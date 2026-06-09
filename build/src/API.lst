@@ -1,0 +1,222 @@
+GAS LISTING /tmp/ccC6L76u.s 			page 1
+
+
+   1              		.file	"API.c"
+   2              		.option nopic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.cfi_sections	.debug_frame
+   7              		.align	2
+   8              		.globl	__mem__alloc
+  10              	__mem__alloc:
+  11              	.LFB0:
+  12              		.file 1 "src/API.c"
+   1:src/API.c     **** //
+   2:src/API.c     **** // Created by os on 5/6/26.
+   3:src/API.c     **** //
+   4:src/API.c     **** 
+   5:src/API.c     **** #include "./APIC.h"
+   6:src/API.c     **** #include "../lib/hw.h"
+   7:src/API.c     **** void* __mem__alloc(size_t size){
+  13              		.loc 1 7 32
+  14              		.cfi_startproc
+  15              	.LVL0:
+  16 0000 130101FF 		addi	sp,sp,-16
+  17              		.cfi_def_cfa_offset 16
+  18 0004 23348100 		sd	s0,8(sp)
+  19              		.cfi_offset 8, -8
+  20 0008 13040101 		addi	s0,sp,16
+  21              		.cfi_def_cfa 8, 0
+   8:src/API.c     ****     uint64 code=0x01;
+  22              		.loc 1 8 5
+  23              	.LVL1:
+   9:src/API.c     ****     __asm__ volatile("mv a1,%[size]"::[size]"r"(size));
+  24              		.loc 1 9 5
+  25              	#APP
+  26              	# 9 "src/API.c" 1
+  10              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
+  27              		mv a1,a0
+  28              	# 0 "" 2
+  29              		.loc 1 10 5
+  30              	#NO_APP
+  31 0010 93071000 		li	a5,1
+  32              	#APP
+  33              	# 10 "src/API.c" 1
+  11              	    __asm__ volatile("ecall");
+  34              		mv a0,a5
+  35              	# 0 "" 2
+  36              		.loc 1 11 5
+  37              	# 11 "src/API.c" 1
+  12              	    void* value;
+  38              		ecall
+  39              	# 0 "" 2
+  40              		.loc 1 12 5
+  13:src/API.c     ****     __asm__ volatile ("mv %0, a0" : "=r"(value));
+  41              		.loc 1 13 5
+  42              	# 13 "src/API.c" 1
+  14              	
+  43              		mv a0, a0
+  44              	# 0 "" 2
+GAS LISTING /tmp/ccC6L76u.s 			page 2
+
+
+  45              	.LVL2:
+  15:src/API.c     ****     return (void*)value;
+  46              		.loc 1 15 5
+  16:src/API.c     **** }
+  47              		.loc 1 16 1 is_stmt 0
+  48              	#NO_APP
+  49 0020 03348100 		ld	s0,8(sp)
+  50              		.cfi_restore 8
+  51              		.cfi_def_cfa 2, 16
+  52 0024 13010101 		addi	sp,sp,16
+  53              		.cfi_def_cfa_offset 0
+  54 0028 67800000 		jr	ra
+  55              		.cfi_endproc
+  56              	.LFE0:
+  58              		.align	2
+  59              		.globl	__mem__free
+  61              	__mem__free:
+  62              	.LFB1:
+  17:src/API.c     **** 
+  18:src/API.c     **** 
+  19:src/API.c     **** 
+  20:src/API.c     **** int __mem__free(void* ptr){
+  63              		.loc 1 20 27 is_stmt 1
+  64              		.cfi_startproc
+  65              	.LVL3:
+  66 002c 130101FF 		addi	sp,sp,-16
+  67              		.cfi_def_cfa_offset 16
+  68 0030 23348100 		sd	s0,8(sp)
+  69              		.cfi_offset 8, -8
+  70 0034 13040101 		addi	s0,sp,16
+  71              		.cfi_def_cfa 8, 0
+  21:src/API.c     ****     uint64 code=0x02;
+  72              		.loc 1 21 5
+  73              	.LVL4:
+  22:src/API.c     ****     __asm__ volatile("mv a1,a0");
+  74              		.loc 1 22 5
+  75              	#APP
+  76              	# 22 "src/API.c" 1
+  23              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
+  77              		mv a1,a0
+  78              	# 0 "" 2
+  79              		.loc 1 23 5
+  80              	#NO_APP
+  81 003c 93072000 		li	a5,2
+  82              	#APP
+  83              	# 23 "src/API.c" 1
+  24              	    __asm__ volatile("ecall");
+  84              		mv a0,a5
+  85              	# 0 "" 2
+  86              		.loc 1 24 5
+  87              	# 24 "src/API.c" 1
+  25              	    return 0;
+  88              		ecall
+  89              	# 0 "" 2
+  90              		.loc 1 25 5
+  26:src/API.c     **** }
+  91              		.loc 1 26 1 is_stmt 0
+GAS LISTING /tmp/ccC6L76u.s 			page 3
+
+
+  92              	#NO_APP
+  93 0048 13050000 		li	a0,0
+  94              	.LVL5:
+  95 004c 03348100 		ld	s0,8(sp)
+  96              		.cfi_restore 8
+  97              		.cfi_def_cfa 2, 16
+  98 0050 13010101 		addi	sp,sp,16
+  99              		.cfi_def_cfa_offset 0
+ 100 0054 67800000 		jr	ra
+ 101              		.cfi_endproc
+ 102              	.LFE1:
+ 104              	.Letext0:
+ 105              		.file 2 "src/./../lib/hw.h"
+GAS LISTING /tmp/ccC6L76u.s 			page 4
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 API.c
+     /tmp/ccC6L76u.s:10     .text:0000000000000000 __mem__alloc
+     /tmp/ccC6L76u.s:14     .text:0000000000000000 .L0 
+     /tmp/ccC6L76u.s:16     .text:0000000000000000 .L0 
+     /tmp/ccC6L76u.s:17     .text:0000000000000004 .L0 
+     /tmp/ccC6L76u.s:19     .text:0000000000000008 .L0 
+     /tmp/ccC6L76u.s:21     .text:000000000000000c .L0 
+     /tmp/ccC6L76u.s:24     .text:000000000000000c .L0 
+           src/API.c:9      .text:000000000000000c .L0 
+     /tmp/ccC6L76u.s:31     .text:0000000000000010 .L0 
+           src/API.c:11     .text:0000000000000018 .L0 
+     /tmp/ccC6L76u.s:41     .text:000000000000001c .L0 
+           src/API.c:13     .text:000000000000001c .L0 
+     /tmp/ccC6L76u.s:47     .text:0000000000000020 .L0 
+     /tmp/ccC6L76u.s:49     .text:0000000000000020 .L0 
+     /tmp/ccC6L76u.s:50     .text:0000000000000024 .L0 
+     /tmp/ccC6L76u.s:51     .text:0000000000000024 .L0 
+     /tmp/ccC6L76u.s:53     .text:0000000000000028 .L0 
+     /tmp/ccC6L76u.s:55     .text:000000000000002c .L0 
+     /tmp/ccC6L76u.s:61     .text:000000000000002c __mem__free
+     /tmp/ccC6L76u.s:64     .text:000000000000002c .L0 
+     /tmp/ccC6L76u.s:66     .text:000000000000002c .L0 
+     /tmp/ccC6L76u.s:67     .text:0000000000000030 .L0 
+     /tmp/ccC6L76u.s:69     .text:0000000000000034 .L0 
+     /tmp/ccC6L76u.s:71     .text:0000000000000038 .L0 
+     /tmp/ccC6L76u.s:74     .text:0000000000000038 .L0 
+           src/API.c:22     .text:0000000000000038 .L0 
+     /tmp/ccC6L76u.s:81     .text:000000000000003c .L0 
+           src/API.c:24     .text:0000000000000044 .L0 
+     /tmp/ccC6L76u.s:91     .text:0000000000000048 .L0 
+     /tmp/ccC6L76u.s:93     .text:0000000000000048 .L0 
+     /tmp/ccC6L76u.s:96     .text:0000000000000050 .L0 
+     /tmp/ccC6L76u.s:97     .text:0000000000000050 .L0 
+     /tmp/ccC6L76u.s:99     .text:0000000000000054 .L0 
+     /tmp/ccC6L76u.s:101    .text:0000000000000058 .L0 
+     /tmp/ccC6L76u.s:106    .text:0000000000000058 .L0 
+                     .debug_frame:0000000000000000 .L0 
+     /tmp/ccC6L76u.s:295    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccC6L76u.s:632    .debug_str:000000000000015b .LASF20
+     /tmp/ccC6L76u.s:600    .debug_str:0000000000000073 .LASF21
+     /tmp/ccC6L76u.s:598    .debug_str:000000000000004e .LASF22
+     /tmp/ccC6L76u.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccC6L76u.s:104    .text:0000000000000058 .Letext0
+     /tmp/ccC6L76u.s:584    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccC6L76u.s:588    .debug_str:000000000000000d .LASF0
+     /tmp/ccC6L76u.s:620    .debug_str:000000000000010e .LASF1
+     /tmp/ccC6L76u.s:612    .debug_str:00000000000000c1 .LASF2
+     /tmp/ccC6L76u.s:606    .debug_str:00000000000000a2 .LASF4
+     /tmp/ccC6L76u.s:602    .debug_str:000000000000007d .LASF3
+     /tmp/ccC6L76u.s:594    .debug_str:0000000000000037 .LASF5
+     /tmp/ccC6L76u.s:604    .debug_str:000000000000008f .LASF6
+     /tmp/ccC6L76u.s:618    .debug_str:00000000000000fb .LASF7
+     /tmp/ccC6L76u.s:630    .debug_str:000000000000014b .LASF8
+     /tmp/ccC6L76u.s:590    .debug_str:000000000000001a .LASF9
+     /tmp/ccC6L76u.s:592    .debug_str:0000000000000028 .LASF10
+     /tmp/ccC6L76u.s:624    .debug_str:0000000000000131 .LASF11
+GAS LISTING /tmp/ccC6L76u.s 			page 5
+
+
+     /tmp/ccC6L76u.s:596    .debug_str:000000000000003e .LASF12
+     /tmp/ccC6L76u.s:622    .debug_str:0000000000000121 .LASF13
+     /tmp/ccC6L76u.s:610    .debug_str:00000000000000b5 .LASF14
+     /tmp/ccC6L76u.s:616    .debug_str:00000000000000e5 .LASF15
+     /tmp/ccC6L76u.s:614    .debug_str:00000000000000cf .LASF16
+     /tmp/ccC6L76u.s:608    .debug_str:00000000000000a9 .LASF23
+     /tmp/ccC6L76u.s:62     .text:000000000000002c .LFB1
+     /tmp/ccC6L76u.s:102    .text:0000000000000058 .LFE1
+     /tmp/ccC6L76u.s:543    .debug_loc:0000000000000000 .LLST1
+     /tmp/ccC6L76u.s:634    .debug_str:00000000000001f9 .LASF17
+     /tmp/ccC6L76u.s:586    .debug_str:0000000000000000 .LASF24
+     /tmp/ccC6L76u.s:11     .text:0000000000000000 .LFB0
+     /tmp/ccC6L76u.s:56     .text:000000000000002c .LFE0
+     /tmp/ccC6L76u.s:626    .debug_str:0000000000000140 .LASF18
+     /tmp/ccC6L76u.s:557    .debug_loc:0000000000000039 .LLST0
+     /tmp/ccC6L76u.s:628    .debug_str:0000000000000145 .LASF19
+     /tmp/ccC6L76u.s:65     .text:000000000000002c .LVL3
+     /tmp/ccC6L76u.s:94     .text:000000000000004c .LVL5
+     /tmp/ccC6L76u.s:15     .text:0000000000000000 .LVL0
+     /tmp/ccC6L76u.s:45     .text:0000000000000020 .LVL2
+     /tmp/ccC6L76u.s:107    .debug_info:0000000000000000 .Ldebug_info0
+
+NO UNDEFINED SYMBOLS

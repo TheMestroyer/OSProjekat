@@ -1,0 +1,445 @@
+GAS LISTING /tmp/ccwtgtQ0.s 			page 1
+
+
+   1              		.file	"main.c"
+   2              		.option nopic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.cfi_sections	.debug_frame
+   7              		.align	2
+   8              		.globl	mainU
+  10              	mainU:
+  11              	.LFB0:
+  12              		.file 1 "src/main.c"
+   1:src/main.c    **** //
+   2:src/main.c    **** // Created by os on 5/6/26.
+   3:src/main.c    **** //
+   4:src/main.c    **** #include "APIC.h"
+   5:src/main.c    **** #include "../lib/console.h"
+   6:src/main.c    **** void mainU(){
+  13              		.loc 1 6 13
+  14              		.cfi_startproc
+  15 0000 130101FE 		addi	sp,sp,-32
+  16              		.cfi_def_cfa_offset 32
+  17 0004 233C1100 		sd	ra,24(sp)
+  18 0008 23388100 		sd	s0,16(sp)
+  19 000c 23349100 		sd	s1,8(sp)
+  20 0010 23302101 		sd	s2,0(sp)
+  21              		.cfi_offset 1, -8
+  22              		.cfi_offset 8, -16
+  23              		.cfi_offset 9, -24
+  24              		.cfi_offset 18, -32
+  25 0014 13040102 		addi	s0,sp,32
+  26              		.cfi_def_cfa 8, 0
+   7:src/main.c    ****     char* a1 = __mem__alloc(sizeof(char)*20);
+  27              		.loc 1 7 5
+  28              		.loc 1 7 16 is_stmt 0
+  29 0018 13054001 		li	a0,20
+  30 001c 97000000 		call	__mem__alloc
+  30      E7800000 
+  31              	.LVL0:
+  32 0024 93040500 		mv	s1,a0
+  33              	.LVL1:
+   8:src/main.c    ****     *a1 = 'a';
+  34              		.loc 1 8 5 is_stmt 1
+  35              		.loc 1 8 9 is_stmt 0
+  36 0028 93071006 		li	a5,97
+  37 002c 2300F500 		sb	a5,0(a0)
+   9:src/main.c    ****     *(a1+sizeof(char)) ='b';
+  38              		.loc 1 9 5 is_stmt 1
+  39              		.loc 1 9 24 is_stmt 0
+  40 0030 93072006 		li	a5,98
+  41 0034 A300F500 		sb	a5,1(a0)
+  10:src/main.c    ****     __putc(*a1);
+  42              		.loc 1 10 5 is_stmt 1
+  43 0038 13051006 		li	a0,97
+  44 003c 97000000 		call	__putc
+  44      E7800000 
+  45              	.LVL2:
+  11:src/main.c    ****     __putc(*(a1+1));
+GAS LISTING /tmp/ccwtgtQ0.s 			page 2
+
+
+  46              		.loc 1 11 5
+  47 0044 03C51400 		lbu	a0,1(s1)
+  48 0048 97000000 		call	__putc
+  48      E7800000 
+  49              	.LVL3:
+  12:src/main.c    ****     *(a1+11) = 'h';
+  50              		.loc 1 12 5
+  51              		.loc 1 12 14 is_stmt 0
+  52 0050 93078006 		li	a5,104
+  53 0054 A385F400 		sb	a5,11(s1)
+  13:src/main.c    ****     char* a2 = __mem__alloc(sizeof(char)*10);
+  54              		.loc 1 13 5 is_stmt 1
+  55              		.loc 1 13 16 is_stmt 0
+  56 0058 1305A000 		li	a0,10
+  57 005c 97000000 		call	__mem__alloc
+  57      E7800000 
+  58              	.LVL4:
+  14:src/main.c    ****     *a2 = 'c';
+  59              		.loc 1 14 5 is_stmt 1
+  60              		.loc 1 14 9 is_stmt 0
+  61 0064 93073006 		li	a5,99
+  62 0068 2300F500 		sb	a5,0(a0)
+  15:src/main.c    ****     *(a2+sizeof(char)) ='d';
+  63              		.loc 1 15 5 is_stmt 1
+  64              		.loc 1 15 24 is_stmt 0
+  65 006c 93074006 		li	a5,100
+  66 0070 A300F500 		sb	a5,1(a0)
+  16:src/main.c    ****     __mem__free(a1);
+  67              		.loc 1 16 5 is_stmt 1
+  68 0074 13850400 		mv	a0,s1
+  69              	.LVL5:
+  70 0078 97000000 		call	__mem__free
+  70      E7800000 
+  71              	.LVL6:
+  17:src/main.c    ****     char* a3 = __mem__alloc(sizeof(char)*10);
+  72              		.loc 1 17 5
+  73              		.loc 1 17 16 is_stmt 0
+  74 0080 1305A000 		li	a0,10
+  75 0084 97000000 		call	__mem__alloc
+  75      E7800000 
+  76              	.LVL7:
+  77 008c 13090500 		mv	s2,a0
+  78              	.LVL8:
+  18:src/main.c    ****     *(a3+sizeof(char)) ='f';
+  79              		.loc 1 18 5 is_stmt 1
+  80              		.loc 1 18 24 is_stmt 0
+  81 0090 93076006 		li	a5,102
+  82 0094 A300F500 		sb	a5,1(a0)
+  19:src/main.c    ****     __putc(*a3);
+  83              		.loc 1 19 5 is_stmt 1
+  84 0098 03450500 		lbu	a0,0(a0)
+  85              	.LVL9:
+  86 009c 97000000 		call	__putc
+  86      E7800000 
+  87              	.LVL10:
+  20:src/main.c    ****     __putc(*(a3+1));
+  88              		.loc 1 20 5
+GAS LISTING /tmp/ccwtgtQ0.s 			page 3
+
+
+  89 00a4 03451900 		lbu	a0,1(s2)
+  90 00a8 97000000 		call	__putc
+  90      E7800000 
+  91              	.LVL11:
+  21:src/main.c    ****     __putc(*a1);
+  92              		.loc 1 21 5
+  93 00b0 03C50400 		lbu	a0,0(s1)
+  94 00b4 97000000 		call	__putc
+  94      E7800000 
+  95              	.LVL12:
+  22:src/main.c    ****     __putc(*(a1+1));
+  96              		.loc 1 22 5
+  97 00bc 03C51400 		lbu	a0,1(s1)
+  98 00c0 97000000 		call	__putc
+  98      E7800000 
+  99              	.LVL13:
+  23:src/main.c    **** }
+ 100              		.loc 1 23 1 is_stmt 0
+ 101 00c8 83308101 		ld	ra,24(sp)
+ 102              		.cfi_restore 1
+ 103 00cc 03340101 		ld	s0,16(sp)
+ 104              		.cfi_restore 8
+ 105              		.cfi_def_cfa 2, 32
+ 106 00d0 83348100 		ld	s1,8(sp)
+ 107              		.cfi_restore 9
+ 108              	.LVL14:
+ 109 00d4 03390100 		ld	s2,0(sp)
+ 110              		.cfi_restore 18
+ 111              	.LVL15:
+ 112 00d8 13010102 		addi	sp,sp,32
+ 113              		.cfi_def_cfa_offset 0
+ 114 00dc 67800000 		jr	ra
+ 115              		.cfi_endproc
+ 116              	.LFE0:
+ 118              		.align	2
+ 119              		.globl	drop_to_user
+ 121              	drop_to_user:
+ 122              	.LFB1:
+  24:src/main.c    **** 
+  25:src/main.c    **** 
+  26:src/main.c    **** void drop_to_user(void (*fn)()) {
+ 123              		.loc 1 26 33 is_stmt 1
+ 124              		.cfi_startproc
+ 125              	.LVL16:
+ 126 00e0 130101FF 		addi	sp,sp,-16
+ 127              		.cfi_def_cfa_offset 16
+ 128 00e4 23348100 		sd	s0,8(sp)
+ 129              		.cfi_offset 8, -8
+ 130 00e8 13040101 		addi	s0,sp,16
+ 131              		.cfi_def_cfa 8, 0
+  27:src/main.c    ****     __asm__ volatile ("csrw sepc, %0" :: "r"(fn));
+ 132              		.loc 1 27 5
+ 133              	#APP
+ 134              	# 27 "src/main.c" 1
+  28              	
+  29:src/main.c    ****     uint64 sstatus;
+ 135              		csrw sepc, a0
+GAS LISTING /tmp/ccwtgtQ0.s 			page 4
+
+
+ 136              	# 0 "" 2
+ 137              		.loc 1 29 5
+  30:src/main.c    ****     __asm__ volatile ("csrr %0, sstatus" : "=r"(sstatus));
+ 138              		.loc 1 30 5
+ 139              	# 30 "src/main.c" 1
+  31              	    sstatus &= ~(1UL << 8);
+ 140              		csrr a5, sstatus
+ 141              	# 0 "" 2
+ 142              	.LVL17:
+ 143              		.loc 1 31 5
+ 144              		.loc 1 31 13 is_stmt 0
+ 145              	#NO_APP
+ 146 00f4 93F7F7EF 		andi	a5,a5,-257
+ 147              	.LVL18:
+  32:src/main.c    ****     sstatus |=  (1UL << 5);
+ 148              		.loc 1 32 5 is_stmt 1
+ 149              		.loc 1 32 13 is_stmt 0
+ 150 00f8 93E70702 		ori	a5,a5,32
+ 151              	.LVL19:
+  33:src/main.c    ****     __asm__ volatile ("csrw sstatus, %0" :: "r"(sstatus));
+ 152              		.loc 1 33 5 is_stmt 1
+ 153              	#APP
+ 154              	# 33 "src/main.c" 1
+  34              	
+  35:src/main.c    ****     __asm__ volatile ("sret");
+ 155              		csrw sstatus, a5
+ 156              	# 0 "" 2
+ 157              		.loc 1 35 5
+ 158              	# 35 "src/main.c" 1
+  36              	}
+ 159              		sret
+ 160              	# 0 "" 2
+ 161              		.loc 1 36 1 is_stmt 0
+ 162              	#NO_APP
+ 163 0104 03348100 		ld	s0,8(sp)
+ 164              		.cfi_restore 8
+ 165              		.cfi_def_cfa 2, 16
+ 166 0108 13010101 		addi	sp,sp,16
+ 167              		.cfi_def_cfa_offset 0
+ 168 010c 67800000 		jr	ra
+ 169              		.cfi_endproc
+ 170              	.LFE1:
+ 172              		.align	2
+ 173              		.globl	main
+ 175              	main:
+ 176              	.LFB2:
+  37:src/main.c    **** void interupt();
+  38:src/main.c    **** int main() {
+ 177              		.loc 1 38 12 is_stmt 1
+ 178              		.cfi_startproc
+ 179 0110 130101FF 		addi	sp,sp,-16
+ 180              		.cfi_def_cfa_offset 16
+ 181 0114 23341100 		sd	ra,8(sp)
+ 182 0118 23308100 		sd	s0,0(sp)
+ 183              		.cfi_offset 1, -8
+ 184              		.cfi_offset 8, -16
+ 185 011c 13040101 		addi	s0,sp,16
+GAS LISTING /tmp/ccwtgtQ0.s 			page 5
+
+
+ 186              		.cfi_def_cfa 8, 0
+  39:src/main.c    ****     __asm__ volatile("csrw sie, zero");
+ 187              		.loc 1 39 5
+ 188              	#APP
+ 189              	# 39 "src/main.c" 1
+  40              	    __asm__ volatile("csrw stvec, %[v]" :: [v]"r"(&interupt));
+ 190              		csrw sie, zero
+ 191              	# 0 "" 2
+ 192              		.loc 1 40 5
+ 193              	#NO_APP
+ 194 0124 97070000 		lla	a5,interupt
+ 194      93870700 
+ 195              	#APP
+ 196              	# 40 "src/main.c" 1
+  41              	    drop_to_user(mainU);
+ 197              		csrw stvec, a5
+ 198              	# 0 "" 2
+ 199              		.loc 1 41 5
+ 200              	#NO_APP
+ 201 0130 17050000 		lla	a0,mainU
+ 201      13050500 
+ 202 0138 97000000 		call	drop_to_user
+ 202      E7800000 
+ 203              	.LVL20:
+  42:src/main.c    ****     return 0;
+ 204              		.loc 1 42 5
+  43:src/main.c    **** }
+ 205              		.loc 1 43 1 is_stmt 0
+ 206 0140 13050000 		li	a0,0
+ 207 0144 83308100 		ld	ra,8(sp)
+ 208              		.cfi_restore 1
+ 209 0148 03340100 		ld	s0,0(sp)
+ 210              		.cfi_restore 8
+ 211              		.cfi_def_cfa 2, 16
+ 212 014c 13010101 		addi	sp,sp,16
+ 213              		.cfi_def_cfa_offset 0
+ 214 0150 67800000 		jr	ra
+ 215              		.cfi_endproc
+ 216              	.LFE2:
+ 218              	.Letext0:
+ 219              		.file 2 "src/../lib/hw.h"
+ 220              		.file 3 "src/APIC.h"
+ 221              		.file 4 "src/../lib/console.h"
+GAS LISTING /tmp/ccwtgtQ0.s 			page 6
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 main.c
+     /tmp/ccwtgtQ0.s:10     .text:0000000000000000 mainU
+     /tmp/ccwtgtQ0.s:14     .text:0000000000000000 .L0 
+     /tmp/ccwtgtQ0.s:15     .text:0000000000000000 .L0 
+     /tmp/ccwtgtQ0.s:16     .text:0000000000000004 .L0 
+     /tmp/ccwtgtQ0.s:21     .text:0000000000000014 .L0 
+     /tmp/ccwtgtQ0.s:22     .text:0000000000000014 .L0 
+     /tmp/ccwtgtQ0.s:23     .text:0000000000000014 .L0 
+     /tmp/ccwtgtQ0.s:24     .text:0000000000000014 .L0 
+     /tmp/ccwtgtQ0.s:26     .text:0000000000000018 .L0 
+     /tmp/ccwtgtQ0.s:28     .text:0000000000000018 .L0 
+     /tmp/ccwtgtQ0.s:29     .text:0000000000000018 .L0 
+     /tmp/ccwtgtQ0.s:35     .text:0000000000000028 .L0 
+     /tmp/ccwtgtQ0.s:36     .text:0000000000000028 .L0 
+     /tmp/ccwtgtQ0.s:39     .text:0000000000000030 .L0 
+     /tmp/ccwtgtQ0.s:40     .text:0000000000000030 .L0 
+     /tmp/ccwtgtQ0.s:43     .text:0000000000000038 .L0 
+     /tmp/ccwtgtQ0.s:47     .text:0000000000000044 .L0 
+     /tmp/ccwtgtQ0.s:51     .text:0000000000000050 .L0 
+     /tmp/ccwtgtQ0.s:52     .text:0000000000000050 .L0 
+     /tmp/ccwtgtQ0.s:55     .text:0000000000000058 .L0 
+     /tmp/ccwtgtQ0.s:56     .text:0000000000000058 .L0 
+     /tmp/ccwtgtQ0.s:60     .text:0000000000000064 .L0 
+     /tmp/ccwtgtQ0.s:61     .text:0000000000000064 .L0 
+     /tmp/ccwtgtQ0.s:64     .text:000000000000006c .L0 
+     /tmp/ccwtgtQ0.s:65     .text:000000000000006c .L0 
+     /tmp/ccwtgtQ0.s:68     .text:0000000000000074 .L0 
+     /tmp/ccwtgtQ0.s:73     .text:0000000000000080 .L0 
+     /tmp/ccwtgtQ0.s:74     .text:0000000000000080 .L0 
+     /tmp/ccwtgtQ0.s:80     .text:0000000000000090 .L0 
+     /tmp/ccwtgtQ0.s:81     .text:0000000000000090 .L0 
+     /tmp/ccwtgtQ0.s:84     .text:0000000000000098 .L0 
+     /tmp/ccwtgtQ0.s:89     .text:00000000000000a4 .L0 
+     /tmp/ccwtgtQ0.s:93     .text:00000000000000b0 .L0 
+     /tmp/ccwtgtQ0.s:97     .text:00000000000000bc .L0 
+     /tmp/ccwtgtQ0.s:101    .text:00000000000000c8 .L0 
+     /tmp/ccwtgtQ0.s:102    .text:00000000000000cc .L0 
+     /tmp/ccwtgtQ0.s:104    .text:00000000000000d0 .L0 
+     /tmp/ccwtgtQ0.s:105    .text:00000000000000d0 .L0 
+     /tmp/ccwtgtQ0.s:107    .text:00000000000000d4 .L0 
+     /tmp/ccwtgtQ0.s:110    .text:00000000000000d8 .L0 
+     /tmp/ccwtgtQ0.s:113    .text:00000000000000dc .L0 
+     /tmp/ccwtgtQ0.s:115    .text:00000000000000e0 .L0 
+     /tmp/ccwtgtQ0.s:121    .text:00000000000000e0 drop_to_user
+     /tmp/ccwtgtQ0.s:124    .text:00000000000000e0 .L0 
+     /tmp/ccwtgtQ0.s:126    .text:00000000000000e0 .L0 
+     /tmp/ccwtgtQ0.s:127    .text:00000000000000e4 .L0 
+     /tmp/ccwtgtQ0.s:129    .text:00000000000000e8 .L0 
+     /tmp/ccwtgtQ0.s:131    .text:00000000000000ec .L0 
+          src/main.c:27     .text:00000000000000ec .L0 
+     /tmp/ccwtgtQ0.s:138    .text:00000000000000f0 .L0 
+          src/main.c:30     .text:00000000000000f0 .L0 
+     /tmp/ccwtgtQ0.s:144    .text:00000000000000f4 .L0 
+     /tmp/ccwtgtQ0.s:146    .text:00000000000000f4 .L0 
+     /tmp/ccwtgtQ0.s:149    .text:00000000000000f8 .L0 
+     /tmp/ccwtgtQ0.s:150    .text:00000000000000f8 .L0 
+GAS LISTING /tmp/ccwtgtQ0.s 			page 7
+
+
+          src/main.c:33     .text:00000000000000fc .L0 
+          src/main.c:35     .text:0000000000000100 .L0 
+     /tmp/ccwtgtQ0.s:163    .text:0000000000000104 .L0 
+     /tmp/ccwtgtQ0.s:164    .text:0000000000000108 .L0 
+     /tmp/ccwtgtQ0.s:165    .text:0000000000000108 .L0 
+     /tmp/ccwtgtQ0.s:167    .text:000000000000010c .L0 
+     /tmp/ccwtgtQ0.s:169    .text:0000000000000110 .L0 
+     /tmp/ccwtgtQ0.s:175    .text:0000000000000110 main
+     /tmp/ccwtgtQ0.s:178    .text:0000000000000110 .L0 
+     /tmp/ccwtgtQ0.s:179    .text:0000000000000110 .L0 
+     /tmp/ccwtgtQ0.s:180    .text:0000000000000114 .L0 
+     /tmp/ccwtgtQ0.s:183    .text:000000000000011c .L0 
+     /tmp/ccwtgtQ0.s:184    .text:000000000000011c .L0 
+     /tmp/ccwtgtQ0.s:186    .text:0000000000000120 .L0 
+          src/main.c:39     .text:0000000000000120 .L0 
+     /tmp/ccwtgtQ0.s:194    .text:0000000000000124 .L0 
+     /tmp/ccwtgtQ0.s:201    .text:0000000000000130 .L0 
+     /tmp/ccwtgtQ0.s:205    .text:0000000000000140 .L0 
+     /tmp/ccwtgtQ0.s:206    .text:0000000000000140 .L0 
+     /tmp/ccwtgtQ0.s:208    .text:0000000000000148 .L0 
+     /tmp/ccwtgtQ0.s:210    .text:000000000000014c .L0 
+     /tmp/ccwtgtQ0.s:211    .text:000000000000014c .L0 
+     /tmp/ccwtgtQ0.s:213    .text:0000000000000150 .L0 
+     /tmp/ccwtgtQ0.s:215    .text:0000000000000154 .L0 
+     /tmp/ccwtgtQ0.s:222    .text:0000000000000154 .L0 
+                     .debug_frame:0000000000000000 .L0 
+     /tmp/ccwtgtQ0.s:194    .text:0000000000000124 .L0 
+     /tmp/ccwtgtQ0.s:201    .text:0000000000000130 .L0 
+     /tmp/ccwtgtQ0.s:530    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccwtgtQ0.s:955    .debug_str:0000000000000170 .LASF24
+     /tmp/ccwtgtQ0.s:919    .debug_str:0000000000000085 .LASF25
+     /tmp/ccwtgtQ0.s:915    .debug_str:000000000000004e .LASF26
+     /tmp/ccwtgtQ0.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccwtgtQ0.s:218    .text:0000000000000154 .Letext0
+     /tmp/ccwtgtQ0.s:901    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccwtgtQ0.s:905    .debug_str:000000000000000d .LASF0
+     /tmp/ccwtgtQ0.s:945    .debug_str:0000000000000128 .LASF1
+     /tmp/ccwtgtQ0.s:931    .debug_str:00000000000000c7 .LASF2
+     /tmp/ccwtgtQ0.s:923    .debug_str:00000000000000a3 .LASF4
+     /tmp/ccwtgtQ0.s:917    .debug_str:0000000000000073 .LASF3
+     /tmp/ccwtgtQ0.s:911    .debug_str:0000000000000037 .LASF5
+     /tmp/ccwtgtQ0.s:921    .debug_str:0000000000000090 .LASF6
+     /tmp/ccwtgtQ0.s:943    .debug_str:0000000000000115 .LASF7
+     /tmp/ccwtgtQ0.s:953    .debug_str:0000000000000160 .LASF8
+     /tmp/ccwtgtQ0.s:907    .debug_str:000000000000001a .LASF9
+     /tmp/ccwtgtQ0.s:909    .debug_str:0000000000000028 .LASF10
+     /tmp/ccwtgtQ0.s:949    .debug_str:000000000000014b .LASF11
+     /tmp/ccwtgtQ0.s:913    .debug_str:000000000000003e .LASF12
+     /tmp/ccwtgtQ0.s:947    .debug_str:000000000000013b .LASF13
+     /tmp/ccwtgtQ0.s:929    .debug_str:00000000000000bb .LASF14
+     /tmp/ccwtgtQ0.s:939    .debug_str:00000000000000f7 .LASF15
+     /tmp/ccwtgtQ0.s:937    .debug_str:00000000000000e1 .LASF16
+     /tmp/ccwtgtQ0.s:933    .debug_str:00000000000000d5 .LASF17
+     /tmp/ccwtgtQ0.s:176    .text:0000000000000110 .LFB2
+     /tmp/ccwtgtQ0.s:216    .text:0000000000000154 .LFE2
+     /tmp/ccwtgtQ0.s:203    .text:0000000000000140 .LVL20
+     /tmp/ccwtgtQ0.s:957    .debug_str:000000000000020e .LASF18
+GAS LISTING /tmp/ccwtgtQ0.s 			page 8
+
+
+     /tmp/ccwtgtQ0.s:122    .text:00000000000000e0 .LFB1
+     /tmp/ccwtgtQ0.s:170    .text:0000000000000110 .LFE1
+     /tmp/ccwtgtQ0.s:941    .debug_str:000000000000010d .LASF19
+     /tmp/ccwtgtQ0.s:951    .debug_str:000000000000015a .LASF27
+     /tmp/ccwtgtQ0.s:11     .text:0000000000000000 .LFB0
+     /tmp/ccwtgtQ0.s:116    .text:00000000000000e0 .LFE0
+     /tmp/ccwtgtQ0.s:863    .debug_loc:0000000000000000 .LLST0
+     /tmp/ccwtgtQ0.s:870    .debug_loc:0000000000000023 .LLST1
+     /tmp/ccwtgtQ0.s:877    .debug_loc:0000000000000046 .LLST2
+     /tmp/ccwtgtQ0.s:31     .text:0000000000000024 .LVL0
+     /tmp/ccwtgtQ0.s:45     .text:0000000000000044 .LVL2
+     /tmp/ccwtgtQ0.s:49     .text:0000000000000050 .LVL3
+     /tmp/ccwtgtQ0.s:58     .text:0000000000000064 .LVL4
+     /tmp/ccwtgtQ0.s:71     .text:0000000000000080 .LVL6
+     /tmp/ccwtgtQ0.s:76     .text:000000000000008c .LVL7
+     /tmp/ccwtgtQ0.s:87     .text:00000000000000a4 .LVL10
+     /tmp/ccwtgtQ0.s:91     .text:00000000000000b0 .LVL11
+     /tmp/ccwtgtQ0.s:95     .text:00000000000000bc .LVL12
+     /tmp/ccwtgtQ0.s:99     .text:00000000000000c8 .LVL13
+     /tmp/ccwtgtQ0.s:925    .debug_str:00000000000000aa .LASF20
+     /tmp/ccwtgtQ0.s:903    .debug_str:0000000000000000 .LASF21
+     /tmp/ccwtgtQ0.s:935    .debug_str:00000000000000da .LASF22
+     /tmp/ccwtgtQ0.s:927    .debug_str:00000000000000af .LASF23
+     /tmp/ccwtgtQ0.s:33     .text:0000000000000028 .LVL1
+     /tmp/ccwtgtQ0.s:108    .text:00000000000000d4 .LVL14
+     /tmp/ccwtgtQ0.s:69     .text:0000000000000078 .LVL5
+     /tmp/ccwtgtQ0.s:78     .text:0000000000000090 .LVL8
+     /tmp/ccwtgtQ0.s:85     .text:000000000000009c .LVL9
+     /tmp/ccwtgtQ0.s:111    .text:00000000000000d8 .LVL15
+     /tmp/ccwtgtQ0.s:223    .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+__mem__alloc
+__putc
+__mem__free
+interupt
