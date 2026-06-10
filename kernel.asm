@@ -74,13 +74,13 @@ interupt:
 
     8000105c:	10200073          	sret
 
-0000000080001060 <__mem__alloc>:
+0000000080001060 <mem_alloc>:
 // Created by os on 5/6/26.
 //
 
 #include "./APIC.h"
 #include "../lib/hw.h"
-void* __mem__alloc(size_t size){
+void* mem_alloc(size_t size){
     80001060:	ff010113          	addi	sp,sp,-16
     80001064:	00813423          	sd	s0,8(sp)
     80001068:	01010413          	addi	s0,sp,16
@@ -102,11 +102,11 @@ void* __mem__alloc(size_t size){
     80001084:	01010113          	addi	sp,sp,16
     80001088:	00008067          	ret
 
-000000008000108c <__mem__free>:
+000000008000108c <mem_free>:
 
 
 
-int __mem__free(void* ptr){
+int mem_free(void* ptr){
     8000108c:	ff010113          	addi	sp,sp,-16
     80001090:	00813423          	sd	s0,8(sp)
     80001094:	01010413          	addi	s0,sp,16
@@ -138,10 +138,10 @@ void mainU(){
     800010c4:	00913423          	sd	s1,8(sp)
     800010c8:	01213023          	sd	s2,0(sp)
     800010cc:	02010413          	addi	s0,sp,32
-    char* a1 = __mem__alloc(sizeof(char)*20);
+    char* a1 = mem_alloc(sizeof(char)*20);
     800010d0:	01400513          	li	a0,20
     800010d4:	00000097          	auipc	ra,0x0
-    800010d8:	f8c080e7          	jalr	-116(ra) # 80001060 <__mem__alloc>
+    800010d8:	f8c080e7          	jalr	-116(ra) # 80001060 <mem_alloc>
     800010dc:	00050493          	mv	s1,a0
     *a1 = 'a';
     800010e0:	06100793          	li	a5,97
@@ -160,24 +160,24 @@ void mainU(){
     *(a1+11) = 'h';
     80001108:	06800793          	li	a5,104
     8000110c:	00f485a3          	sb	a5,11(s1)
-    char* a2 = __mem__alloc(sizeof(char)*10);
+    char* a2 = mem_alloc(sizeof(char)*10);
     80001110:	00a00513          	li	a0,10
     80001114:	00000097          	auipc	ra,0x0
-    80001118:	f4c080e7          	jalr	-180(ra) # 80001060 <__mem__alloc>
+    80001118:	f4c080e7          	jalr	-180(ra) # 80001060 <mem_alloc>
     *a2 = 'c';
     8000111c:	06300793          	li	a5,99
     80001120:	00f50023          	sb	a5,0(a0)
     *(a2+sizeof(char)) ='d';
     80001124:	06400793          	li	a5,100
     80001128:	00f500a3          	sb	a5,1(a0)
-    __mem__free(a1);
+    mem_free(a1);
     8000112c:	00048513          	mv	a0,s1
     80001130:	00000097          	auipc	ra,0x0
-    80001134:	f5c080e7          	jalr	-164(ra) # 8000108c <__mem__free>
-    char* a3 = __mem__alloc(sizeof(char)*10);
+    80001134:	f5c080e7          	jalr	-164(ra) # 8000108c <mem_free>
+    char* a3 = mem_alloc(sizeof(char)*10);
     80001138:	00a00513          	li	a0,10
     8000113c:	00000097          	auipc	ra,0x0
-    80001140:	f24080e7          	jalr	-220(ra) # 80001060 <__mem__alloc>
+    80001140:	f24080e7          	jalr	-220(ra) # 80001060 <mem_alloc>
     80001144:	00050913          	mv	s2,a0
     *(a3+sizeof(char)) ='f';
     80001148:	06600793          	li	a5,102

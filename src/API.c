@@ -4,7 +4,7 @@
 
 #include "./APIC.h"
 #include "../lib/hw.h"
-void* __mem__alloc(size_t size){
+void* mem_alloc(size_t size){
     uint64 code=0x01;
     __asm__ volatile("mv a1,%[size]"::[size]"r"(size));
     __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
@@ -17,7 +17,7 @@ void* __mem__alloc(size_t size){
 
 
 
-int __mem__free(void* ptr){
+int mem_free(void* ptr){
     uint64 code=0x02;
     __asm__ volatile("mv a1,a0");
     __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
