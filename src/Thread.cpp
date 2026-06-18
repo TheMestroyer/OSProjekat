@@ -2,7 +2,16 @@
 // Created by os on 6/10/26.
 //
 
-#include "Thread.h"
+#include "Thread.hpp"
+
+#include "../lib/console.h"
+
+Thread::Thread() {
+
+}
+size_t* Thread::getContext() {
+    return threadContext.x[0];
+}
 Thread* Thread::getNextInQueue(){
     return next;
 }
@@ -20,11 +29,21 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
     setPrevInQueue(prev);
 }
 void Thread::start(){
+    Scheduler::AddNewThread(this);
+    this->threadContext.x[5] = static_cast<size_t*>(this->run);
     Scheduler::Put(this);
+    Scheduler::yield(nullptr,this);
 }
 void Thread::run(){
-
+    __putc('{');
 }
 void Thread::join(){
 
+}
+void Thread::setStackPtr(size_t* stackPtr) {
+    this->stackPtr = stackPtr;
+}
+
+void Thread::setSupervisorSp(size_t* supervisorSp) {
+    this->supervisorSp = supervisorSp;
 }

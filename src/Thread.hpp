@@ -5,7 +5,7 @@
 #ifndef OSPROJEKAT_THREAD_H
 #define OSPROJEKAT_THREAD_H
 
-#include "Scheduler.h"
+#include "Scheduler.hpp"
 #include "../lib/hw.h"
 
 class Thread{
@@ -13,11 +13,14 @@ private:
     Context threadContext;
     Thread* prev;
     Thread* next;
-    size_t stack[DEFAULT_STACK_SIZE];
-    size_t supervisorSp;
+    size_t* stackPtr;
+    size_t* stack[DEFAULT_STACK_SIZE];
+    size_t* supervisorSp;
 public:
-    Context* getContext();
-    void setContext(Context* context);
+    Thread();
+    void setStackPtr(size_t* stackPtr);
+    void setSupervisorSp(size_t* supervisorSp);
+    size_t* getContext();
     Thread* getNextInQueue();
     Thread* getPrevInQueue();
     void setNextInQueue(Thread* next);

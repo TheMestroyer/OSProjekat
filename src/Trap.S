@@ -14,6 +14,8 @@ interupt:
     sd x8,0x40(sp)
     sd x9,0x48(sp)
 
+    #csrw sepc,pc;
+
     call HandleInterupt
 
     ld x0,0x00(sp)
@@ -26,6 +28,8 @@ interupt:
     ld x7,0x38(sp)
     ld x8,0x40(sp)
     ld x9,0x48(sp)
+
+    #csrr pc,sepc;
     addi sp, sp, 256
 
     sret

@@ -2,15 +2,16 @@
 // Created by os on 6/10/26.
 //
 
-#include "Scheduler.h"
-extern "C" void saveContext(context_t* ctx);
-extern "C" void restoreContext(context_t* ctx);
+#include "Scheduler.hpp"
+extern "C" void saveContext(size_t* ctx);
+extern "C" void restoreContext(size_t* ctx);
 
 Thread* Scheduler::GetRunning(){
     return running;
 }
 void Scheduler::yield(Thread* oldThread, Thread* newThread){
-    saveContext(oldThread->getContext());
+    if (oldThread != nullptr)//TODO: Add error and remove this temp logic
+        saveContext(oldThread->getContext());
     restoreContext(newThread->getContext());
 }
 Thread* Scheduler::GetNext(){
@@ -27,12 +28,20 @@ void Scheduler::Put(Thread* thread){
 }
 
 void Scheduler::SetupStartStack(){
-    size_t sp;
+    size_t* sp;
     size_t pc;
-    size_t newsp;
+    size_t* newsp;
     __asm__ volatile("mv %[sp],sp":[sp]"=r"(sp));
     newsp = sp-4;
     __asm__ volatile("mv sp,%[sp]"::[sp]"r"(newsp));
     Scheduler::stack_cursor = newsp-DEFAULT_STACK_SIZE;
 }
+
+void Scheduler::AddNewThread(Thread* thread) {
+    Scheduler::stack_cursor = Scheduler::stack_cursor-2*DEFAULT_STACK_SIZE;
+
+    thread->setStackPtr(stackCursor+DEFAULT_STACK_SIZE);
+    thread->setSupervisorSp(stack_cursor);
+}
+
 

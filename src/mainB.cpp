@@ -1,5 +1,5 @@
 #include "../lib/console.h"
-#include "MemoryAllocator.h"
+#include "MemoryAllocator.hpp"
 void mainA(){
     MemoryAllocator memAlloc = MemoryAllocator::GetInstance();
 

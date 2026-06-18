@@ -4,22 +4,22 @@
 #include "APIC.h"
 #include "../lib/console.h"
 void mainU(){
-    char* a1 = mem_alloc(sizeof(char) * 20);
-    *a1 = 'a';
-    *(a1+sizeof(char)) ='b';
-    __putc(*a1);
-    __putc(*(a1+1));
-    *(a1+11) = 'h';
-    char* a2 = mem_alloc(sizeof(char) * 10);
-    *a2 = 'c';
-    *(a2+sizeof(char)) ='d';
-    mem_free(a1);
-    char* a3 = mem_alloc(sizeof(char) * 10);
-    *(a3+sizeof(char)) ='f';
-    __putc(*a3);
-    __putc(*(a3+1));
-    __putc(*a1);
-    __putc(*(a1+1));
+    // char* a1 = mem_alloc(sizeof(char) * 20);
+    // *a1 = 'a';
+    // *(a1+sizeof(char)) ='b';
+    // __putc(*a1);
+    // __putc(*(a1+1));
+    // *(a1+11) = 'h';
+    // char* a2 = mem_alloc(sizeof(char) * 10);
+    // *a2 = 'c';
+    // *(a2+sizeof(char)) ='d';
+    // mem_free(a1);
+    // char* a3 = mem_alloc(sizeof(char) * 10);
+    // *(a3+sizeof(char)) ='f';
+    // __putc(*a3);
+    // __putc(*(a3+1));
+    // __putc(*a1);
+    // __putc(*(a1+1));
 }
 
 
