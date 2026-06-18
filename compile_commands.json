@@ -1,0 +1,33 @@
+[
+    {
+        "arguments": [
+            "riscv64-linux-gnu-g++",
+            "-c",
+            "-Wall",
+            "-Werror",
+            "-Og",
+            "-ggdb",
+            "-nostdlib",
+            "-std=c++11",
+            "-march=rv64ima",
+            "-mabi=lp64",
+            "-mcmodel=medany",
+            "-mno-relax",
+            "-fno-omit-frame-pointer",
+            "-ffreestanding",
+            "-fno-common",
+            "-fno-rtti",
+            "-fno-threadsafe-statics",
+            "-fno-stack-protector",
+            "-D",
+            "DEBUG_PRINT=0",
+            "-MFbuild/src/Thread.d",
+            "-Wa,-a,-ad,-alms=build/src/Thread.lst",
+            "-o",
+            "build/src/Thread.o",
+            "src/Thread.cpp"
+        ],
+        "directory": "/home/os/Documents/project-base-v1.1",
+        "file": "src/Thread.cpp"
+    }
+]
