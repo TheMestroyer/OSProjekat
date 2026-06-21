@@ -1,3 +1,10 @@
+# 1 "src/ContextSave.S"
+# 1 "<built-in>"
+# 1 "<command-line>"
+# 31 "<command-line>"
+# 1 "/usr/riscv64-linux-gnu/include/stdc-predef.h" 1 3
+# 32 "<command-line>" 2
+# 1 "src/ContextSave.S"
 .global saveContext
 .global restoreContext
 .global setupStartContext
@@ -39,9 +46,9 @@ saveContext:
     csrr t0,sstatus
     sd t0,0x108(a0)
     ret
-    
+
 restoreContext:
-    
+
     ld x1,0x08(a0)
     ld x3,0x18(a0)
     ld x4,0x20(a0)

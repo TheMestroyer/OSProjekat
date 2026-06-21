@@ -22,6 +22,7 @@ class Scheduler{
     static void RestoreContext(Thread* thread);
 public:
     static void SetupStartStack();
+    static void SetupStartThread();
 
     static Thread* GetRunning();
     //Switches from oldThread to newThread

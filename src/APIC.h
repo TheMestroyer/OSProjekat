@@ -17,6 +17,7 @@
   thread_t thread_create(void (*body)(void));
   int      thread_start(thread_t t);
   int      thread_join(thread_t t);
+  int      start_main_thread();
 
 #ifdef __cplusplus
   }

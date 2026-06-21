@@ -3,8 +3,12 @@
 //
 
 #include "Scheduler.hpp"
+
+#include "MemoryAllocator.hpp"
+
 extern "C" void saveContext(size_t* ctx);
 extern "C" void restoreContext(size_t* ctx);
+extern "C" void setupStartContext(size_t* ctx);
 
 Thread* Scheduler::running = nullptr;
 Thread* Scheduler::readyQueue = nullptr;
@@ -18,7 +22,7 @@ Thread* Scheduler::GetRunning(){
 void Scheduler::yield(Thread* oldThread, Thread* newThread){
     if (oldThread != nullptr)//TODO: Add error and remove this temp logic
         saveContext(oldThread->getContext());
-    if (newThread->getContext()!=nullptr)restoreContext(newThread->getContext());
+    restoreContext(newThread->getContext());
 }
 Thread* Scheduler::GetNext(){
     //TODO: Add checks if empty and stuff
@@ -33,14 +37,19 @@ void Scheduler::Put(Thread* thread){
     readyQueueEnd = thread;
 }
 
-void Scheduler::SetupStartStack(){
-    size_t* sp;
-    //size_t pc;
-    size_t* newsp;
-    __asm__ volatile("mv %[sp],sp":[sp]"=r"(sp));
-    newsp = sp-4;
-    __asm__ volatile("mv sp,%[sp]"::[sp]"r"(newsp));
-    Scheduler::stack_cursor = newsp-DEFAULT_STACK_SIZE;
+extern "C" char end[];
+
+void Scheduler::SetupStartStack() {
+
+    Scheduler::stack_cursor = reinterpret_cast<size_t*>(
+        ((reinterpret_cast<size_t>(end) + 7) & ~7)
+    );
+}
+
+void Scheduler::SetupStartThread() {
+    SetupStartStack();
+    running = static_cast<Thread*>(MemoryAllocator::GetInstance().AllocateFragment(sizeof(Thread)));
+    setupStartContext(running->getContext());
 }
 
 void Scheduler::AddNewThread(Thread* thread) {

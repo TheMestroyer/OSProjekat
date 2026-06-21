@@ -44,6 +44,7 @@ void drop_to_user(void (*fn)()) {
 }
 void interupt();
 int main() {
+    start_main_thread();
     __asm__ volatile("csrw sie, zero");
     __asm__ volatile("csrw stvec, %[v]" :: [v]"r"(&interupt));
     drop_to_user(mainU);

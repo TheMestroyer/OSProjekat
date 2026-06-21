@@ -4,6 +4,7 @@
 #include "./MemoryAllocator.hpp"
 #include "Thread.hpp"
 #include "APIC.h"
+#include "Scheduler.hpp"
 
 extern "C" void HandleInterupt(uint64 code){
     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
@@ -41,7 +42,11 @@ inline void* operator new(size_t, void* p) { return p; }
 
 class FunctionThread : public Thread {
 public:
-    FunctionThread(void (*f)(void)) : func(f) {}
+    virtual void init(void (*f)(void)) {
+        func = f;
+        this->copyContext(Scheduler::GetRunning()->getContext());
+        threadContext.sepc = (size_t)this->func;
+    }
     void run() override { func(); }
 private:
     void (*func)(void);
@@ -50,7 +55,7 @@ private:
 extern "C" {
 thread_t thread_create(void (*body)(void)) {
     void* mem = mem_alloc(sizeof(FunctionThread));
-    return new(mem) FunctionThread(body);
+    return reinterpret_cast<thread_t>(mem);
 }
 int thread_start(thread_t t) {
     ((Thread*)t)->start();
@@ -58,6 +63,10 @@ int thread_start(thread_t t) {
 }
 int thread_join(thread_t t) {
     ((Thread*)t)->join();
+    return 0;
+}
+int start_main_thread() {
+    Scheduler::SetupStartThread();
     return 0;
 }
 }

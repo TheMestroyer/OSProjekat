@@ -8,10 +8,22 @@
 #include "../lib/console.h"
 
 Thread::Thread() {
+}
+
+void Thread::init() {
 
 }
+void Thread::copyContext(size_t* ctx) {
+    Context* cont = reinterpret_cast<Context*>(ctx);
+    for (int i = 0;i<32;i++) {
+        threadContext.x[i] = cont->x[i];
+    }
+    threadContext.sepc = cont->sepc;
+    threadContext.sstatus =cont->sstatus;
+}
+
 size_t* Thread::getContext() {
-    return threadContext.x[0];
+    return reinterpret_cast<size_t*>(&threadContext);
 }
 Thread* Thread::getNextInQueue(){
     return next;
@@ -31,8 +43,8 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
 }
 void Thread::start(){
     Scheduler::AddNewThread(this);
-    this->threadContext.x[5] = reinterpret_cast<size_t*>(&Thread::threadTrampoline);
-    this->threadContext.x[10] = reinterpret_cast<size_t*>(this);
+    this->threadContext.x[5] = reinterpret_cast<size_t>(&Thread::threadTrampoline);
+    this->threadContext.x[10] = reinterpret_cast<size_t>(this);
     Scheduler::yield(nullptr,this);
 }
 void Thread::run(){
