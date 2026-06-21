@@ -8,11 +8,7 @@
 #include "../lib/hw.h"
 
 
-struct Context {
-    uint64* x[32];    // x0-x31, offsets 0x00-0xF
-    uint64* sepc;     // offset 0x100
-    uint64* sstatus;  // offset 0x108
-};
+
 
 class Scheduler{
     static time_t runningThreadTimeLeft;

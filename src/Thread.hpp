@@ -5,11 +5,19 @@
 #ifndef OSPROJEKAT_THREAD_H
 #define OSPROJEKAT_THREAD_H
 
-#include "Scheduler.hpp"
 #include "../lib/hw.h"
+struct Context {
+    size_t* x[32];    // x0-x31, offsets 0x00-0xF
+    size_t* sepc;     // offset 0x100
+    size_t* sstatus;  // offset 0x108
+};
 
 class Thread{
 private:
+    static void threadTrampoline(Thread* t) {
+        t->run();
+    }
+
     Context threadContext;
     Thread* prev;
     Thread* next;

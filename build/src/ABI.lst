@@ -1,0 +1,778 @@
+GAS LISTING /tmp/ccm56XBe.s 			page 1
+
+
+   1              		.file	"ABI.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.section	.text._ZN14FunctionThread3runEv,"axG",@progbits,_ZN14FunctionThread3runEv,comdat
+   7              		.align	2
+   8              		.weak	_ZN14FunctionThread3runEv
+  10              	_ZN14FunctionThread3runEv:
+  11              	.LFB6:
+  12              		.file 1 "src/ABI.cpp"
+   1:src/ABI.cpp   **** //
+   2:src/ABI.cpp   **** // Created by os on 5/6/26.
+   3:src/ABI.cpp   **** //
+   4:src/ABI.cpp   **** #include "./MemoryAllocator.hpp"
+   5:src/ABI.cpp   **** #include "Thread.hpp"
+   6:src/ABI.cpp   **** #include "APIC.h"
+   7:src/ABI.cpp   **** 
+   8:src/ABI.cpp   **** extern "C" void HandleInterupt(uint64 code){
+   9:src/ABI.cpp   ****     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
+  10:src/ABI.cpp   ****     uint64 scause=0;
+  11:src/ABI.cpp   ****     __asm__ volatile("csrr %[scause],scause":[scause]"=r"(scause));
+  12:src/ABI.cpp   ****     if (scause !=8&&scause !=9) {
+  13:src/ABI.cpp   ****         __asm__ volatile("csrw scause,0");
+  14:src/ABI.cpp   ****         return;
+  15:src/ABI.cpp   ****     }
+  16:src/ABI.cpp   ****     uint64 sepc;
+  17:src/ABI.cpp   ****     __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
+  18:src/ABI.cpp   ****     __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+  19:src/ABI.cpp   ****     switch (code) {
+  20:src/ABI.cpp   ****         case 0x01: {
+  21:src/ABI.cpp   ****             size_t size=0;
+  22:src/ABI.cpp   ****             __asm__ volatile("mv %[size],a1":[size]"=r"(size));
+  23:src/ABI.cpp   ****             void* ptr = MemoryAllocator::GetInstance().AllocateFragment(size);
+  24:src/ABI.cpp   ****             __asm__ volatile("mv a0,%[res]"::[res]"r"(ptr));
+  25:src/ABI.cpp   ****             break;
+  26:src/ABI.cpp   ****         }
+  27:src/ABI.cpp   ****         case 0x02: {
+  28:src/ABI.cpp   ****             void* ptr=nullptr;
+  29:src/ABI.cpp   ****             __asm__ volatile("mv %[ptr],a1":[ptr]"=r"(ptr));
+  30:src/ABI.cpp   ****             MemoryAllocator::GetInstance().FreeFragment(ptr);
+  31:src/ABI.cpp   ****             break;
+  32:src/ABI.cpp   ****         }
+  33:src/ABI.cpp   ****         default: {
+  34:src/ABI.cpp   ****             break;
+  35:src/ABI.cpp   ****         }
+  36:src/ABI.cpp   ****     }
+  37:src/ABI.cpp   ****     return;
+  38:src/ABI.cpp   **** }
+  39:src/ABI.cpp   **** 
+  40:src/ABI.cpp   **** inline void* operator new(size_t, void* p) { return p; }
+  41:src/ABI.cpp   **** 
+  42:src/ABI.cpp   **** class FunctionThread : public Thread {
+  43:src/ABI.cpp   **** public:
+  44:src/ABI.cpp   ****     FunctionThread(void (*f)(void)) : func(f) {}
+  45:src/ABI.cpp   ****     void run() override { func(); }
+  13              		.loc 1 45 10
+GAS LISTING /tmp/ccm56XBe.s 			page 2
+
+
+  14              		.cfi_startproc
+  15              	.LVL0:
+  16 0000 130101FF 		addi	sp,sp,-16
+  17              		.cfi_def_cfa_offset 16
+  18 0004 23341100 		sd	ra,8(sp)
+  19 0008 23308100 		sd	s0,0(sp)
+  20              		.cfi_offset 1, -8
+  21              		.cfi_offset 8, -16
+  22 000c 13040101 		addi	s0,sp,16
+  23              		.cfi_def_cfa 8, 0
+  24              		.loc 1 45 27
+  25 0010 B7870000 		li	a5,32768
+  26 0014 3305F500 		add	a0,a0,a5
+  27              	.LVL1:
+  28 0018 83378513 		ld	a5,312(a0)
+  29              		.loc 1 45 31 is_stmt 0
+  30 001c E7800700 		jalr	a5
+  31              	.LVL2:
+  32              		.loc 1 45 35
+  33 0020 83308100 		ld	ra,8(sp)
+  34              		.cfi_restore 1
+  35 0024 03340100 		ld	s0,0(sp)
+  36              		.cfi_restore 8
+  37              		.cfi_def_cfa 2, 16
+  38 0028 13010101 		addi	sp,sp,16
+  39              		.cfi_def_cfa_offset 0
+  40 002c 67800000 		jr	ra
+  41              		.cfi_endproc
+  42              	.LFE6:
+  44              		.text
+  45              		.align	2
+  46              		.globl	HandleInterupt
+  48              	HandleInterupt:
+  49              	.LFB1:
+   8:src/ABI.cpp   ****     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
+  50              		.loc 1 8 44 is_stmt 1
+  51              		.cfi_startproc
+  52              	.LVL3:
+   9:src/ABI.cpp   ****     uint64 scause=0;
+  53              		.loc 1 9 5
+   9:src/ABI.cpp   ****     uint64 scause=0;
+  54              		.loc 1 9 55 is_stmt 0
+  55              	#APP
+  56              	# 9 "src/ABI.cpp" 1
+  57              		mv a4,a0
+  58              	# 0 "" 2
+  59              	.LVL4:
+  10:src/ABI.cpp   ****     __asm__ volatile("csrr %[scause],scause":[scause]"=r"(scause));
+  60              		.loc 1 10 5 is_stmt 1
+  11:src/ABI.cpp   ****     if (scause !=8&&scause !=9) {
+  61              		.loc 1 11 5
+  11:src/ABI.cpp   ****     if (scause !=8&&scause !=9) {
+  62              		.loc 1 11 67 is_stmt 0
+  63              	# 11 "src/ABI.cpp" 1
+  64              		csrr a5,scause
+  65              	# 0 "" 2
+  66              	.LVL5:
+GAS LISTING /tmp/ccm56XBe.s 			page 3
+
+
+  12:src/ABI.cpp   ****         __asm__ volatile("csrw scause,0");
+  67              		.loc 1 12 5 is_stmt 1
+  12:src/ABI.cpp   ****         __asm__ volatile("csrw scause,0");
+  68              		.loc 1 12 19 is_stmt 0
+  69              	#NO_APP
+  70 0008 938787FF 		addi	a5,a5,-8
+  71              	.LVL6:
+  12:src/ABI.cpp   ****         __asm__ volatile("csrw scause,0");
+  72              		.loc 1 12 5
+  73 000c 93061000 		li	a3,1
+  74 0010 63E4F604 		bgtu	a5,a3,.L11
+   8:src/ABI.cpp   ****     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
+  75              		.loc 1 8 44
+  76 0014 130101FE 		addi	sp,sp,-32
+  77              		.cfi_def_cfa_offset 32
+  78 0018 233C1100 		sd	ra,24(sp)
+  79 001c 23388100 		sd	s0,16(sp)
+  80 0020 23349100 		sd	s1,8(sp)
+  81              		.cfi_offset 1, -8
+  82              		.cfi_offset 8, -16
+  83              		.cfi_offset 9, -24
+  84 0024 13040102 		addi	s0,sp,32
+  85              		.cfi_def_cfa 8, 0
+  16:src/ABI.cpp   ****     __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
+  86              		.loc 1 16 5 is_stmt 1
+  17:src/ABI.cpp   ****     __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+  87              		.loc 1 17 5
+  17:src/ABI.cpp   ****     __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+  88              		.loc 1 17 51 is_stmt 0
+  89              	#APP
+  90              	# 17 "src/ABI.cpp" 1
+  91              		csrr a5, sepc
+  92              	# 0 "" 2
+  93              	.LVL7:
+  18:src/ABI.cpp   ****     switch (code) {
+  94              		.loc 1 18 5 is_stmt 1
+  18:src/ABI.cpp   ****     switch (code) {
+  95              		.loc 1 18 50 is_stmt 0
+  96              	#NO_APP
+  97 002c 93874700 		addi	a5,a5,4
+  98              	.LVL8:
+  18:src/ABI.cpp   ****     switch (code) {
+  99              		.loc 1 18 55
+ 100              	#APP
+ 101              	# 18 "src/ABI.cpp" 1
+  19:src/ABI.cpp   ****         case 0x01: {
+ 102              		csrw sepc, a5
+ 103              	# 0 "" 2
+ 104              		.loc 1 19 5 is_stmt 1
+ 105              	#NO_APP
+ 106              	.LBB7:
+ 107 0034 93071000 		li	a5,1
+ 108              	.LVL9:
+ 109 0038 6304F702 		beq	a4,a5,.L6
+ 110 003c 93072000 		li	a5,2
+ 111 0040 6300F704 		beq	a4,a5,.L7
+ 112              	.LVL10:
+GAS LISTING /tmp/ccm56XBe.s 			page 4
+
+
+ 113              	.L3:
+ 114              	.LBE7:
+  38:src/ABI.cpp   **** 
+ 115              		.loc 1 38 1 is_stmt 0
+ 116 0044 83308101 		ld	ra,24(sp)
+ 117              		.cfi_restore 1
+ 118 0048 03340101 		ld	s0,16(sp)
+ 119              		.cfi_restore 8
+ 120              		.cfi_def_cfa 2, 32
+ 121 004c 83348100 		ld	s1,8(sp)
+ 122              		.cfi_restore 9
+ 123 0050 13010102 		addi	sp,sp,32
+ 124              		.cfi_def_cfa_offset 0
+ 125 0054 67800000 		jr	ra
+ 126              	.LVL11:
+ 127              	.L11:
+  13:src/ABI.cpp   ****         return;
+ 128              		.loc 1 13 9 is_stmt 1
+  13:src/ABI.cpp   ****         return;
+ 129              		.loc 1 13 42 is_stmt 0
+ 130              	#APP
+ 131              	# 13 "src/ABI.cpp" 1
+  14:src/ABI.cpp   ****     }
+ 132              		csrw scause,0
+ 133              	# 0 "" 2
+ 134              		.loc 1 14 9 is_stmt 1
+ 135              	#NO_APP
+ 136 005c 67800000 		ret
+ 137              	.LVL12:
+ 138              	.L6:
+ 139              		.cfi_def_cfa_register 8
+ 140              		.cfi_offset 1, -8
+ 141              		.cfi_offset 8, -16
+ 142              		.cfi_offset 9, -24
+  20:src/ABI.cpp   ****             size_t size=0;
+ 143              		.loc 1 20 9
+  20:src/ABI.cpp   ****             size_t size=0;
+ 144              		.loc 1 20 20
+ 145              	.LBB10:
+ 146              	.LBB8:
+  21:src/ABI.cpp   ****             __asm__ volatile("mv %[size],a1":[size]"=r"(size));
+ 147              		.loc 1 21 13
+  22:src/ABI.cpp   ****             void* ptr = MemoryAllocator::GetInstance().AllocateFragment(size);
+ 148              		.loc 1 22 13
+  22:src/ABI.cpp   ****             void* ptr = MemoryAllocator::GetInstance().AllocateFragment(size);
+ 149              		.loc 1 22 63 is_stmt 0
+ 150              	#APP
+ 151              	# 22 "src/ABI.cpp" 1
+ 152              		mv s1,a1
+ 153              	# 0 "" 2
+ 154              	.LVL13:
+  23:src/ABI.cpp   ****             __asm__ volatile("mv a0,%[res]"::[res]"r"(ptr));
+ 155              		.loc 1 23 13 is_stmt 1
+  23:src/ABI.cpp   ****             __asm__ volatile("mv a0,%[res]"::[res]"r"(ptr));
+ 156              		.loc 1 23 54 is_stmt 0
+ 157              	#NO_APP
+ 158 0064 97000000 		call	_ZN15MemoryAllocator11GetInstanceEv@plt
+GAS LISTING /tmp/ccm56XBe.s 			page 5
+
+
+ 158      E7800000 
+ 159              	.LVL14:
+  23:src/ABI.cpp   ****             __asm__ volatile("mv a0,%[res]"::[res]"r"(ptr));
+ 160              		.loc 1 23 72
+ 161 006c 93850400 		mv	a1,s1
+ 162 0070 97000000 		call	_ZN15MemoryAllocator16AllocateFragmentEm@plt
+ 162      E7800000 
+ 163              	.LVL15:
+  24:src/ABI.cpp   ****             break;
+ 164              		.loc 1 24 13 is_stmt 1
+  24:src/ABI.cpp   ****             break;
+ 165              		.loc 1 24 60 is_stmt 0
+ 166              	#APP
+ 167              	# 24 "src/ABI.cpp" 1
+  25:src/ABI.cpp   ****         }
+ 168              		mv a0,a0
+ 169              	# 0 "" 2
+ 170              		.loc 1 25 13 is_stmt 1
+ 171              	#NO_APP
+ 172 007c 6FF09FFC 		j	.L3
+ 173              	.LVL16:
+ 174              	.L7:
+ 175              	.LBE8:
+ 176              	.LBE10:
+  27:src/ABI.cpp   ****             void* ptr=nullptr;
+ 177              		.loc 1 27 9
+  27:src/ABI.cpp   ****             void* ptr=nullptr;
+ 178              		.loc 1 27 20
+ 179              	.LBB11:
+ 180              	.LBB9:
+  28:src/ABI.cpp   ****             __asm__ volatile("mv %[ptr],a1":[ptr]"=r"(ptr));
+ 181              		.loc 1 28 13
+  29:src/ABI.cpp   ****             MemoryAllocator::GetInstance().FreeFragment(ptr);
+ 182              		.loc 1 29 13
+  29:src/ABI.cpp   ****             MemoryAllocator::GetInstance().FreeFragment(ptr);
+ 183              		.loc 1 29 60 is_stmt 0
+ 184              	#APP
+ 185              	# 29 "src/ABI.cpp" 1
+ 186              		mv s1,a1
+ 187              	# 0 "" 2
+ 188              	.LVL17:
+  30:src/ABI.cpp   ****             break;
+ 189              		.loc 1 30 13 is_stmt 1
+  30:src/ABI.cpp   ****             break;
+ 190              		.loc 1 30 42 is_stmt 0
+ 191              	#NO_APP
+ 192 0084 97000000 		call	_ZN15MemoryAllocator11GetInstanceEv@plt
+ 192      E7800000 
+ 193              	.LVL18:
+  30:src/ABI.cpp   ****             break;
+ 194              		.loc 1 30 56
+ 195 008c 93850400 		mv	a1,s1
+ 196 0090 97000000 		call	_ZN15MemoryAllocator12FreeFragmentEPv@plt
+ 196      E7800000 
+ 197              	.LVL19:
+  31:src/ABI.cpp   ****         }
+ 198              		.loc 1 31 13 is_stmt 1
+GAS LISTING /tmp/ccm56XBe.s 			page 6
+
+
+ 199 0098 6FF0DFFA 		j	.L3
+ 200              	.LBE9:
+ 201              	.LBE11:
+ 202              		.cfi_endproc
+ 203              	.LFE1:
+ 205              		.align	2
+ 206              		.globl	thread_create
+ 208              	thread_create:
+ 209              	.LFB7:
+  46:src/ABI.cpp   **** private:
+  47:src/ABI.cpp   ****     void (*func)(void);
+  48:src/ABI.cpp   **** };
+  49:src/ABI.cpp   **** 
+  50:src/ABI.cpp   **** extern "C" {
+  51:src/ABI.cpp   **** thread_t thread_create(void (*body)(void)) {
+ 210              		.loc 1 51 44
+ 211              		.cfi_startproc
+ 212              	.LVL20:
+ 213 009c 130101FD 		addi	sp,sp,-48
+ 214              		.cfi_def_cfa_offset 48
+ 215 00a0 23341102 		sd	ra,40(sp)
+ 216 00a4 23308102 		sd	s0,32(sp)
+ 217 00a8 233C9100 		sd	s1,24(sp)
+ 218 00ac 23382101 		sd	s2,16(sp)
+ 219 00b0 23343101 		sd	s3,8(sp)
+ 220              		.cfi_offset 1, -8
+ 221              		.cfi_offset 8, -16
+ 222              		.cfi_offset 9, -24
+ 223              		.cfi_offset 18, -32
+ 224              		.cfi_offset 19, -40
+ 225 00b4 13040103 		addi	s0,sp,48
+ 226              		.cfi_def_cfa 8, 0
+ 227 00b8 93090500 		mv	s3,a0
+  52:src/ABI.cpp   ****     void* mem = mem_alloc(sizeof(FunctionThread));
+ 228              		.loc 1 52 5
+ 229              		.loc 1 52 26 is_stmt 0
+ 230 00bc 37890000 		li	s2,32768
+ 231 00c0 13050914 		addi	a0,s2,320
+ 232              	.LVL21:
+ 233 00c4 97000000 		call	mem_alloc@plt
+ 233      E7800000 
+ 234              	.LVL22:
+ 235 00cc 93040500 		mv	s1,a0
+ 236              	.LVL23:
+  53:src/ABI.cpp   ****     return new(mem) FunctionThread(body);
+ 237              		.loc 1 53 5 is_stmt 1
+  40:src/ABI.cpp   **** 
+ 238              		.loc 1 40 46
+ 239              	.LBB12:
+ 240              	.LBB13:
+  44:src/ABI.cpp   ****     void run() override { func(); }
+ 241              		.loc 1 44 45 is_stmt 0
+ 242 00d0 97000000 		call	_ZN6ThreadC2Ev@plt
+ 242      E7800000 
+ 243              	.LVL24:
+ 244 00d8 97070000 		lla	a5,_ZTV14FunctionThread+16
+ 244      93870700 
+GAS LISTING /tmp/ccm56XBe.s 			page 7
+
+
+ 245 00e0 23B0F400 		sd	a5,0(s1)
+ 246 00e4 33892401 		add	s2,s1,s2
+ 247 00e8 233C3913 		sd	s3,312(s2)
+ 248              	.LVL25:
+ 249              	.LBE13:
+ 250              	.LBE12:
+  54:src/ABI.cpp   **** }
+ 251              		.loc 1 54 1
+ 252 00ec 13850400 		mv	a0,s1
+ 253 00f0 83308102 		ld	ra,40(sp)
+ 254              		.cfi_restore 1
+ 255 00f4 03340102 		ld	s0,32(sp)
+ 256              		.cfi_restore 8
+ 257              		.cfi_def_cfa 2, 48
+ 258 00f8 83348101 		ld	s1,24(sp)
+ 259              		.cfi_restore 9
+ 260              	.LVL26:
+ 261 00fc 03390101 		ld	s2,16(sp)
+ 262              		.cfi_restore 18
+ 263 0100 83398100 		ld	s3,8(sp)
+ 264              		.cfi_restore 19
+ 265              	.LVL27:
+ 266 0104 13010103 		addi	sp,sp,48
+ 267              		.cfi_def_cfa_offset 0
+ 268 0108 67800000 		jr	ra
+ 269              		.cfi_endproc
+ 270              	.LFE7:
+ 272              		.align	2
+ 273              		.globl	thread_start
+ 275              	thread_start:
+ 276              	.LFB8:
+  55:src/ABI.cpp   **** int thread_start(thread_t t) {
+ 277              		.loc 1 55 30 is_stmt 1
+ 278              		.cfi_startproc
+ 279              	.LVL28:
+ 280 010c 130101FF 		addi	sp,sp,-16
+ 281              		.cfi_def_cfa_offset 16
+ 282 0110 23341100 		sd	ra,8(sp)
+ 283 0114 23308100 		sd	s0,0(sp)
+ 284              		.cfi_offset 1, -8
+ 285              		.cfi_offset 8, -16
+ 286 0118 13040101 		addi	s0,sp,16
+ 287              		.cfi_def_cfa 8, 0
+  56:src/ABI.cpp   ****     ((Thread*)t)->start();
+ 288              		.loc 1 56 5
+ 289              		.loc 1 56 24 is_stmt 0
+ 290 011c 97000000 		call	_ZN6Thread5startEv@plt
+ 290      E7800000 
+ 291              	.LVL29:
+  57:src/ABI.cpp   ****     return 0;
+ 292              		.loc 1 57 5 is_stmt 1
+  58:src/ABI.cpp   **** }
+ 293              		.loc 1 58 1 is_stmt 0
+ 294 0124 13050000 		li	a0,0
+ 295 0128 83308100 		ld	ra,8(sp)
+ 296              		.cfi_restore 1
+ 297 012c 03340100 		ld	s0,0(sp)
+GAS LISTING /tmp/ccm56XBe.s 			page 8
+
+
+ 298              		.cfi_restore 8
+ 299              		.cfi_def_cfa 2, 16
+ 300 0130 13010101 		addi	sp,sp,16
+ 301              		.cfi_def_cfa_offset 0
+ 302 0134 67800000 		jr	ra
+ 303              		.cfi_endproc
+ 304              	.LFE8:
+ 306              		.align	2
+ 307              		.globl	thread_join
+ 309              	thread_join:
+ 310              	.LFB9:
+  59:src/ABI.cpp   **** int thread_join(thread_t t) {
+ 311              		.loc 1 59 29 is_stmt 1
+ 312              		.cfi_startproc
+ 313              	.LVL30:
+ 314 0138 130101FF 		addi	sp,sp,-16
+ 315              		.cfi_def_cfa_offset 16
+ 316 013c 23341100 		sd	ra,8(sp)
+ 317 0140 23308100 		sd	s0,0(sp)
+ 318              		.cfi_offset 1, -8
+ 319              		.cfi_offset 8, -16
+ 320 0144 13040101 		addi	s0,sp,16
+ 321              		.cfi_def_cfa 8, 0
+  60:src/ABI.cpp   ****     ((Thread*)t)->join();
+ 322              		.loc 1 60 5
+ 323              		.loc 1 60 23 is_stmt 0
+ 324 0148 97000000 		call	_ZN6Thread4joinEv@plt
+ 324      E7800000 
+ 325              	.LVL31:
+  61:src/ABI.cpp   ****     return 0;
+ 326              		.loc 1 61 5 is_stmt 1
+  62:src/ABI.cpp   **** }
+ 327              		.loc 1 62 1 is_stmt 0
+ 328 0150 13050000 		li	a0,0
+ 329 0154 83308100 		ld	ra,8(sp)
+ 330              		.cfi_restore 1
+ 331 0158 03340100 		ld	s0,0(sp)
+ 332              		.cfi_restore 8
+ 333              		.cfi_def_cfa 2, 16
+ 334 015c 13010101 		addi	sp,sp,16
+ 335              		.cfi_def_cfa_offset 0
+ 336 0160 67800000 		jr	ra
+ 337              		.cfi_endproc
+ 338              	.LFE9:
+ 340              		.weak	_ZTV14FunctionThread
+ 341              		.section	.data.rel.ro.local._ZTV14FunctionThread,"awG",@progbits,_ZTV14FunctionThread,comdat
+ 342              		.align	3
+ 345              	_ZTV14FunctionThread:
+ 346 0000 00000000 		.dword	0
+ 346      00000000 
+ 347 0008 00000000 		.dword	0
+ 347      00000000 
+ 348 0010 00000000 		.dword	_ZN14FunctionThread3runEv
+ 348      00000000 
+ 349              		.text
+ 350              	.Letext0:
+ 351              		.file 2 "src/./../lib/hw.h"
+GAS LISTING /tmp/ccm56XBe.s 			page 9
+
+
+ 352              		.file 3 "src/./MemoryAllocator.hpp"
+ 353              		.file 4 "src/APIC.h"
+ 354              		.file 5 "src/Thread.hpp"
+GAS LISTING /tmp/ccm56XBe.s 			page 10
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 ABI.cpp
+     /tmp/ccm56XBe.s:10     .text._ZN14FunctionThread3runEv:0000000000000000 _ZN14FunctionThread3runEv
+     /tmp/ccm56XBe.s:14     .text._ZN14FunctionThread3runEv:0000000000000000 .L0 
+     /tmp/ccm56XBe.s:16     .text._ZN14FunctionThread3runEv:0000000000000000 .L0 
+     /tmp/ccm56XBe.s:17     .text._ZN14FunctionThread3runEv:0000000000000004 .L0 
+     /tmp/ccm56XBe.s:20     .text._ZN14FunctionThread3runEv:000000000000000c .L0 
+     /tmp/ccm56XBe.s:21     .text._ZN14FunctionThread3runEv:000000000000000c .L0 
+     /tmp/ccm56XBe.s:23     .text._ZN14FunctionThread3runEv:0000000000000010 .L0 
+     /tmp/ccm56XBe.s:25     .text._ZN14FunctionThread3runEv:0000000000000010 .L0 
+     /tmp/ccm56XBe.s:30     .text._ZN14FunctionThread3runEv:000000000000001c .L0 
+     /tmp/ccm56XBe.s:33     .text._ZN14FunctionThread3runEv:0000000000000020 .L0 
+     /tmp/ccm56XBe.s:34     .text._ZN14FunctionThread3runEv:0000000000000024 .L0 
+     /tmp/ccm56XBe.s:36     .text._ZN14FunctionThread3runEv:0000000000000028 .L0 
+     /tmp/ccm56XBe.s:37     .text._ZN14FunctionThread3runEv:0000000000000028 .L0 
+     /tmp/ccm56XBe.s:39     .text._ZN14FunctionThread3runEv:000000000000002c .L0 
+     /tmp/ccm56XBe.s:41     .text._ZN14FunctionThread3runEv:0000000000000030 .L0 
+     /tmp/ccm56XBe.s:48     .text:0000000000000000 HandleInterupt
+     /tmp/ccm56XBe.s:51     .text:0000000000000000 .L0 
+     /tmp/ccm56XBe.s:53     .text:0000000000000000 .L0 
+     /tmp/ccm56XBe.s:54     .text:0000000000000000 .L0 
+         src/ABI.cpp:9      .text:0000000000000000 .L0 
+     /tmp/ccm56XBe.s:61     .text:0000000000000004 .L0 
+     /tmp/ccm56XBe.s:62     .text:0000000000000004 .L0 
+         src/ABI.cpp:11     .text:0000000000000004 .L0 
+     /tmp/ccm56XBe.s:68     .text:0000000000000008 .L0 
+     /tmp/ccm56XBe.s:70     .text:0000000000000008 .L0 
+     /tmp/ccm56XBe.s:73     .text:000000000000000c .L0 
+     /tmp/ccm56XBe.s:76     .text:0000000000000014 .L0 
+     /tmp/ccm56XBe.s:77     .text:0000000000000018 .L0 
+     /tmp/ccm56XBe.s:81     .text:0000000000000024 .L0 
+     /tmp/ccm56XBe.s:82     .text:0000000000000024 .L0 
+     /tmp/ccm56XBe.s:83     .text:0000000000000024 .L0 
+     /tmp/ccm56XBe.s:85     .text:0000000000000028 .L0 
+     /tmp/ccm56XBe.s:87     .text:0000000000000028 .L0 
+     /tmp/ccm56XBe.s:88     .text:0000000000000028 .L0 
+         src/ABI.cpp:17     .text:0000000000000028 .L0 
+     /tmp/ccm56XBe.s:95     .text:000000000000002c .L0 
+     /tmp/ccm56XBe.s:97     .text:000000000000002c .L0 
+         src/ABI.cpp:18     .text:0000000000000030 .L0 
+     /tmp/ccm56XBe.s:107    .text:0000000000000034 .L0 
+     /tmp/ccm56XBe.s:116    .text:0000000000000044 .L0 
+     /tmp/ccm56XBe.s:117    .text:0000000000000048 .L0 
+     /tmp/ccm56XBe.s:119    .text:000000000000004c .L0 
+     /tmp/ccm56XBe.s:120    .text:000000000000004c .L0 
+     /tmp/ccm56XBe.s:122    .text:0000000000000050 .L0 
+     /tmp/ccm56XBe.s:124    .text:0000000000000054 .L0 
+     /tmp/ccm56XBe.s:129    .text:0000000000000058 .L0 
+         src/ABI.cpp:13     .text:0000000000000058 .L0 
+     /tmp/ccm56XBe.s:136    .text:000000000000005c .L0 
+     /tmp/ccm56XBe.s:139    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:140    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:141    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:142    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:144    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:147    .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:148    .text:0000000000000060 .L0 
+GAS LISTING /tmp/ccm56XBe.s 			page 11
+
+
+     /tmp/ccm56XBe.s:149    .text:0000000000000060 .L0 
+         src/ABI.cpp:22     .text:0000000000000060 .L0 
+     /tmp/ccm56XBe.s:156    .text:0000000000000064 .L0 
+     /tmp/ccm56XBe.s:158    .text:0000000000000064 .L0 
+     /tmp/ccm56XBe.s:161    .text:000000000000006c .L0 
+     /tmp/ccm56XBe.s:165    .text:0000000000000078 .L0 
+         src/ABI.cpp:24     .text:0000000000000078 .L0 
+     /tmp/ccm56XBe.s:172    .text:000000000000007c .L0 
+     /tmp/ccm56XBe.s:178    .text:0000000000000080 .L0 
+     /tmp/ccm56XBe.s:181    .text:0000000000000080 .L0 
+     /tmp/ccm56XBe.s:182    .text:0000000000000080 .L0 
+     /tmp/ccm56XBe.s:183    .text:0000000000000080 .L0 
+         src/ABI.cpp:29     .text:0000000000000080 .L0 
+     /tmp/ccm56XBe.s:190    .text:0000000000000084 .L0 
+     /tmp/ccm56XBe.s:192    .text:0000000000000084 .L0 
+     /tmp/ccm56XBe.s:195    .text:000000000000008c .L0 
+     /tmp/ccm56XBe.s:199    .text:0000000000000098 .L0 
+     /tmp/ccm56XBe.s:202    .text:000000000000009c .L0 
+     /tmp/ccm56XBe.s:208    .text:000000000000009c thread_create
+     /tmp/ccm56XBe.s:211    .text:000000000000009c .L0 
+     /tmp/ccm56XBe.s:213    .text:000000000000009c .L0 
+     /tmp/ccm56XBe.s:214    .text:00000000000000a0 .L0 
+     /tmp/ccm56XBe.s:220    .text:00000000000000b4 .L0 
+     /tmp/ccm56XBe.s:221    .text:00000000000000b4 .L0 
+     /tmp/ccm56XBe.s:222    .text:00000000000000b4 .L0 
+     /tmp/ccm56XBe.s:223    .text:00000000000000b4 .L0 
+     /tmp/ccm56XBe.s:224    .text:00000000000000b4 .L0 
+     /tmp/ccm56XBe.s:226    .text:00000000000000b8 .L0 
+     /tmp/ccm56XBe.s:229    .text:00000000000000bc .L0 
+     /tmp/ccm56XBe.s:230    .text:00000000000000bc .L0 
+     /tmp/ccm56XBe.s:238    .text:00000000000000d0 .L0 
+     /tmp/ccm56XBe.s:241    .text:00000000000000d0 .L0 
+     /tmp/ccm56XBe.s:242    .text:00000000000000d0 .L0 
+     /tmp/ccm56XBe.s:345    .data.rel.ro.local._ZTV14FunctionThread:0000000000000000 _ZTV14FunctionThread
+     /tmp/ccm56XBe.s:252    .text:00000000000000ec .L0 
+     /tmp/ccm56XBe.s:254    .text:00000000000000f4 .L0 
+     /tmp/ccm56XBe.s:256    .text:00000000000000f8 .L0 
+     /tmp/ccm56XBe.s:257    .text:00000000000000f8 .L0 
+     /tmp/ccm56XBe.s:259    .text:00000000000000fc .L0 
+     /tmp/ccm56XBe.s:262    .text:0000000000000100 .L0 
+     /tmp/ccm56XBe.s:264    .text:0000000000000104 .L0 
+     /tmp/ccm56XBe.s:267    .text:0000000000000108 .L0 
+     /tmp/ccm56XBe.s:269    .text:000000000000010c .L0 
+     /tmp/ccm56XBe.s:275    .text:000000000000010c thread_start
+     /tmp/ccm56XBe.s:278    .text:000000000000010c .L0 
+     /tmp/ccm56XBe.s:280    .text:000000000000010c .L0 
+     /tmp/ccm56XBe.s:281    .text:0000000000000110 .L0 
+     /tmp/ccm56XBe.s:284    .text:0000000000000118 .L0 
+     /tmp/ccm56XBe.s:285    .text:0000000000000118 .L0 
+     /tmp/ccm56XBe.s:287    .text:000000000000011c .L0 
+     /tmp/ccm56XBe.s:289    .text:000000000000011c .L0 
+     /tmp/ccm56XBe.s:290    .text:000000000000011c .L0 
+     /tmp/ccm56XBe.s:293    .text:0000000000000124 .L0 
+     /tmp/ccm56XBe.s:294    .text:0000000000000124 .L0 
+     /tmp/ccm56XBe.s:296    .text:000000000000012c .L0 
+     /tmp/ccm56XBe.s:298    .text:0000000000000130 .L0 
+     /tmp/ccm56XBe.s:299    .text:0000000000000130 .L0 
+GAS LISTING /tmp/ccm56XBe.s 			page 12
+
+
+     /tmp/ccm56XBe.s:301    .text:0000000000000134 .L0 
+     /tmp/ccm56XBe.s:303    .text:0000000000000138 .L0 
+     /tmp/ccm56XBe.s:309    .text:0000000000000138 thread_join
+     /tmp/ccm56XBe.s:312    .text:0000000000000138 .L0 
+     /tmp/ccm56XBe.s:314    .text:0000000000000138 .L0 
+     /tmp/ccm56XBe.s:315    .text:000000000000013c .L0 
+     /tmp/ccm56XBe.s:318    .text:0000000000000144 .L0 
+     /tmp/ccm56XBe.s:319    .text:0000000000000144 .L0 
+     /tmp/ccm56XBe.s:321    .text:0000000000000148 .L0 
+     /tmp/ccm56XBe.s:323    .text:0000000000000148 .L0 
+     /tmp/ccm56XBe.s:324    .text:0000000000000148 .L0 
+     /tmp/ccm56XBe.s:327    .text:0000000000000150 .L0 
+     /tmp/ccm56XBe.s:328    .text:0000000000000150 .L0 
+     /tmp/ccm56XBe.s:330    .text:0000000000000158 .L0 
+     /tmp/ccm56XBe.s:332    .text:000000000000015c .L0 
+     /tmp/ccm56XBe.s:333    .text:000000000000015c .L0 
+     /tmp/ccm56XBe.s:335    .text:0000000000000160 .L0 
+     /tmp/ccm56XBe.s:337    .text:0000000000000164 .L0 
+     /tmp/ccm56XBe.s:44     .text._ZN14FunctionThread3runEv:0000000000000030 .L0 
+     /tmp/ccm56XBe.s:355    .text:0000000000000164 .L0 
+     /tmp/ccm56XBe.s:244    .text:00000000000000d8 .L0 
+     /tmp/ccm56XBe.s:127    .text:0000000000000058 .L11
+     /tmp/ccm56XBe.s:138    .text:0000000000000060 .L6
+     /tmp/ccm56XBe.s:174    .text:0000000000000080 .L7
+     /tmp/ccm56XBe.s:113    .text:0000000000000044 .L3
+     /tmp/ccm56XBe.s:1000   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccm56XBe.s:2035   .debug_str:0000000000000190 .LASF48
+     /tmp/ccm56XBe.s:1981   .debug_str:0000000000000023 .LASF49
+     /tmp/ccm56XBe.s:2039   .debug_str:0000000000000259 .LASF50
+     /tmp/ccm56XBe.s:1967   .debug_ranges:0000000000000000 .Ldebug_ranges0
+     /tmp/ccm56XBe.s:1975   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccm56XBe.s:2051   .debug_str:00000000000002bf .LASF0
+     /tmp/ccm56XBe.s:2023   .debug_str:000000000000013c .LASF1
+     /tmp/ccm56XBe.s:2015   .debug_str:00000000000000fc .LASF2
+     /tmp/ccm56XBe.s:2077   .debug_str:0000000000000387 .LASF3
+     /tmp/ccm56XBe.s:1991   .debug_str:0000000000000056 .LASF4
+     /tmp/ccm56XBe.s:2021   .debug_str:000000000000012a .LASF5
+     /tmp/ccm56XBe.s:2025   .debug_str:000000000000014f .LASF6
+     /tmp/ccm56XBe.s:1977   .debug_str:0000000000000000 .LASF7
+     /tmp/ccm56XBe.s:2007   .debug_str:00000000000000c4 .LASF8
+     /tmp/ccm56XBe.s:2059   .debug_str:00000000000002e8 .LASF9
+     /tmp/ccm56XBe.s:1989   .debug_str:0000000000000048 .LASF10
+     /tmp/ccm56XBe.s:2099   .debug_str:0000000000000441 .LASF11
+     /tmp/ccm56XBe.s:2011   .debug_str:00000000000000e6 .LASF12
+     /tmp/ccm56XBe.s:2083   .debug_str:00000000000003bf .LASF13
+     /tmp/ccm56XBe.s:2069   .debug_str:000000000000033e .LASF14
+     /tmp/ccm56XBe.s:2027   .debug_str:0000000000000156 .LASF15
+     /tmp/ccm56XBe.s:1997   .debug_str:000000000000007d .LASF16
+     /tmp/ccm56XBe.s:2063   .debug_str:0000000000000312 .LASF17
+     /tmp/ccm56XBe.s:2005   .debug_str:00000000000000bb .LASF22
+     /tmp/ccm56XBe.s:1983   .debug_str:000000000000002f .LASF18
+     /tmp/ccm56XBe.s:2095   .debug_str:0000000000000430 .LASF19
+     /tmp/ccm56XBe.s:2071   .debug_str:000000000000034e .LASF20
+     /tmp/ccm56XBe.s:2091   .debug_str:000000000000040f .LASF21
+     /tmp/ccm56XBe.s:1979   .debug_str:0000000000000013 .LASF23
+     /tmp/ccm56XBe.s:2043   .debug_str:0000000000000297 .LASF51
+     /tmp/ccm56XBe.s:2079   .debug_str:000000000000038d .LASF52
+GAS LISTING /tmp/ccm56XBe.s 			page 13
+
+
+     /tmp/ccm56XBe.s:2055   .debug_str:00000000000002d2 .LASF24
+     /tmp/ccm56XBe.s:2085   .debug_str:00000000000003cf .LASF26
+     /tmp/ccm56XBe.s:1995   .debug_str:0000000000000070 .LASF25
+     /tmp/ccm56XBe.s:2073   .debug_str:0000000000000353 .LASF27
+     /tmp/ccm56XBe.s:2045   .debug_str:00000000000002a3 .LASF28
+     /tmp/ccm56XBe.s:2041   .debug_str:000000000000027e .LASF53
+     /tmp/ccm56XBe.s:2075   .debug_str:0000000000000379 .LASF29
+     /tmp/ccm56XBe.s:2097   .debug_str:0000000000000435 .LASF30
+     /tmp/ccm56XBe.s:2065   .debug_str:0000000000000328 .LASF31
+     /tmp/ccm56XBe.s:2033   .debug_str:0000000000000181 .LASF32
+     /tmp/ccm56XBe.s:2029   .debug_str:0000000000000162 .LASF33
+     /tmp/ccm56XBe.s:2019   .debug_str:000000000000010f .LASF34
+     /tmp/ccm56XBe.s:2003   .debug_str:000000000000009f .LASF54
+     /tmp/ccm56XBe.s:2061   .debug_str:00000000000002f8 .LASF55
+     /tmp/ccm56XBe.s:2037   .debug_str:0000000000000254 .LASF56
+     /tmp/ccm56XBe.s:2013   .debug_str:00000000000000f5 .LASF57
+     /tmp/ccm56XBe.s:2049   .debug_str:00000000000002ad .LASF35
+     /tmp/ccm56XBe.s:1999   .debug_str:0000000000000093 .LASF37
+     /tmp/ccm56XBe.s:1993   .debug_str:000000000000005d .LASF36
+     /tmp/ccm56XBe.s:2053   .debug_str:00000000000002cc .LASF38
+     /tmp/ccm56XBe.s:1985   .debug_str:0000000000000034 .LASF39
+     /tmp/ccm56XBe.s:310    .text:0000000000000138 .LFB9
+     /tmp/ccm56XBe.s:338    .text:0000000000000164 .LFE9
+     /tmp/ccm56XBe.s:1776   .debug_loc:0000000000000000 .LLST12
+     /tmp/ccm56XBe.s:325    .text:0000000000000150 .LVL31
+     /tmp/ccm56XBe.s:2067   .debug_str:0000000000000331 .LASF40
+     /tmp/ccm56XBe.s:276    .text:000000000000010c .LFB8
+     /tmp/ccm56XBe.s:304    .text:0000000000000138 .LFE8
+     /tmp/ccm56XBe.s:1790   .debug_loc:0000000000000039 .LLST11
+     /tmp/ccm56XBe.s:291    .text:0000000000000124 .LVL29
+     /tmp/ccm56XBe.s:2081   .debug_str:00000000000003b1 .LASF41
+     /tmp/ccm56XBe.s:209    .text:000000000000009c .LFB7
+     /tmp/ccm56XBe.s:270    .text:000000000000010c .LFE7
+     /tmp/ccm56XBe.s:2031   .debug_str:000000000000017c .LASF42
+     /tmp/ccm56XBe.s:1804   .debug_loc:0000000000000072 .LLST7
+     /tmp/ccm56XBe.s:1820   .debug_loc:00000000000000be .LLST8
+     /tmp/ccm56XBe.s:239    .text:00000000000000d0 .LBB12
+     /tmp/ccm56XBe.s:250    .text:00000000000000ec .LBE12
+     /tmp/ccm56XBe.s:1831   .debug_loc:00000000000000f4 .LLST9
+     /tmp/ccm56XBe.s:1838   .debug_loc:0000000000000117 .LLST10
+     /tmp/ccm56XBe.s:243    .text:00000000000000d8 .LVL24
+     /tmp/ccm56XBe.s:234    .text:00000000000000cc .LVL22
+     /tmp/ccm56XBe.s:11     .text._ZN14FunctionThread3runEv:0000000000000000 .LFB6
+     /tmp/ccm56XBe.s:42     .text._ZN14FunctionThread3runEv:0000000000000030 .LFE6
+     /tmp/ccm56XBe.s:2017   .debug_str:000000000000010a .LASF58
+     /tmp/ccm56XBe.s:1845   .debug_loc:000000000000013a .LLST0
+     /tmp/ccm56XBe.s:2093   .debug_str:0000000000000414 .LASF59
+     /tmp/ccm56XBe.s:2087   .debug_str:00000000000003f8 .LASF60
+     /tmp/ccm56XBe.s:1987   .debug_str:0000000000000040 .LASF61
+     /tmp/ccm56XBe.s:2009   .debug_str:00000000000000d7 .LASF43
+     /tmp/ccm56XBe.s:49     .text:0000000000000000 .LFB1
+     /tmp/ccm56XBe.s:203    .text:000000000000009c .LFE1
+     /tmp/ccm56XBe.s:2047   .debug_str:00000000000002a8 .LASF44
+     /tmp/ccm56XBe.s:1865   .debug_loc:000000000000018a .LLST1
+     /tmp/ccm56XBe.s:2001   .debug_str:0000000000000098 .LASF45
+     /tmp/ccm56XBe.s:1884   .debug_loc:00000000000001e6 .LLST2
+     /tmp/ccm56XBe.s:2057   .debug_str:00000000000002e3 .LASF46
+GAS LISTING /tmp/ccm56XBe.s 			page 14
+
+
+     /tmp/ccm56XBe.s:1908   .debug_loc:0000000000000247 .LLST3
+     /tmp/ccm56XBe.s:146    .text:0000000000000060 .LBB8
+     /tmp/ccm56XBe.s:175    .text:0000000000000080 .LBE8
+     /tmp/ccm56XBe.s:1921   .debug_loc:000000000000027f .LLST4
+     /tmp/ccm56XBe.s:1933   .debug_loc:00000000000002b6 .LLST5
+     /tmp/ccm56XBe.s:159    .text:000000000000006c .LVL14
+     /tmp/ccm56XBe.s:163    .text:0000000000000078 .LVL15
+     /tmp/ccm56XBe.s:180    .text:0000000000000080 .LBB9
+     /tmp/ccm56XBe.s:200    .text:000000000000009c .LBE9
+     /tmp/ccm56XBe.s:1940   .debug_loc:00000000000002d9 .LLST6
+     /tmp/ccm56XBe.s:193    .text:000000000000008c .LVL18
+     /tmp/ccm56XBe.s:197    .text:0000000000000098 .LVL19
+     /tmp/ccm56XBe.s:2089   .debug_str:0000000000000405 .LASF47
+     /tmp/ccm56XBe.s:313    .text:0000000000000138 .LVL30
+     /tmp/ccm56XBe.s:279    .text:000000000000010c .LVL28
+     /tmp/ccm56XBe.s:212    .text:000000000000009c .LVL20
+     /tmp/ccm56XBe.s:232    .text:00000000000000c4 .LVL21
+     /tmp/ccm56XBe.s:265    .text:0000000000000104 .LVL27
+     /tmp/ccm56XBe.s:236    .text:00000000000000d0 .LVL23
+     /tmp/ccm56XBe.s:260    .text:00000000000000fc .LVL26
+     /tmp/ccm56XBe.s:248    .text:00000000000000ec .LVL25
+     /tmp/ccm56XBe.s:15     .text._ZN14FunctionThread3runEv:0000000000000000 .LVL0
+     /tmp/ccm56XBe.s:27     .text._ZN14FunctionThread3runEv:0000000000000018 .LVL1
+     /tmp/ccm56XBe.s:31     .text._ZN14FunctionThread3runEv:0000000000000020 .LVL2
+     /tmp/ccm56XBe.s:52     .text:0000000000000000 .LVL3
+     /tmp/ccm56XBe.s:59     .text:0000000000000004 .LVL4
+     /tmp/ccm56XBe.s:112    .text:0000000000000044 .LVL10
+     /tmp/ccm56XBe.s:126    .text:0000000000000058 .LVL11
+     /tmp/ccm56XBe.s:173    .text:0000000000000080 .LVL16
+     /tmp/ccm56XBe.s:66     .text:0000000000000008 .LVL5
+     /tmp/ccm56XBe.s:71     .text:000000000000000c .LVL6
+     /tmp/ccm56XBe.s:93     .text:000000000000002c .LVL7
+     /tmp/ccm56XBe.s:137    .text:0000000000000060 .LVL12
+     /tmp/ccm56XBe.s:98     .text:0000000000000030 .LVL8
+     /tmp/ccm56XBe.s:108    .text:0000000000000038 .LVL9
+     /tmp/ccm56XBe.s:154    .text:0000000000000064 .LVL13
+     /tmp/ccm56XBe.s:188    .text:0000000000000084 .LVL17
+     /tmp/ccm56XBe.s:356    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccm56XBe.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccm56XBe.s:350    .text:0000000000000164 .Letext0
+
+UNDEFINED SYMBOLS
+_ZN15MemoryAllocator11GetInstanceEv
+_ZN15MemoryAllocator16AllocateFragmentEm
+_ZN15MemoryAllocator12FreeFragmentEPv
+mem_alloc
+_ZN6ThreadC2Ev
+_ZN6Thread5startEv
+_ZN6Thread4joinEv

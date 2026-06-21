@@ -3,6 +3,7 @@
 //
 
 #include "Thread.hpp"
+#include "Scheduler.hpp"
 
 #include "../lib/console.h"
 
@@ -19,10 +20,10 @@ Thread* Thread::getPrevInQueue(){
     return prev;
 }
 void Thread::setNextInQueue(Thread* next){
-    this.next = next;
+    this->next = next;
 }
 void Thread::setPrevInQueue(Thread* prev){
-    this.prev = prev;
+    this->prev = prev;
 }
 void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
     setNextInQueue(next);
@@ -30,8 +31,8 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
 }
 void Thread::start(){
     Scheduler::AddNewThread(this);
-    this->threadContext.x[5] = static_cast<size_t*>(this->run);
-    Scheduler::Put(this);
+    this->threadContext.x[5] = reinterpret_cast<size_t*>(&Thread::threadTrampoline);
+    this->threadContext.x[10] = reinterpret_cast<size_t*>(this);
     Scheduler::yield(nullptr,this);
 }
 void Thread::run(){

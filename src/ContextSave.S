@@ -1,4 +1,5 @@
 .global saveContext
+.global restoreContext
 .align 4
 saveContext:
     sd x1,0x08(a0)
@@ -38,7 +39,7 @@ saveContext:
     sd t0,0x108(a0)
     ret
     
-restore:
+restoreContext:
     
     ld x1,0x08(a0)
     ld x3,0x18(a0)

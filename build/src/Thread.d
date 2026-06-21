@@ -1,10 +1,10 @@
-build/src/Thread.o: src/Thread.cpp src/Thread.hpp src/Scheduler.hpp \
- src/../lib/hw.h src/../lib/console.h
+build/src/Thread.o: src/Thread.cpp src/Thread.hpp src/../lib/hw.h \
+ src/Scheduler.hpp src/../lib/console.h
 
 src/Thread.hpp:
 
-src/Scheduler.hpp:
-
 src/../lib/hw.h:
+
+src/Scheduler.hpp:
 
 src/../lib/console.h:

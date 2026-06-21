@@ -3,6 +3,10 @@
 //
 #include "APIC.h"
 #include "../lib/console.h"
+void my_thread_body(void) {
+    __putc('}');
+}
+
 void mainU(){
     // char* a1 = mem_alloc(sizeof(char) * 20);
     // *a1 = 'a';
@@ -20,7 +24,11 @@ void mainU(){
     // __putc(*(a3+1));
     // __putc(*a1);
     // __putc(*(a1+1));
+    thread_t t = thread_create(my_thread_body);
+    thread_start(t);
 }
+
+
 
 
 void drop_to_user(void (*fn)()) {

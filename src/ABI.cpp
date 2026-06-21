@@ -1,7 +1,9 @@
 //
 // Created by os on 5/6/26.
 //
-#include "./MemoryAllocator.h"
+#include "./MemoryAllocator.hpp"
+#include "Thread.hpp"
+#include "APIC.h"
 
 extern "C" void HandleInterupt(uint64 code){
     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
@@ -34,3 +36,29 @@ extern "C" void HandleInterupt(uint64 code){
     }
     return;
 }
+
+inline void* operator new(size_t, void* p) { return p; }
+
+class FunctionThread : public Thread {
+public:
+    FunctionThread(void (*f)(void)) : func(f) {}
+    void run() override { func(); }
+private:
+    void (*func)(void);
+};
+
+extern "C" {
+thread_t thread_create(void (*body)(void)) {
+    void* mem = mem_alloc(sizeof(FunctionThread));
+    return new(mem) FunctionThread(body);
+}
+int thread_start(thread_t t) {
+    ((Thread*)t)->start();
+    return 0;
+}
+int thread_join(thread_t t) {
+    ((Thread*)t)->join();
+    return 0;
+}
+}
+
