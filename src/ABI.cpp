@@ -5,14 +5,19 @@
 #include "Thread.hpp"
 #include "APIC.h"
 #include "Scheduler.hpp"
+#include "../lib/console.h"
 
 extern "C" void HandleInterupt(uint64 code){
     __asm__ volatile("mv %[code],a0":[code]"=r"(code));
     uint64 scause=0;
     __asm__ volatile("csrr %[scause],scause":[scause]"=r"(scause));
     if (scause !=8&&scause !=9) {
-        __asm__ volatile("csrw scause,0");
+        uint64 sepc;
+        __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
+        __putc('!');
+        __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
         return;
+
     }
     uint64 sepc;
     __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
@@ -31,6 +36,13 @@ extern "C" void HandleInterupt(uint64 code){
             MemoryAllocator::GetInstance().FreeFragment(ptr);
             break;
         }
+        case 0x03: {//TODO:Check code
+            thread_t t = nullptr;
+            __asm__ volatile("mv %0, a1" : "=r"(t));
+            ((Thread*)t)->start();
+            break;
+        }
+
         default: {
             break;
         }
@@ -40,27 +52,24 @@ extern "C" void HandleInterupt(uint64 code){
 
 inline void* operator new(size_t, void* p) { return p; }
 
-class FunctionThread : public Thread {
-public:
-    virtual void init(void (*f)(void)) {
-        func = f;
-        this->copyContext(Scheduler::GetRunning()->getContext());
-        threadContext.sepc = (size_t)this->func;
-    }
-    void run() override { func(); }
-private:
-    void (*func)(void);
-};
 
 extern "C" {
 thread_t thread_create(void (*body)(void)) {
-    void* mem = mem_alloc(sizeof(FunctionThread));
-    return reinterpret_cast<thread_t>(mem);
+    void* mem = mem_alloc(sizeof(Thread));
+    Thread* t = reinterpret_cast<Thread*>(mem);
+    t->init();
+    t->setBody(body);
+    return reinterpret_cast<thread_t>(t);
 }
-int thread_start(thread_t t) {
-    ((Thread*)t)->start();
+
+int thread_start(thread_t handle) {//TODO:Change name
+    uint64 code = 0x03;
+    __asm__ volatile("mv a1, %0" :: "r"(handle));
+    __asm__ volatile("mv a0, %0" :: "r"(code));
+    __asm__ volatile("ecall");
     return 0;
 }
+
 int thread_join(thread_t t) {
     ((Thread*)t)->join();
     return 0;

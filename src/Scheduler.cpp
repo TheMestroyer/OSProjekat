@@ -53,10 +53,7 @@ void Scheduler::SetupStartThread() {
 }
 
 void Scheduler::AddNewThread(Thread* thread) {
-    Scheduler::stack_cursor = Scheduler::stack_cursor-2*DEFAULT_STACK_SIZE;
-
-    thread->setStackPtr(stack_cursor+DEFAULT_STACK_SIZE);
-    thread->setSupervisorSp(stack_cursor);
+    thread->threadContext.x[2] = reinterpret_cast<size_t>(thread->getStackTop());
 }
 
 

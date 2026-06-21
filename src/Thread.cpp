@@ -8,6 +8,7 @@
 #include "../lib/console.h"
 
 Thread::Thread() {
+    body = nullptr;
 }
 
 void Thread::init() {
@@ -18,6 +19,7 @@ void Thread::copyContext(size_t* ctx) {
     for (int i = 0;i<32;i++) {
         threadContext.x[i] = cont->x[i];
     }
+    threadContext.x[2] = reinterpret_cast<size_t>(this->stackPtr);
     threadContext.sepc = cont->sepc;
     threadContext.sstatus =cont->sstatus;
 }
@@ -43,12 +45,9 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
 }
 void Thread::start(){
     Scheduler::AddNewThread(this);
-    this->threadContext.x[5] = reinterpret_cast<size_t>(&Thread::threadTrampoline);
+    this->threadContext.sepc = reinterpret_cast<size_t>(&Thread::threadTrampoline);
     this->threadContext.x[10] = reinterpret_cast<size_t>(this);
-    Scheduler::yield(nullptr,this);
-}
-void Thread::run(){
-    __putc('{');
+    Scheduler::yield(Scheduler::GetRunning(),this);
 }
 void Thread::join(){
 

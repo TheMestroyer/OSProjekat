@@ -15,20 +15,22 @@ struct Context {
 class Thread{
 protected:
     static void threadTrampoline(Thread* t) {
-        t->run();
+        if (t->body)t->body();
     }
+    void (*body)(void);
 
-    Context threadContext;
     Thread* prev;
     Thread* next;
     size_t* stackPtr;
     size_t stack[DEFAULT_STACK_SIZE];
     size_t* supervisorSp;
 public:
+    Context threadContext;
     Thread();
     void copyContext(size_t* ctx);
     virtual void init();
     void setStackPtr(size_t* stackPtr);
+    size_t* getStackTop() { return stack + DEFAULT_STACK_SIZE; }
     void setSupervisorSp(size_t* supervisorSp);
     size_t* getContext();
     Thread* getNextInQueue();
@@ -37,7 +39,7 @@ public:
     void setPrevInQueue(Thread* prev);
     void setNextAndPrevInQueue(Thread* next, Thread* prev);
     void start();
-    virtual void run();
+    void setBody(void (*b)(void)) { body = b; }
     void join();
 };
 
