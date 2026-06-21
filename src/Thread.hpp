@@ -28,7 +28,7 @@ public:
     Context threadContext;
     Thread();
     void copyContext(size_t* ctx);
-    virtual void init();
+    void init();
     void setStackPtr(size_t* stackPtr);
     size_t* getStackTop() { return stack + DEFAULT_STACK_SIZE; }
     void setSupervisorSp(size_t* supervisorSp);

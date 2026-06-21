@@ -8,11 +8,9 @@
 #include "../lib/console.h"
 
 Thread::Thread() {
-    body = nullptr;
 }
 
 void Thread::init() {
-
 }
 void Thread::copyContext(size_t* ctx) {
     Context* cont = reinterpret_cast<Context*>(ctx);
