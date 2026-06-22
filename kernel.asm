@@ -344,56 +344,57 @@ interupt:
     80001268:	04013403          	ld	s0,64(sp)
     ld x9,0x48(sp)
     8000126c:	04813483          	ld	s1,72(sp)
-    ld x10,0x50(sp)
-    80001270:	05013503          	ld	a0,80(sp)
+    #ld x10,0x50(sp)
     ld x11,0x58(sp)
-    80001274:	05813583          	ld	a1,88(sp)
+    80001270:	05813583          	ld	a1,88(sp)
     ld x12,0x60(sp)
-    80001278:	06013603          	ld	a2,96(sp)
+    80001274:	06013603          	ld	a2,96(sp)
     ld x13,0x68(sp)
-    8000127c:	06813683          	ld	a3,104(sp)
+    80001278:	06813683          	ld	a3,104(sp)
     ld x14,0x70(sp)
-    80001280:	07013703          	ld	a4,112(sp)
+    8000127c:	07013703          	ld	a4,112(sp)
     ld x15,0x78(sp)
-    80001284:	07813783          	ld	a5,120(sp)
+    80001280:	07813783          	ld	a5,120(sp)
     ld x16,0x80(sp)
-    80001288:	08013803          	ld	a6,128(sp)
+    80001284:	08013803          	ld	a6,128(sp)
     ld x17,0x88(sp)
-    8000128c:	08813883          	ld	a7,136(sp)
+    80001288:	08813883          	ld	a7,136(sp)
     ld x18,0x90(sp)
-    80001290:	09013903          	ld	s2,144(sp)
+    8000128c:	09013903          	ld	s2,144(sp)
     ld x19,0x98(sp)
-    80001294:	09813983          	ld	s3,152(sp)
+    80001290:	09813983          	ld	s3,152(sp)
     ld x20,0xA0(sp)
-    80001298:	0a013a03          	ld	s4,160(sp)
+    80001294:	0a013a03          	ld	s4,160(sp)
     ld x21,0xA8(sp)
-    8000129c:	0a813a83          	ld	s5,168(sp)
+    80001298:	0a813a83          	ld	s5,168(sp)
     ld x22,0xB0(sp)
-    800012a0:	0b013b03          	ld	s6,176(sp)
+    8000129c:	0b013b03          	ld	s6,176(sp)
     ld x23,0xB8(sp)
-    800012a4:	0b813b83          	ld	s7,184(sp)
+    800012a0:	0b813b83          	ld	s7,184(sp)
     ld x24,0xC0(sp)
-    800012a8:	0c013c03          	ld	s8,192(sp)
+    800012a4:	0c013c03          	ld	s8,192(sp)
     ld x25,0xC8(sp)
-    800012ac:	0c813c83          	ld	s9,200(sp)
+    800012a8:	0c813c83          	ld	s9,200(sp)
     ld x26,0xD0(sp)
-    800012b0:	0d013d03          	ld	s10,208(sp)
+    800012ac:	0d013d03          	ld	s10,208(sp)
     ld x27,0xD8(sp)
-    800012b4:	0d813d83          	ld	s11,216(sp)
+    800012b0:	0d813d83          	ld	s11,216(sp)
     ld x28,0xE0(sp)
-    800012b8:	0e013e03          	ld	t3,224(sp)
+    800012b4:	0e013e03          	ld	t3,224(sp)
     ld x29,0xE8(sp)
-    800012bc:	0e813e83          	ld	t4,232(sp)
+    800012b8:	0e813e83          	ld	t4,232(sp)
     ld x30,0xF0(sp)
-    800012c0:	0f013f03          	ld	t5,240(sp)
+    800012bc:	0f013f03          	ld	t5,240(sp)
     ld x31,0xF8(sp)
-    800012c4:	0f813f83          	ld	t6,248(sp)
+    800012c0:	0f813f83          	ld	t6,248(sp)
 
     #csrr pc,sepc;
     addi sp, sp, 256
-    800012c8:	10010113          	addi	sp,sp,256
+    800012c4:	10010113          	addi	sp,sp,256
 
-    800012cc:	10200073          	sret
+    800012c8:	10200073          	sret
+    800012cc:	0000                	unimp
+	...
 
 00000000800012d0 <mem_alloc>:
 // Created by os on 5/6/26.
@@ -943,7 +944,7 @@ void Scheduler::SetupStartThread() {
     800017e0:	00000097          	auipc	ra,0x0
     800017e4:	0c0080e7          	jalr	192(ra) # 800018a0 <_ZN15MemoryAllocator11GetInstanceEv>
     800017e8:	000085b7          	lui	a1,0x8
-    800017ec:	14058593          	addi	a1,a1,320 # 8140 <_entry-0x7fff7ec0>
+    800017ec:	13858593          	addi	a1,a1,312 # 8138 <_entry-0x7fff7ec8>
     800017f0:	00000097          	auipc	ra,0x0
     800017f4:	10c080e7          	jalr	268(ra) # 800018fc <_ZN15MemoryAllocator16AllocateFragmentEm>
     800017f8:	00003797          	auipc	a5,0x3
@@ -972,11 +973,11 @@ void Scheduler::AddNewThread(Thread* thread) {
     void setStackPtr(size_t* stackPtr);
     size_t* getStackTop() { return stack + DEFAULT_STACK_SIZE; }
     8000182c:	00008737          	lui	a4,0x8
-    80001830:	02870793          	addi	a5,a4,40 # 8028 <_entry-0x7fff7fd8>
+    80001830:	02070793          	addi	a5,a4,32 # 8020 <_entry-0x7fff7fe0>
     80001834:	00f507b3          	add	a5,a0,a5
     thread->threadContext.x[2] = reinterpret_cast<size_t>(thread->getStackTop());
     80001838:	00e50533          	add	a0,a0,a4
-    8000183c:	04f53023          	sd	a5,64(a0)
+    8000183c:	02f53c23          	sd	a5,56(a0)
 }
     80001840:	00813403          	ld	s0,8(sp)
     80001844:	01010113          	addi	sp,sp,16

@@ -1,4 +1,4 @@
-GAS LISTING /tmp/cchHyUbI.s 			page 1
+GAS LISTING /tmp/cc0Hygap.s 			page 1
 
 
    1              		.file	"main.c"
@@ -58,7 +58,7 @@ GAS LISTING /tmp/cchHyUbI.s 			page 1
   47              		.cfi_def_cfa_offset 16
   48 0030 23341100 		sd	ra,8(sp)
   49 0034 23308100 		sd	s0,0(sp)
-GAS LISTING /tmp/cchHyUbI.s 			page 2
+GAS LISTING /tmp/cc0Hygap.s 			page 2
 
 
   50              		.cfi_offset 1, -8
@@ -118,7 +118,7 @@ GAS LISTING /tmp/cchHyUbI.s 			page 1
   79              		.loc 1 34 33 is_stmt 1
   80              		.cfi_startproc
   81              	.LVL3:
-GAS LISTING /tmp/cchHyUbI.s 			page 3
+GAS LISTING /tmp/cc0Hygap.s 			page 3
 
 
   82 0064 130101FF 		addi	sp,sp,-16
@@ -178,7 +178,7 @@ GAS LISTING /tmp/cchHyUbI.s 			page 1
  126              	.LFE2:
  128              		.align	2
  129              		.globl	main
-GAS LISTING /tmp/cchHyUbI.s 			page 4
+GAS LISTING /tmp/cc0Hygap.s 			page 4
 
 
  131              	main:
@@ -238,146 +238,146 @@ GAS LISTING /tmp/cchHyUbI.s 			page 1
  173 00dc 67800000 		jr	ra
  174              		.cfi_endproc
  175              	.LFE3:
-GAS LISTING /tmp/cchHyUbI.s 			page 5
+GAS LISTING /tmp/cc0Hygap.s 			page 5
 
 
  177              	.Letext0:
  178              		.file 2 "src/../lib/hw.h"
  179              		.file 3 "src/APIC.h"
  180              		.file 4 "src/../lib/console.h"
-GAS LISTING /tmp/cchHyUbI.s 			page 6
+GAS LISTING /tmp/cc0Hygap.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/cchHyUbI.s:10     .text:0000000000000000 my_thread_body
-     /tmp/cchHyUbI.s:14     .text:0000000000000000 .L0 
-     /tmp/cchHyUbI.s:15     .text:0000000000000000 .L0 
-     /tmp/cchHyUbI.s:16     .text:0000000000000004 .L0 
-     /tmp/cchHyUbI.s:19     .text:000000000000000c .L0 
-     /tmp/cchHyUbI.s:20     .text:000000000000000c .L0 
-     /tmp/cchHyUbI.s:22     .text:0000000000000010 .L0 
-     /tmp/cchHyUbI.s:24     .text:0000000000000010 .L0 
-     /tmp/cchHyUbI.s:28     .text:000000000000001c .L0 
-     /tmp/cchHyUbI.s:29     .text:0000000000000020 .L0 
-     /tmp/cchHyUbI.s:31     .text:0000000000000024 .L0 
-     /tmp/cchHyUbI.s:32     .text:0000000000000024 .L0 
-     /tmp/cchHyUbI.s:34     .text:0000000000000028 .L0 
-     /tmp/cchHyUbI.s:36     .text:000000000000002c .L0 
-     /tmp/cchHyUbI.s:42     .text:000000000000002c mainU
-     /tmp/cchHyUbI.s:45     .text:000000000000002c .L0 
-     /tmp/cchHyUbI.s:46     .text:000000000000002c .L0 
-     /tmp/cchHyUbI.s:47     .text:0000000000000030 .L0 
-     /tmp/cchHyUbI.s:50     .text:0000000000000038 .L0 
-     /tmp/cchHyUbI.s:51     .text:0000000000000038 .L0 
-     /tmp/cchHyUbI.s:53     .text:000000000000003c .L0 
-     /tmp/cchHyUbI.s:55     .text:000000000000003c .L0 
-     /tmp/cchHyUbI.s:56     .text:000000000000003c .L0 
-     /tmp/cchHyUbI.s:60     .text:000000000000004c .L0 
-     /tmp/cchHyUbI.s:63     .text:0000000000000054 .L0 
-     /tmp/cchHyUbI.s:64     .text:0000000000000058 .L0 
-     /tmp/cchHyUbI.s:66     .text:000000000000005c .L0 
-     /tmp/cchHyUbI.s:67     .text:000000000000005c .L0 
-     /tmp/cchHyUbI.s:69     .text:0000000000000060 .L0 
-     /tmp/cchHyUbI.s:71     .text:0000000000000064 .L0 
-     /tmp/cchHyUbI.s:77     .text:0000000000000064 drop_to_user
-     /tmp/cchHyUbI.s:80     .text:0000000000000064 .L0 
-     /tmp/cchHyUbI.s:82     .text:0000000000000064 .L0 
-     /tmp/cchHyUbI.s:83     .text:0000000000000068 .L0 
-     /tmp/cchHyUbI.s:85     .text:000000000000006c .L0 
-     /tmp/cchHyUbI.s:87     .text:0000000000000070 .L0 
+     /tmp/cc0Hygap.s:10     .text:0000000000000000 my_thread_body
+     /tmp/cc0Hygap.s:14     .text:0000000000000000 .L0 
+     /tmp/cc0Hygap.s:15     .text:0000000000000000 .L0 
+     /tmp/cc0Hygap.s:16     .text:0000000000000004 .L0 
+     /tmp/cc0Hygap.s:19     .text:000000000000000c .L0 
+     /tmp/cc0Hygap.s:20     .text:000000000000000c .L0 
+     /tmp/cc0Hygap.s:22     .text:0000000000000010 .L0 
+     /tmp/cc0Hygap.s:24     .text:0000000000000010 .L0 
+     /tmp/cc0Hygap.s:28     .text:000000000000001c .L0 
+     /tmp/cc0Hygap.s:29     .text:0000000000000020 .L0 
+     /tmp/cc0Hygap.s:31     .text:0000000000000024 .L0 
+     /tmp/cc0Hygap.s:32     .text:0000000000000024 .L0 
+     /tmp/cc0Hygap.s:34     .text:0000000000000028 .L0 
+     /tmp/cc0Hygap.s:36     .text:000000000000002c .L0 
+     /tmp/cc0Hygap.s:42     .text:000000000000002c mainU
+     /tmp/cc0Hygap.s:45     .text:000000000000002c .L0 
+     /tmp/cc0Hygap.s:46     .text:000000000000002c .L0 
+     /tmp/cc0Hygap.s:47     .text:0000000000000030 .L0 
+     /tmp/cc0Hygap.s:50     .text:0000000000000038 .L0 
+     /tmp/cc0Hygap.s:51     .text:0000000000000038 .L0 
+     /tmp/cc0Hygap.s:53     .text:000000000000003c .L0 
+     /tmp/cc0Hygap.s:55     .text:000000000000003c .L0 
+     /tmp/cc0Hygap.s:56     .text:000000000000003c .L0 
+     /tmp/cc0Hygap.s:60     .text:000000000000004c .L0 
+     /tmp/cc0Hygap.s:63     .text:0000000000000054 .L0 
+     /tmp/cc0Hygap.s:64     .text:0000000000000058 .L0 
+     /tmp/cc0Hygap.s:66     .text:000000000000005c .L0 
+     /tmp/cc0Hygap.s:67     .text:000000000000005c .L0 
+     /tmp/cc0Hygap.s:69     .text:0000000000000060 .L0 
+     /tmp/cc0Hygap.s:71     .text:0000000000000064 .L0 
+     /tmp/cc0Hygap.s:77     .text:0000000000000064 drop_to_user
+     /tmp/cc0Hygap.s:80     .text:0000000000000064 .L0 
+     /tmp/cc0Hygap.s:82     .text:0000000000000064 .L0 
+     /tmp/cc0Hygap.s:83     .text:0000000000000068 .L0 
+     /tmp/cc0Hygap.s:85     .text:000000000000006c .L0 
+     /tmp/cc0Hygap.s:87     .text:0000000000000070 .L0 
           src/main.c:35     .text:0000000000000070 .L0 
-     /tmp/cchHyUbI.s:94     .text:0000000000000074 .L0 
+     /tmp/cc0Hygap.s:94     .text:0000000000000074 .L0 
           src/main.c:38     .text:0000000000000074 .L0 
-     /tmp/cchHyUbI.s:100    .text:0000000000000078 .L0 
-     /tmp/cchHyUbI.s:102    .text:0000000000000078 .L0 
-     /tmp/cchHyUbI.s:105    .text:000000000000007c .L0 
-     /tmp/cchHyUbI.s:106    .text:000000000000007c .L0 
+     /tmp/cc0Hygap.s:100    .text:0000000000000078 .L0 
+     /tmp/cc0Hygap.s:102    .text:0000000000000078 .L0 
+     /tmp/cc0Hygap.s:105    .text:000000000000007c .L0 
+     /tmp/cc0Hygap.s:106    .text:000000000000007c .L0 
           src/main.c:41     .text:0000000000000080 .L0 
           src/main.c:43     .text:0000000000000084 .L0 
-     /tmp/cchHyUbI.s:119    .text:0000000000000088 .L0 
-     /tmp/cchHyUbI.s:120    .text:000000000000008c .L0 
-     /tmp/cchHyUbI.s:121    .text:000000000000008c .L0 
-     /tmp/cchHyUbI.s:123    .text:0000000000000090 .L0 
-     /tmp/cchHyUbI.s:125    .text:0000000000000094 .L0 
-     /tmp/cchHyUbI.s:131    .text:0000000000000094 main
-     /tmp/cchHyUbI.s:134    .text:0000000000000094 .L0 
-     /tmp/cchHyUbI.s:135    .text:0000000000000094 .L0 
-     /tmp/cchHyUbI.s:136    .text:0000000000000098 .L0 
-     /tmp/cchHyUbI.s:139    .text:00000000000000a0 .L0 
-GAS LISTING /tmp/cchHyUbI.s 			page 7
+     /tmp/cc0Hygap.s:119    .text:0000000000000088 .L0 
+     /tmp/cc0Hygap.s:120    .text:000000000000008c .L0 
+     /tmp/cc0Hygap.s:121    .text:000000000000008c .L0 
+     /tmp/cc0Hygap.s:123    .text:0000000000000090 .L0 
+     /tmp/cc0Hygap.s:125    .text:0000000000000094 .L0 
+     /tmp/cc0Hygap.s:131    .text:0000000000000094 main
+     /tmp/cc0Hygap.s:134    .text:0000000000000094 .L0 
+     /tmp/cc0Hygap.s:135    .text:0000000000000094 .L0 
+     /tmp/cc0Hygap.s:136    .text:0000000000000098 .L0 
+     /tmp/cc0Hygap.s:139    .text:00000000000000a0 .L0 
+GAS LISTING /tmp/cc0Hygap.s 			page 7
 
 
-     /tmp/cchHyUbI.s:140    .text:00000000000000a0 .L0 
-     /tmp/cchHyUbI.s:142    .text:00000000000000a4 .L0 
-     /tmp/cchHyUbI.s:144    .text:00000000000000a4 .L0 
+     /tmp/cc0Hygap.s:140    .text:00000000000000a0 .L0 
+     /tmp/cc0Hygap.s:142    .text:00000000000000a4 .L0 
+     /tmp/cc0Hygap.s:144    .text:00000000000000a4 .L0 
           src/main.c:48     .text:00000000000000ac .L0 
-     /tmp/cchHyUbI.s:153    .text:00000000000000b0 .L0 
-     /tmp/cchHyUbI.s:160    .text:00000000000000bc .L0 
-     /tmp/cchHyUbI.s:164    .text:00000000000000cc .L0 
-     /tmp/cchHyUbI.s:165    .text:00000000000000cc .L0 
-     /tmp/cchHyUbI.s:167    .text:00000000000000d4 .L0 
-     /tmp/cchHyUbI.s:169    .text:00000000000000d8 .L0 
-     /tmp/cchHyUbI.s:170    .text:00000000000000d8 .L0 
-     /tmp/cchHyUbI.s:172    .text:00000000000000dc .L0 
-     /tmp/cchHyUbI.s:174    .text:00000000000000e0 .L0 
-     /tmp/cchHyUbI.s:181    .text:00000000000000e0 .L0 
+     /tmp/cc0Hygap.s:153    .text:00000000000000b0 .L0 
+     /tmp/cc0Hygap.s:160    .text:00000000000000bc .L0 
+     /tmp/cc0Hygap.s:164    .text:00000000000000cc .L0 
+     /tmp/cc0Hygap.s:165    .text:00000000000000cc .L0 
+     /tmp/cc0Hygap.s:167    .text:00000000000000d4 .L0 
+     /tmp/cc0Hygap.s:169    .text:00000000000000d8 .L0 
+     /tmp/cc0Hygap.s:170    .text:00000000000000d8 .L0 
+     /tmp/cc0Hygap.s:172    .text:00000000000000dc .L0 
+     /tmp/cc0Hygap.s:174    .text:00000000000000e0 .L0 
+     /tmp/cc0Hygap.s:181    .text:00000000000000e0 .L0 
                      .debug_frame:0000000000000000 .L0 
-     /tmp/cchHyUbI.s:56     .text:000000000000003c .L0 
-     /tmp/cchHyUbI.s:153    .text:00000000000000b0 .L0 
-     /tmp/cchHyUbI.s:160    .text:00000000000000bc .L0 
-     /tmp/cchHyUbI.s:453    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/cchHyUbI.s:871    .debug_str:0000000000000190 .LASF26
-     /tmp/cchHyUbI.s:829    .debug_str:0000000000000062 .LASF27
-     /tmp/cchHyUbI.s:835    .debug_str:0000000000000087 .LASF28
-     /tmp/cchHyUbI.s:5      .text:0000000000000000 .Ltext0
-     /tmp/cchHyUbI.s:177    .text:00000000000000e0 .Letext0
-     /tmp/cchHyUbI.s:813    .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/cchHyUbI.s:815    .debug_str:0000000000000000 .LASF0
-     /tmp/cchHyUbI.s:859    .debug_str:0000000000000136 .LASF1
-     /tmp/cchHyUbI.s:841    .debug_str:00000000000000ba .LASF2
-     /tmp/cchHyUbI.s:833    .debug_str:0000000000000080 .LASF4
-     /tmp/cchHyUbI.s:827    .debug_str:0000000000000050 .LASF3
-     /tmp/cchHyUbI.s:823    .debug_str:0000000000000039 .LASF5
-     /tmp/cchHyUbI.s:831    .debug_str:000000000000006d .LASF6
-     /tmp/cchHyUbI.s:857    .debug_str:0000000000000123 .LASF7
-     /tmp/cchHyUbI.s:869    .debug_str:0000000000000180 .LASF8
-     /tmp/cchHyUbI.s:819    .debug_str:000000000000001c .LASF9
-     /tmp/cchHyUbI.s:821    .debug_str:000000000000002a .LASF10
-     /tmp/cchHyUbI.s:863    .debug_str:0000000000000159 .LASF11
-     /tmp/cchHyUbI.s:825    .debug_str:0000000000000040 .LASF12
-     /tmp/cchHyUbI.s:861    .debug_str:0000000000000149 .LASF13
-     /tmp/cchHyUbI.s:839    .debug_str:00000000000000ae .LASF14
-     /tmp/cchHyUbI.s:853    .debug_str:0000000000000105 .LASF15
-     /tmp/cchHyUbI.s:849    .debug_str:00000000000000e2 .LASF16
-     /tmp/cchHyUbI.s:837    .debug_str:00000000000000a5 .LASF17
-     /tmp/cchHyUbI.s:845    .debug_str:00000000000000d6 .LASF18
-     /tmp/cchHyUbI.s:132    .text:0000000000000094 .LFB3
-     /tmp/cchHyUbI.s:175    .text:00000000000000e0 .LFE3
-     /tmp/cchHyUbI.s:145    .text:00000000000000ac .LVL7
-     /tmp/cchHyUbI.s:162    .text:00000000000000cc .LVL8
-     /tmp/cchHyUbI.s:873    .debug_str:000000000000022e .LASF19
-     /tmp/cchHyUbI.s:78     .text:0000000000000064 .LFB2
-     /tmp/cchHyUbI.s:126    .text:0000000000000094 .LFE2
-     /tmp/cchHyUbI.s:855    .debug_str:000000000000011b .LASF20
-     /tmp/cchHyUbI.s:865    .debug_str:0000000000000168 .LASF29
-     /tmp/cchHyUbI.s:43     .text:000000000000002c .LFB1
-     /tmp/cchHyUbI.s:72     .text:0000000000000064 .LFE1
-     /tmp/cchHyUbI.s:793    .debug_loc:0000000000000000 .LLST0
-     /tmp/cchHyUbI.s:58     .text:000000000000004c .LVL1
-GAS LISTING /tmp/cchHyUbI.s 			page 8
+     /tmp/cc0Hygap.s:56     .text:000000000000003c .L0 
+     /tmp/cc0Hygap.s:153    .text:00000000000000b0 .L0 
+     /tmp/cc0Hygap.s:160    .text:00000000000000bc .L0 
+     /tmp/cc0Hygap.s:453    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/cc0Hygap.s:871    .debug_str:0000000000000190 .LASF26
+     /tmp/cc0Hygap.s:829    .debug_str:0000000000000062 .LASF27
+     /tmp/cc0Hygap.s:835    .debug_str:0000000000000087 .LASF28
+     /tmp/cc0Hygap.s:5      .text:0000000000000000 .Ltext0
+     /tmp/cc0Hygap.s:177    .text:00000000000000e0 .Letext0
+     /tmp/cc0Hygap.s:813    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/cc0Hygap.s:815    .debug_str:0000000000000000 .LASF0
+     /tmp/cc0Hygap.s:859    .debug_str:0000000000000136 .LASF1
+     /tmp/cc0Hygap.s:841    .debug_str:00000000000000ba .LASF2
+     /tmp/cc0Hygap.s:833    .debug_str:0000000000000080 .LASF4
+     /tmp/cc0Hygap.s:827    .debug_str:0000000000000050 .LASF3
+     /tmp/cc0Hygap.s:823    .debug_str:0000000000000039 .LASF5
+     /tmp/cc0Hygap.s:831    .debug_str:000000000000006d .LASF6
+     /tmp/cc0Hygap.s:857    .debug_str:0000000000000123 .LASF7
+     /tmp/cc0Hygap.s:869    .debug_str:0000000000000180 .LASF8
+     /tmp/cc0Hygap.s:819    .debug_str:000000000000001c .LASF9
+     /tmp/cc0Hygap.s:821    .debug_str:000000000000002a .LASF10
+     /tmp/cc0Hygap.s:863    .debug_str:0000000000000159 .LASF11
+     /tmp/cc0Hygap.s:825    .debug_str:0000000000000040 .LASF12
+     /tmp/cc0Hygap.s:861    .debug_str:0000000000000149 .LASF13
+     /tmp/cc0Hygap.s:839    .debug_str:00000000000000ae .LASF14
+     /tmp/cc0Hygap.s:853    .debug_str:0000000000000105 .LASF15
+     /tmp/cc0Hygap.s:849    .debug_str:00000000000000e2 .LASF16
+     /tmp/cc0Hygap.s:837    .debug_str:00000000000000a5 .LASF17
+     /tmp/cc0Hygap.s:845    .debug_str:00000000000000d6 .LASF18
+     /tmp/cc0Hygap.s:132    .text:0000000000000094 .LFB3
+     /tmp/cc0Hygap.s:175    .text:00000000000000e0 .LFE3
+     /tmp/cc0Hygap.s:145    .text:00000000000000ac .LVL7
+     /tmp/cc0Hygap.s:162    .text:00000000000000cc .LVL8
+     /tmp/cc0Hygap.s:873    .debug_str:000000000000022e .LASF19
+     /tmp/cc0Hygap.s:78     .text:0000000000000064 .LFB2
+     /tmp/cc0Hygap.s:126    .text:0000000000000094 .LFE2
+     /tmp/cc0Hygap.s:855    .debug_str:000000000000011b .LASF20
+     /tmp/cc0Hygap.s:865    .debug_str:0000000000000168 .LASF29
+     /tmp/cc0Hygap.s:43     .text:000000000000002c .LFB1
+     /tmp/cc0Hygap.s:72     .text:0000000000000064 .LFE1
+     /tmp/cc0Hygap.s:793    .debug_loc:0000000000000000 .LLST0
+     /tmp/cc0Hygap.s:58     .text:000000000000004c .LVL1
+GAS LISTING /tmp/cc0Hygap.s 			page 8
 
 
-     /tmp/cchHyUbI.s:61     .text:0000000000000054 .LVL2
-     /tmp/cchHyUbI.s:817    .debug_str:000000000000000d .LASF21
-     /tmp/cchHyUbI.s:11     .text:0000000000000000 .LFB0
-     /tmp/cchHyUbI.s:37     .text:000000000000002c .LFE0
-     /tmp/cchHyUbI.s:26     .text:000000000000001c .LVL0
-     /tmp/cchHyUbI.s:867    .debug_str:000000000000016e .LASF22
-     /tmp/cchHyUbI.s:843    .debug_str:00000000000000c8 .LASF23
-     /tmp/cchHyUbI.s:851    .debug_str:00000000000000f8 .LASF24
-     /tmp/cchHyUbI.s:847    .debug_str:00000000000000db .LASF25
-     /tmp/cchHyUbI.s:182    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/cc0Hygap.s:61     .text:0000000000000054 .LVL2
+     /tmp/cc0Hygap.s:817    .debug_str:000000000000000d .LASF21
+     /tmp/cc0Hygap.s:11     .text:0000000000000000 .LFB0
+     /tmp/cc0Hygap.s:37     .text:000000000000002c .LFE0
+     /tmp/cc0Hygap.s:26     .text:000000000000001c .LVL0
+     /tmp/cc0Hygap.s:867    .debug_str:000000000000016e .LASF22
+     /tmp/cc0Hygap.s:843    .debug_str:00000000000000c8 .LASF23
+     /tmp/cc0Hygap.s:851    .debug_str:00000000000000f8 .LASF24
+     /tmp/cc0Hygap.s:847    .debug_str:00000000000000db .LASF25
+     /tmp/cc0Hygap.s:182    .debug_info:0000000000000000 .Ldebug_info0
 
 UNDEFINED SYMBOLS
 __putc
