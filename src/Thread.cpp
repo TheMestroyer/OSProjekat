@@ -41,11 +41,24 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
     setNextInQueue(next);
     setPrevInQueue(prev);
 }
+void Thread::threadTrampoline(Thread* t) {
+    if (t->body)t->body();
+    //Scheduler::yield(t,Scheduler::GetRunning());
+    while (true) {}//TODO: Namesti dobar return iz threada
+}
 void Thread::start(){
     Scheduler::AddNewThread(this);
     this->threadContext.sepc = reinterpret_cast<size_t>(&Thread::threadTrampoline);
     this->threadContext.x[10] = reinterpret_cast<size_t>(this);
-    Scheduler::yield(Scheduler::GetRunning(),this);
+    // size_t gp_val;
+    // __asm__ volatile("mv %0, gp" : "=r"(gp_val));
+    // this->threadContext.x[3] = gp_val;
+    // size_t sstatus_val;
+    // __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus_val));
+    // sstatus_val |= (1UL << 8);
+    // sstatus_val |= (1UL << 5);
+    // this->threadContext.sstatus = sstatus_val;
+    Scheduler::yield(Scheduler::GetRunning(), this);
 }
 void Thread::join(){
 

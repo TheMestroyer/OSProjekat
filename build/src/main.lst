@@ -1,4 +1,4 @@
-GAS LISTING /tmp/cc0Hygap.s 			page 1
+GAS LISTING /tmp/ccMd98al.s 			page 1
 
 
    1              		.file	"main.c"
@@ -28,9 +28,9 @@ GAS LISTING /tmp/cc0Hygap.s 			page 1
   20              		.cfi_offset 8, -16
   21 000c 13040101 		addi	s0,sp,16
   22              		.cfi_def_cfa 8, 0
-   7:src/main.c    ****     __putc('}');
+   7:src/main.c    ****     __putc('{');
   23              		.loc 1 7 5
-  24 0010 1305D007 		li	a0,125
+  24 0010 1305B007 		li	a0,123
   25 0014 97000000 		call	__putc
   25      E7800000 
   26              	.LVL0:
@@ -47,337 +47,408 @@ GAS LISTING /tmp/cc0Hygap.s 			page 1
   36              		.cfi_endproc
   37              	.LFE0:
   39              		.align	2
-  40              		.globl	mainU
-  42              	mainU:
+  40              		.globl	my_thread_body2
+  42              	my_thread_body2:
   43              	.LFB1:
-   9:src/main.c    **** 
-  10:src/main.c    **** void mainU(){
-  44              		.loc 1 10 13 is_stmt 1
+   9:src/main.c    **** void my_thread_body2(void) {
+  44              		.loc 1 9 28 is_stmt 1
   45              		.cfi_startproc
   46 002c 130101FF 		addi	sp,sp,-16
   47              		.cfi_def_cfa_offset 16
   48 0030 23341100 		sd	ra,8(sp)
   49 0034 23308100 		sd	s0,0(sp)
-GAS LISTING /tmp/cc0Hygap.s 			page 2
-
-
   50              		.cfi_offset 1, -8
+GAS LISTING /tmp/ccMd98al.s 			page 2
+
+
   51              		.cfi_offset 8, -16
   52 0038 13040101 		addi	s0,sp,16
   53              		.cfi_def_cfa 8, 0
-  11:src/main.c    ****     // char* a1 = mem_alloc(sizeof(char) * 20);
-  12:src/main.c    ****     // *a1 = 'a';
-  13:src/main.c    ****     // *(a1+sizeof(char)) ='b';
-  14:src/main.c    ****     // __putc(*a1);
-  15:src/main.c    ****     // __putc(*(a1+1));
-  16:src/main.c    ****     // *(a1+11) = 'h';
-  17:src/main.c    ****     // char* a2 = mem_alloc(sizeof(char) * 10);
-  18:src/main.c    ****     // *a2 = 'c';
-  19:src/main.c    ****     // *(a2+sizeof(char)) ='d';
-  20:src/main.c    ****     // mem_free(a1);
-  21:src/main.c    ****     // char* a3 = mem_alloc(sizeof(char) * 10);
-  22:src/main.c    ****     // *(a3+sizeof(char)) ='f';
-  23:src/main.c    ****     // __putc(*a3);
-  24:src/main.c    ****     // __putc(*(a3+1));
-  25:src/main.c    ****     // __putc(*a1);
-  26:src/main.c    ****     // __putc(*(a1+1));
-  27:src/main.c    ****     thread_t t = thread_create(my_thread_body);
-  54              		.loc 1 27 5
-  55              		.loc 1 27 18 is_stmt 0
-  56 003c 17050000 		lla	a0,my_thread_body
-  56      13050500 
-  57 0044 97000000 		call	thread_create
-  57      E7800000 
-  58              	.LVL1:
-  28:src/main.c    ****     thread_start(t);
-  59              		.loc 1 28 5 is_stmt 1
-  60 004c 97000000 		call	thread_start
-  60      E7800000 
-  61              	.LVL2:
-  29:src/main.c    **** }
-  62              		.loc 1 29 1 is_stmt 0
-  63 0054 83308100 		ld	ra,8(sp)
-  64              		.cfi_restore 1
-  65 0058 03340100 		ld	s0,0(sp)
-  66              		.cfi_restore 8
-  67              		.cfi_def_cfa 2, 16
-  68 005c 13010101 		addi	sp,sp,16
-  69              		.cfi_def_cfa_offset 0
-  70 0060 67800000 		jr	ra
-  71              		.cfi_endproc
-  72              	.LFE1:
-  74              		.align	2
-  75              		.globl	drop_to_user
-  77              	drop_to_user:
-  78              	.LFB2:
-  30:src/main.c    **** 
-  31:src/main.c    **** 
-  32:src/main.c    **** 
-  33:src/main.c    **** 
-  34:src/main.c    **** void drop_to_user(void (*fn)()) {
-  79              		.loc 1 34 33 is_stmt 1
-  80              		.cfi_startproc
-  81              	.LVL3:
-GAS LISTING /tmp/cc0Hygap.s 			page 3
+  10:src/main.c    ****     __putc('}');
+  54              		.loc 1 10 5
+  55 003c 1305D007 		li	a0,125
+  56 0040 97000000 		call	__putc
+  56      E7800000 
+  57              	.LVL1:
+  11:src/main.c    **** }
+  58              		.loc 1 11 1 is_stmt 0
+  59 0048 83308100 		ld	ra,8(sp)
+  60              		.cfi_restore 1
+  61 004c 03340100 		ld	s0,0(sp)
+  62              		.cfi_restore 8
+  63              		.cfi_def_cfa 2, 16
+  64 0050 13010101 		addi	sp,sp,16
+  65              		.cfi_def_cfa_offset 0
+  66 0054 67800000 		jr	ra
+  67              		.cfi_endproc
+  68              	.LFE1:
+  70              		.align	2
+  71              		.globl	mainU
+  73              	mainU:
+  74              	.LFB2:
+  12:src/main.c    **** 
+  13:src/main.c    **** void mainU(){
+  75              		.loc 1 13 13 is_stmt 1
+  76              		.cfi_startproc
+  77 0058 130101FF 		addi	sp,sp,-16
+  78              		.cfi_def_cfa_offset 16
+  79 005c 23341100 		sd	ra,8(sp)
+  80 0060 23308100 		sd	s0,0(sp)
+  81              		.cfi_offset 1, -8
+  82              		.cfi_offset 8, -16
+  83 0064 13040101 		addi	s0,sp,16
+  84              		.cfi_def_cfa 8, 0
+  14:src/main.c    ****     // char* a1 = mem_alloc(sizeof(char) * 20);
+  15:src/main.c    ****     // *a1 = 'a';
+  16:src/main.c    ****     // *(a1+sizeof(char)) ='b';
+  17:src/main.c    ****     // __putc(*a1);
+  18:src/main.c    ****     // __putc(*(a1+1));
+  19:src/main.c    ****     // *(a1+11) = 'h';
+  20:src/main.c    ****     // char* a2 = mem_alloc(sizeof(char) * 10);
+  21:src/main.c    ****     // *a2 = 'c';
+  22:src/main.c    ****     // *(a2+sizeof(char)) ='d';
+  23:src/main.c    ****     // mem_free(a1);
+  24:src/main.c    ****     // char* a3 = mem_alloc(sizeof(char) * 10);
+  25:src/main.c    ****     // *(a3+sizeof(char)) ='f';
+  26:src/main.c    ****     // __putc(*a3);
+  27:src/main.c    ****     // __putc(*(a3+1));
+  28:src/main.c    ****     // __putc(*a1);
+  29:src/main.c    ****     // __putc(*(a1+1));
+  30:src/main.c    ****     thread_t t = thread_create(my_thread_body);
+  85              		.loc 1 30 5
+  86              		.loc 1 30 18 is_stmt 0
+  87 0068 17050000 		lla	a0,my_thread_body
+GAS LISTING /tmp/ccMd98al.s 			page 3
 
 
-  82 0064 130101FF 		addi	sp,sp,-16
-  83              		.cfi_def_cfa_offset 16
-  84 0068 23348100 		sd	s0,8(sp)
-  85              		.cfi_offset 8, -8
-  86 006c 13040101 		addi	s0,sp,16
-  87              		.cfi_def_cfa 8, 0
-  35:src/main.c    ****     __asm__ volatile ("csrw sepc, %0" :: "r"(fn));
-  88              		.loc 1 35 5
-  89              	#APP
-  90              	# 35 "src/main.c" 1
-  36              	
-  37:src/main.c    ****     uint64 sstatus;
-  91              		csrw sepc, a0
-  92              	# 0 "" 2
-  93              		.loc 1 37 5
-  38:src/main.c    ****     __asm__ volatile ("csrr %0, sstatus" : "=r"(sstatus));
-  94              		.loc 1 38 5
-  95              	# 38 "src/main.c" 1
-  39              	    sstatus &= ~(1UL << 8);
-  96              		csrr a5, sstatus
-  97              	# 0 "" 2
-  98              	.LVL4:
-  99              		.loc 1 39 5
- 100              		.loc 1 39 13 is_stmt 0
- 101              	#NO_APP
- 102 0078 93F7F7EF 		andi	a5,a5,-257
- 103              	.LVL5:
-  40:src/main.c    ****     sstatus |=  (1UL << 5);
- 104              		.loc 1 40 5 is_stmt 1
- 105              		.loc 1 40 13 is_stmt 0
- 106 007c 93E70702 		ori	a5,a5,32
- 107              	.LVL6:
-  41:src/main.c    ****     __asm__ volatile ("csrw sstatus, %0" :: "r"(sstatus));
- 108              		.loc 1 41 5 is_stmt 1
- 109              	#APP
- 110              	# 41 "src/main.c" 1
-  42              	
-  43:src/main.c    ****     __asm__ volatile ("sret");
- 111              		csrw sstatus, a5
- 112              	# 0 "" 2
- 113              		.loc 1 43 5
- 114              	# 43 "src/main.c" 1
-  44              	}
- 115              		sret
- 116              	# 0 "" 2
- 117              		.loc 1 44 1 is_stmt 0
- 118              	#NO_APP
- 119 0088 03348100 		ld	s0,8(sp)
- 120              		.cfi_restore 8
- 121              		.cfi_def_cfa 2, 16
- 122 008c 13010101 		addi	sp,sp,16
- 123              		.cfi_def_cfa_offset 0
- 124 0090 67800000 		jr	ra
- 125              		.cfi_endproc
- 126              	.LFE2:
- 128              		.align	2
- 129              		.globl	main
-GAS LISTING /tmp/cc0Hygap.s 			page 4
+  87      13050500 
+  88 0070 97000000 		call	thread_create
+  88      E7800000 
+  89              	.LVL2:
+  31:src/main.c    ****     thread_start(t);
+  90              		.loc 1 31 5 is_stmt 1
+  91 0078 97000000 		call	thread_start
+  91      E7800000 
+  92              	.LVL3:
+  32:src/main.c    ****     thread_t t2 = thread_create(my_thread_body2);
+  93              		.loc 1 32 5
+  94              		.loc 1 32 19 is_stmt 0
+  95 0080 17050000 		lla	a0,my_thread_body2
+  95      13050500 
+  96 0088 97000000 		call	thread_create
+  96      E7800000 
+  97              	.LVL4:
+  33:src/main.c    ****     thread_start(t2);
+  98              		.loc 1 33 5 is_stmt 1
+  99 0090 97000000 		call	thread_start
+  99      E7800000 
+ 100              	.LVL5:
+  34:src/main.c    **** }
+ 101              		.loc 1 34 1 is_stmt 0
+ 102 0098 83308100 		ld	ra,8(sp)
+ 103              		.cfi_restore 1
+ 104 009c 03340100 		ld	s0,0(sp)
+ 105              		.cfi_restore 8
+ 106              		.cfi_def_cfa 2, 16
+ 107 00a0 13010101 		addi	sp,sp,16
+ 108              		.cfi_def_cfa_offset 0
+ 109 00a4 67800000 		jr	ra
+ 110              		.cfi_endproc
+ 111              	.LFE2:
+ 113              		.align	2
+ 114              		.globl	drop_to_user
+ 116              	drop_to_user:
+ 117              	.LFB3:
+  35:src/main.c    **** 
+  36:src/main.c    **** 
+  37:src/main.c    **** 
+  38:src/main.c    **** 
+  39:src/main.c    **** void drop_to_user(void (*fn)()) {
+ 118              		.loc 1 39 33 is_stmt 1
+ 119              		.cfi_startproc
+ 120              	.LVL6:
+ 121 00a8 130101FF 		addi	sp,sp,-16
+ 122              		.cfi_def_cfa_offset 16
+ 123 00ac 23348100 		sd	s0,8(sp)
+ 124              		.cfi_offset 8, -8
+ 125 00b0 13040101 		addi	s0,sp,16
+ 126              		.cfi_def_cfa 8, 0
+  40:src/main.c    ****     __asm__ volatile ("csrw sepc, %0" :: "r"(fn));
+ 127              		.loc 1 40 5
+ 128              	#APP
+ 129              	# 40 "src/main.c" 1
+  41              	
+GAS LISTING /tmp/ccMd98al.s 			page 4
 
 
- 131              	main:
- 132              	.LFB3:
-  45:src/main.c    **** void interupt();
-  46:src/main.c    **** int main() {
- 133              		.loc 1 46 12 is_stmt 1
- 134              		.cfi_startproc
- 135 0094 130101FF 		addi	sp,sp,-16
- 136              		.cfi_def_cfa_offset 16
- 137 0098 23341100 		sd	ra,8(sp)
- 138 009c 23308100 		sd	s0,0(sp)
- 139              		.cfi_offset 1, -8
- 140              		.cfi_offset 8, -16
- 141 00a0 13040101 		addi	s0,sp,16
- 142              		.cfi_def_cfa 8, 0
-  47:src/main.c    ****     start_main_thread();
- 143              		.loc 1 47 5
- 144 00a4 97000000 		call	start_main_thread
- 144      E7800000 
- 145              	.LVL7:
-  48:src/main.c    ****     __asm__ volatile("csrw sie, zero");
- 146              		.loc 1 48 5
- 147              	#APP
- 148              	# 48 "src/main.c" 1
-  49              	    __asm__ volatile("csrw stvec, %[v]" :: [v]"r"(&interupt));
- 149              		csrw sie, zero
- 150              	# 0 "" 2
- 151              		.loc 1 49 5
- 152              	#NO_APP
- 153 00b0 97070000 		lla	a5,interupt
- 153      93870700 
- 154              	#APP
- 155              	# 49 "src/main.c" 1
-  50              	    drop_to_user(mainU);
- 156              		csrw stvec, a5
- 157              	# 0 "" 2
- 158              		.loc 1 50 5
- 159              	#NO_APP
- 160 00bc 17050000 		lla	a0,mainU
- 160      13050500 
- 161 00c4 97000000 		call	drop_to_user
- 161      E7800000 
- 162              	.LVL8:
-  51:src/main.c    ****     return 0;
- 163              		.loc 1 51 5
-  52:src/main.c    **** }
- 164              		.loc 1 52 1 is_stmt 0
- 165 00cc 13050000 		li	a0,0
- 166 00d0 83308100 		ld	ra,8(sp)
- 167              		.cfi_restore 1
- 168 00d4 03340100 		ld	s0,0(sp)
- 169              		.cfi_restore 8
- 170              		.cfi_def_cfa 2, 16
- 171 00d8 13010101 		addi	sp,sp,16
- 172              		.cfi_def_cfa_offset 0
- 173 00dc 67800000 		jr	ra
- 174              		.cfi_endproc
- 175              	.LFE3:
-GAS LISTING /tmp/cc0Hygap.s 			page 5
+  42:src/main.c    ****     uint64 sstatus;
+ 130              		csrw sepc, a0
+ 131              	# 0 "" 2
+ 132              		.loc 1 42 5
+  43:src/main.c    ****     __asm__ volatile ("csrr %0, sstatus" : "=r"(sstatus));
+ 133              		.loc 1 43 5
+ 134              	# 43 "src/main.c" 1
+  44              	    sstatus &= ~(1UL << 8);
+ 135              		csrr a5, sstatus
+ 136              	# 0 "" 2
+ 137              	.LVL7:
+ 138              		.loc 1 44 5
+ 139              		.loc 1 44 13 is_stmt 0
+ 140              	#NO_APP
+ 141 00bc 93F7F7EF 		andi	a5,a5,-257
+ 142              	.LVL8:
+  45:src/main.c    ****     sstatus |=  (1UL << 5);
+ 143              		.loc 1 45 5 is_stmt 1
+ 144              		.loc 1 45 13 is_stmt 0
+ 145 00c0 93E70702 		ori	a5,a5,32
+ 146              	.LVL9:
+  46:src/main.c    ****     __asm__ volatile ("csrw sstatus, %0" :: "r"(sstatus));
+ 147              		.loc 1 46 5 is_stmt 1
+ 148              	#APP
+ 149              	# 46 "src/main.c" 1
+  47              	
+  48:src/main.c    ****     __asm__ volatile ("sret");
+ 150              		csrw sstatus, a5
+ 151              	# 0 "" 2
+ 152              		.loc 1 48 5
+ 153              	# 48 "src/main.c" 1
+  49              	}
+ 154              		sret
+ 155              	# 0 "" 2
+ 156              		.loc 1 49 1 is_stmt 0
+ 157              	#NO_APP
+ 158 00cc 03348100 		ld	s0,8(sp)
+ 159              		.cfi_restore 8
+ 160              		.cfi_def_cfa 2, 16
+ 161 00d0 13010101 		addi	sp,sp,16
+ 162              		.cfi_def_cfa_offset 0
+ 163 00d4 67800000 		jr	ra
+ 164              		.cfi_endproc
+ 165              	.LFE3:
+ 167              		.align	2
+ 168              		.globl	main
+ 170              	main:
+ 171              	.LFB4:
+  50:src/main.c    **** void interupt();
+  51:src/main.c    **** int main() {
+ 172              		.loc 1 51 12 is_stmt 1
+ 173              		.cfi_startproc
+ 174 00d8 130101FF 		addi	sp,sp,-16
+ 175              		.cfi_def_cfa_offset 16
+ 176 00dc 23341100 		sd	ra,8(sp)
+ 177 00e0 23308100 		sd	s0,0(sp)
+ 178              		.cfi_offset 1, -8
+GAS LISTING /tmp/ccMd98al.s 			page 5
 
 
- 177              	.Letext0:
- 178              		.file 2 "src/../lib/hw.h"
- 179              		.file 3 "src/APIC.h"
- 180              		.file 4 "src/../lib/console.h"
-GAS LISTING /tmp/cc0Hygap.s 			page 6
+ 179              		.cfi_offset 8, -16
+ 180 00e4 13040101 		addi	s0,sp,16
+ 181              		.cfi_def_cfa 8, 0
+  52:src/main.c    ****     start_main_thread();
+ 182              		.loc 1 52 5
+ 183 00e8 97000000 		call	start_main_thread
+ 183      E7800000 
+ 184              	.LVL10:
+  53:src/main.c    ****     __asm__ volatile("csrw sie, zero");
+ 185              		.loc 1 53 5
+ 186              	#APP
+ 187              	# 53 "src/main.c" 1
+  54              	    __asm__ volatile("csrw stvec, %[v]" :: [v]"r"(&interupt));
+ 188              		csrw sie, zero
+ 189              	# 0 "" 2
+ 190              		.loc 1 54 5
+ 191              	#NO_APP
+ 192 00f4 97070000 		lla	a5,interupt
+ 192      93870700 
+ 193              	#APP
+ 194              	# 54 "src/main.c" 1
+  55              	    drop_to_user(mainU);
+ 195              		csrw stvec, a5
+ 196              	# 0 "" 2
+ 197              		.loc 1 55 5
+ 198              	#NO_APP
+ 199 0100 17050000 		lla	a0,mainU
+ 199      13050500 
+ 200 0108 97000000 		call	drop_to_user
+ 200      E7800000 
+ 201              	.LVL11:
+  56:src/main.c    ****     return 0;
+ 202              		.loc 1 56 5
+  57:src/main.c    **** }
+ 203              		.loc 1 57 1 is_stmt 0
+ 204 0110 13050000 		li	a0,0
+ 205 0114 83308100 		ld	ra,8(sp)
+ 206              		.cfi_restore 1
+ 207 0118 03340100 		ld	s0,0(sp)
+ 208              		.cfi_restore 8
+ 209              		.cfi_def_cfa 2, 16
+ 210 011c 13010101 		addi	sp,sp,16
+ 211              		.cfi_def_cfa_offset 0
+ 212 0120 67800000 		jr	ra
+ 213              		.cfi_endproc
+ 214              	.LFE4:
+ 216              	.Letext0:
+ 217              		.file 2 "src/../lib/hw.h"
+ 218              		.file 3 "src/APIC.h"
+ 219              		.file 4 "src/../lib/console.h"
+GAS LISTING /tmp/ccMd98al.s 			page 6
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 main.c
-     /tmp/cc0Hygap.s:10     .text:0000000000000000 my_thread_body
-     /tmp/cc0Hygap.s:14     .text:0000000000000000 .L0 
-     /tmp/cc0Hygap.s:15     .text:0000000000000000 .L0 
-     /tmp/cc0Hygap.s:16     .text:0000000000000004 .L0 
-     /tmp/cc0Hygap.s:19     .text:000000000000000c .L0 
-     /tmp/cc0Hygap.s:20     .text:000000000000000c .L0 
-     /tmp/cc0Hygap.s:22     .text:0000000000000010 .L0 
-     /tmp/cc0Hygap.s:24     .text:0000000000000010 .L0 
-     /tmp/cc0Hygap.s:28     .text:000000000000001c .L0 
-     /tmp/cc0Hygap.s:29     .text:0000000000000020 .L0 
-     /tmp/cc0Hygap.s:31     .text:0000000000000024 .L0 
-     /tmp/cc0Hygap.s:32     .text:0000000000000024 .L0 
-     /tmp/cc0Hygap.s:34     .text:0000000000000028 .L0 
-     /tmp/cc0Hygap.s:36     .text:000000000000002c .L0 
-     /tmp/cc0Hygap.s:42     .text:000000000000002c mainU
-     /tmp/cc0Hygap.s:45     .text:000000000000002c .L0 
-     /tmp/cc0Hygap.s:46     .text:000000000000002c .L0 
-     /tmp/cc0Hygap.s:47     .text:0000000000000030 .L0 
-     /tmp/cc0Hygap.s:50     .text:0000000000000038 .L0 
-     /tmp/cc0Hygap.s:51     .text:0000000000000038 .L0 
-     /tmp/cc0Hygap.s:53     .text:000000000000003c .L0 
-     /tmp/cc0Hygap.s:55     .text:000000000000003c .L0 
-     /tmp/cc0Hygap.s:56     .text:000000000000003c .L0 
-     /tmp/cc0Hygap.s:60     .text:000000000000004c .L0 
-     /tmp/cc0Hygap.s:63     .text:0000000000000054 .L0 
-     /tmp/cc0Hygap.s:64     .text:0000000000000058 .L0 
-     /tmp/cc0Hygap.s:66     .text:000000000000005c .L0 
-     /tmp/cc0Hygap.s:67     .text:000000000000005c .L0 
-     /tmp/cc0Hygap.s:69     .text:0000000000000060 .L0 
-     /tmp/cc0Hygap.s:71     .text:0000000000000064 .L0 
-     /tmp/cc0Hygap.s:77     .text:0000000000000064 drop_to_user
-     /tmp/cc0Hygap.s:80     .text:0000000000000064 .L0 
-     /tmp/cc0Hygap.s:82     .text:0000000000000064 .L0 
-     /tmp/cc0Hygap.s:83     .text:0000000000000068 .L0 
-     /tmp/cc0Hygap.s:85     .text:000000000000006c .L0 
-     /tmp/cc0Hygap.s:87     .text:0000000000000070 .L0 
-          src/main.c:35     .text:0000000000000070 .L0 
-     /tmp/cc0Hygap.s:94     .text:0000000000000074 .L0 
-          src/main.c:38     .text:0000000000000074 .L0 
-     /tmp/cc0Hygap.s:100    .text:0000000000000078 .L0 
-     /tmp/cc0Hygap.s:102    .text:0000000000000078 .L0 
-     /tmp/cc0Hygap.s:105    .text:000000000000007c .L0 
-     /tmp/cc0Hygap.s:106    .text:000000000000007c .L0 
-          src/main.c:41     .text:0000000000000080 .L0 
-          src/main.c:43     .text:0000000000000084 .L0 
-     /tmp/cc0Hygap.s:119    .text:0000000000000088 .L0 
-     /tmp/cc0Hygap.s:120    .text:000000000000008c .L0 
-     /tmp/cc0Hygap.s:121    .text:000000000000008c .L0 
-     /tmp/cc0Hygap.s:123    .text:0000000000000090 .L0 
-     /tmp/cc0Hygap.s:125    .text:0000000000000094 .L0 
-     /tmp/cc0Hygap.s:131    .text:0000000000000094 main
-     /tmp/cc0Hygap.s:134    .text:0000000000000094 .L0 
-     /tmp/cc0Hygap.s:135    .text:0000000000000094 .L0 
-     /tmp/cc0Hygap.s:136    .text:0000000000000098 .L0 
-     /tmp/cc0Hygap.s:139    .text:00000000000000a0 .L0 
-GAS LISTING /tmp/cc0Hygap.s 			page 7
+     /tmp/ccMd98al.s:10     .text:0000000000000000 my_thread_body
+     /tmp/ccMd98al.s:14     .text:0000000000000000 .L0 
+     /tmp/ccMd98al.s:15     .text:0000000000000000 .L0 
+     /tmp/ccMd98al.s:16     .text:0000000000000004 .L0 
+     /tmp/ccMd98al.s:19     .text:000000000000000c .L0 
+     /tmp/ccMd98al.s:20     .text:000000000000000c .L0 
+     /tmp/ccMd98al.s:22     .text:0000000000000010 .L0 
+     /tmp/ccMd98al.s:24     .text:0000000000000010 .L0 
+     /tmp/ccMd98al.s:28     .text:000000000000001c .L0 
+     /tmp/ccMd98al.s:29     .text:0000000000000020 .L0 
+     /tmp/ccMd98al.s:31     .text:0000000000000024 .L0 
+     /tmp/ccMd98al.s:32     .text:0000000000000024 .L0 
+     /tmp/ccMd98al.s:34     .text:0000000000000028 .L0 
+     /tmp/ccMd98al.s:36     .text:000000000000002c .L0 
+     /tmp/ccMd98al.s:42     .text:000000000000002c my_thread_body2
+     /tmp/ccMd98al.s:45     .text:000000000000002c .L0 
+     /tmp/ccMd98al.s:46     .text:000000000000002c .L0 
+     /tmp/ccMd98al.s:47     .text:0000000000000030 .L0 
+     /tmp/ccMd98al.s:50     .text:0000000000000038 .L0 
+     /tmp/ccMd98al.s:51     .text:0000000000000038 .L0 
+     /tmp/ccMd98al.s:53     .text:000000000000003c .L0 
+     /tmp/ccMd98al.s:55     .text:000000000000003c .L0 
+     /tmp/ccMd98al.s:59     .text:0000000000000048 .L0 
+     /tmp/ccMd98al.s:60     .text:000000000000004c .L0 
+     /tmp/ccMd98al.s:62     .text:0000000000000050 .L0 
+     /tmp/ccMd98al.s:63     .text:0000000000000050 .L0 
+     /tmp/ccMd98al.s:65     .text:0000000000000054 .L0 
+     /tmp/ccMd98al.s:67     .text:0000000000000058 .L0 
+     /tmp/ccMd98al.s:73     .text:0000000000000058 mainU
+     /tmp/ccMd98al.s:76     .text:0000000000000058 .L0 
+     /tmp/ccMd98al.s:77     .text:0000000000000058 .L0 
+     /tmp/ccMd98al.s:78     .text:000000000000005c .L0 
+     /tmp/ccMd98al.s:81     .text:0000000000000064 .L0 
+     /tmp/ccMd98al.s:82     .text:0000000000000064 .L0 
+     /tmp/ccMd98al.s:84     .text:0000000000000068 .L0 
+     /tmp/ccMd98al.s:86     .text:0000000000000068 .L0 
+     /tmp/ccMd98al.s:87     .text:0000000000000068 .L0 
+     /tmp/ccMd98al.s:91     .text:0000000000000078 .L0 
+     /tmp/ccMd98al.s:94     .text:0000000000000080 .L0 
+     /tmp/ccMd98al.s:95     .text:0000000000000080 .L0 
+     /tmp/ccMd98al.s:99     .text:0000000000000090 .L0 
+     /tmp/ccMd98al.s:102    .text:0000000000000098 .L0 
+     /tmp/ccMd98al.s:103    .text:000000000000009c .L0 
+     /tmp/ccMd98al.s:105    .text:00000000000000a0 .L0 
+     /tmp/ccMd98al.s:106    .text:00000000000000a0 .L0 
+     /tmp/ccMd98al.s:108    .text:00000000000000a4 .L0 
+     /tmp/ccMd98al.s:110    .text:00000000000000a8 .L0 
+     /tmp/ccMd98al.s:116    .text:00000000000000a8 drop_to_user
+     /tmp/ccMd98al.s:119    .text:00000000000000a8 .L0 
+     /tmp/ccMd98al.s:121    .text:00000000000000a8 .L0 
+     /tmp/ccMd98al.s:122    .text:00000000000000ac .L0 
+     /tmp/ccMd98al.s:124    .text:00000000000000b0 .L0 
+     /tmp/ccMd98al.s:126    .text:00000000000000b4 .L0 
+          src/main.c:40     .text:00000000000000b4 .L0 
+     /tmp/ccMd98al.s:133    .text:00000000000000b8 .L0 
+GAS LISTING /tmp/ccMd98al.s 			page 7
 
 
-     /tmp/cc0Hygap.s:140    .text:00000000000000a0 .L0 
-     /tmp/cc0Hygap.s:142    .text:00000000000000a4 .L0 
-     /tmp/cc0Hygap.s:144    .text:00000000000000a4 .L0 
-          src/main.c:48     .text:00000000000000ac .L0 
-     /tmp/cc0Hygap.s:153    .text:00000000000000b0 .L0 
-     /tmp/cc0Hygap.s:160    .text:00000000000000bc .L0 
-     /tmp/cc0Hygap.s:164    .text:00000000000000cc .L0 
-     /tmp/cc0Hygap.s:165    .text:00000000000000cc .L0 
-     /tmp/cc0Hygap.s:167    .text:00000000000000d4 .L0 
-     /tmp/cc0Hygap.s:169    .text:00000000000000d8 .L0 
-     /tmp/cc0Hygap.s:170    .text:00000000000000d8 .L0 
-     /tmp/cc0Hygap.s:172    .text:00000000000000dc .L0 
-     /tmp/cc0Hygap.s:174    .text:00000000000000e0 .L0 
-     /tmp/cc0Hygap.s:181    .text:00000000000000e0 .L0 
+          src/main.c:43     .text:00000000000000b8 .L0 
+     /tmp/ccMd98al.s:139    .text:00000000000000bc .L0 
+     /tmp/ccMd98al.s:141    .text:00000000000000bc .L0 
+     /tmp/ccMd98al.s:144    .text:00000000000000c0 .L0 
+     /tmp/ccMd98al.s:145    .text:00000000000000c0 .L0 
+          src/main.c:46     .text:00000000000000c4 .L0 
+          src/main.c:48     .text:00000000000000c8 .L0 
+     /tmp/ccMd98al.s:158    .text:00000000000000cc .L0 
+     /tmp/ccMd98al.s:159    .text:00000000000000d0 .L0 
+     /tmp/ccMd98al.s:160    .text:00000000000000d0 .L0 
+     /tmp/ccMd98al.s:162    .text:00000000000000d4 .L0 
+     /tmp/ccMd98al.s:164    .text:00000000000000d8 .L0 
+     /tmp/ccMd98al.s:170    .text:00000000000000d8 main
+     /tmp/ccMd98al.s:173    .text:00000000000000d8 .L0 
+     /tmp/ccMd98al.s:174    .text:00000000000000d8 .L0 
+     /tmp/ccMd98al.s:175    .text:00000000000000dc .L0 
+     /tmp/ccMd98al.s:178    .text:00000000000000e4 .L0 
+     /tmp/ccMd98al.s:179    .text:00000000000000e4 .L0 
+     /tmp/ccMd98al.s:181    .text:00000000000000e8 .L0 
+     /tmp/ccMd98al.s:183    .text:00000000000000e8 .L0 
+          src/main.c:53     .text:00000000000000f0 .L0 
+     /tmp/ccMd98al.s:192    .text:00000000000000f4 .L0 
+     /tmp/ccMd98al.s:199    .text:0000000000000100 .L0 
+     /tmp/ccMd98al.s:203    .text:0000000000000110 .L0 
+     /tmp/ccMd98al.s:204    .text:0000000000000110 .L0 
+     /tmp/ccMd98al.s:206    .text:0000000000000118 .L0 
+     /tmp/ccMd98al.s:208    .text:000000000000011c .L0 
+     /tmp/ccMd98al.s:209    .text:000000000000011c .L0 
+     /tmp/ccMd98al.s:211    .text:0000000000000120 .L0 
+     /tmp/ccMd98al.s:213    .text:0000000000000124 .L0 
+     /tmp/ccMd98al.s:220    .text:0000000000000124 .L0 
                      .debug_frame:0000000000000000 .L0 
-     /tmp/cc0Hygap.s:56     .text:000000000000003c .L0 
-     /tmp/cc0Hygap.s:153    .text:00000000000000b0 .L0 
-     /tmp/cc0Hygap.s:160    .text:00000000000000bc .L0 
-     /tmp/cc0Hygap.s:453    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/cc0Hygap.s:871    .debug_str:0000000000000190 .LASF26
-     /tmp/cc0Hygap.s:829    .debug_str:0000000000000062 .LASF27
-     /tmp/cc0Hygap.s:835    .debug_str:0000000000000087 .LASF28
-     /tmp/cc0Hygap.s:5      .text:0000000000000000 .Ltext0
-     /tmp/cc0Hygap.s:177    .text:00000000000000e0 .Letext0
-     /tmp/cc0Hygap.s:813    .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/cc0Hygap.s:815    .debug_str:0000000000000000 .LASF0
-     /tmp/cc0Hygap.s:859    .debug_str:0000000000000136 .LASF1
-     /tmp/cc0Hygap.s:841    .debug_str:00000000000000ba .LASF2
-     /tmp/cc0Hygap.s:833    .debug_str:0000000000000080 .LASF4
-     /tmp/cc0Hygap.s:827    .debug_str:0000000000000050 .LASF3
-     /tmp/cc0Hygap.s:823    .debug_str:0000000000000039 .LASF5
-     /tmp/cc0Hygap.s:831    .debug_str:000000000000006d .LASF6
-     /tmp/cc0Hygap.s:857    .debug_str:0000000000000123 .LASF7
-     /tmp/cc0Hygap.s:869    .debug_str:0000000000000180 .LASF8
-     /tmp/cc0Hygap.s:819    .debug_str:000000000000001c .LASF9
-     /tmp/cc0Hygap.s:821    .debug_str:000000000000002a .LASF10
-     /tmp/cc0Hygap.s:863    .debug_str:0000000000000159 .LASF11
-     /tmp/cc0Hygap.s:825    .debug_str:0000000000000040 .LASF12
-     /tmp/cc0Hygap.s:861    .debug_str:0000000000000149 .LASF13
-     /tmp/cc0Hygap.s:839    .debug_str:00000000000000ae .LASF14
-     /tmp/cc0Hygap.s:853    .debug_str:0000000000000105 .LASF15
-     /tmp/cc0Hygap.s:849    .debug_str:00000000000000e2 .LASF16
-     /tmp/cc0Hygap.s:837    .debug_str:00000000000000a5 .LASF17
-     /tmp/cc0Hygap.s:845    .debug_str:00000000000000d6 .LASF18
-     /tmp/cc0Hygap.s:132    .text:0000000000000094 .LFB3
-     /tmp/cc0Hygap.s:175    .text:00000000000000e0 .LFE3
-     /tmp/cc0Hygap.s:145    .text:00000000000000ac .LVL7
-     /tmp/cc0Hygap.s:162    .text:00000000000000cc .LVL8
-     /tmp/cc0Hygap.s:873    .debug_str:000000000000022e .LASF19
-     /tmp/cc0Hygap.s:78     .text:0000000000000064 .LFB2
-     /tmp/cc0Hygap.s:126    .text:0000000000000094 .LFE2
-     /tmp/cc0Hygap.s:855    .debug_str:000000000000011b .LASF20
-     /tmp/cc0Hygap.s:865    .debug_str:0000000000000168 .LASF29
-     /tmp/cc0Hygap.s:43     .text:000000000000002c .LFB1
-     /tmp/cc0Hygap.s:72     .text:0000000000000064 .LFE1
-     /tmp/cc0Hygap.s:793    .debug_loc:0000000000000000 .LLST0
-     /tmp/cc0Hygap.s:58     .text:000000000000004c .LVL1
-GAS LISTING /tmp/cc0Hygap.s 			page 8
+     /tmp/ccMd98al.s:87     .text:0000000000000068 .L0 
+     /tmp/ccMd98al.s:95     .text:0000000000000080 .L0 
+     /tmp/ccMd98al.s:192    .text:00000000000000f4 .L0 
+     /tmp/ccMd98al.s:199    .text:0000000000000100 .L0 
+     /tmp/ccMd98al.s:534    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccMd98al.s:961    .debug_str:00000000000001a0 .LASF27
+     /tmp/ccMd98al.s:917    .debug_str:0000000000000062 .LASF28
+     /tmp/ccMd98al.s:923    .debug_str:0000000000000087 .LASF29
+     /tmp/ccMd98al.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccMd98al.s:216    .text:0000000000000124 .Letext0
+     /tmp/ccMd98al.s:901    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccMd98al.s:903    .debug_str:0000000000000000 .LASF0
+     /tmp/ccMd98al.s:949    .debug_str:0000000000000146 .LASF1
+     /tmp/ccMd98al.s:929    .debug_str:00000000000000ba .LASF2
+     /tmp/ccMd98al.s:921    .debug_str:0000000000000080 .LASF4
+     /tmp/ccMd98al.s:915    .debug_str:0000000000000050 .LASF3
+     /tmp/ccMd98al.s:911    .debug_str:0000000000000039 .LASF5
+     /tmp/ccMd98al.s:919    .debug_str:000000000000006d .LASF6
+     /tmp/ccMd98al.s:947    .debug_str:0000000000000133 .LASF7
+     /tmp/ccMd98al.s:959    .debug_str:0000000000000190 .LASF8
+     /tmp/ccMd98al.s:907    .debug_str:000000000000001c .LASF9
+     /tmp/ccMd98al.s:909    .debug_str:000000000000002a .LASF10
+     /tmp/ccMd98al.s:953    .debug_str:0000000000000169 .LASF11
+     /tmp/ccMd98al.s:913    .debug_str:0000000000000040 .LASF12
+     /tmp/ccMd98al.s:951    .debug_str:0000000000000159 .LASF13
+GAS LISTING /tmp/ccMd98al.s 			page 8
 
 
-     /tmp/cc0Hygap.s:61     .text:0000000000000054 .LVL2
-     /tmp/cc0Hygap.s:817    .debug_str:000000000000000d .LASF21
-     /tmp/cc0Hygap.s:11     .text:0000000000000000 .LFB0
-     /tmp/cc0Hygap.s:37     .text:000000000000002c .LFE0
-     /tmp/cc0Hygap.s:26     .text:000000000000001c .LVL0
-     /tmp/cc0Hygap.s:867    .debug_str:000000000000016e .LASF22
-     /tmp/cc0Hygap.s:843    .debug_str:00000000000000c8 .LASF23
-     /tmp/cc0Hygap.s:851    .debug_str:00000000000000f8 .LASF24
-     /tmp/cc0Hygap.s:847    .debug_str:00000000000000db .LASF25
-     /tmp/cc0Hygap.s:182    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccMd98al.s:927    .debug_str:00000000000000ae .LASF14
+     /tmp/ccMd98al.s:943    .debug_str:0000000000000115 .LASF15
+     /tmp/ccMd98al.s:937    .debug_str:00000000000000e2 .LASF16
+     /tmp/ccMd98al.s:925    .debug_str:00000000000000a5 .LASF17
+     /tmp/ccMd98al.s:933    .debug_str:00000000000000d6 .LASF18
+     /tmp/ccMd98al.s:171    .text:00000000000000d8 .LFB4
+     /tmp/ccMd98al.s:214    .text:0000000000000124 .LFE4
+     /tmp/ccMd98al.s:184    .text:00000000000000f0 .LVL10
+     /tmp/ccMd98al.s:201    .text:0000000000000110 .LVL11
+     /tmp/ccMd98al.s:963    .debug_str:000000000000023e .LASF19
+     /tmp/ccMd98al.s:117    .text:00000000000000a8 .LFB3
+     /tmp/ccMd98al.s:165    .text:00000000000000d8 .LFE3
+     /tmp/ccMd98al.s:945    .debug_str:000000000000012b .LASF20
+     /tmp/ccMd98al.s:955    .debug_str:0000000000000178 .LASF30
+     /tmp/ccMd98al.s:74     .text:0000000000000058 .LFB2
+     /tmp/ccMd98al.s:111    .text:00000000000000a8 .LFE2
+     /tmp/ccMd98al.s:874    .debug_loc:0000000000000000 .LLST0
+     /tmp/ccMd98al.s:881    .debug_loc:0000000000000023 .LLST1
+     /tmp/ccMd98al.s:89     .text:0000000000000078 .LVL2
+     /tmp/ccMd98al.s:92     .text:0000000000000080 .LVL3
+     /tmp/ccMd98al.s:97     .text:0000000000000090 .LVL4
+     /tmp/ccMd98al.s:100    .text:0000000000000098 .LVL5
+     /tmp/ccMd98al.s:941    .debug_str:0000000000000105 .LASF21
+     /tmp/ccMd98al.s:43     .text:000000000000002c .LFB1
+     /tmp/ccMd98al.s:68     .text:0000000000000058 .LFE1
+     /tmp/ccMd98al.s:57     .text:0000000000000048 .LVL1
+     /tmp/ccMd98al.s:905    .debug_str:000000000000000d .LASF22
+     /tmp/ccMd98al.s:11     .text:0000000000000000 .LFB0
+     /tmp/ccMd98al.s:37     .text:000000000000002c .LFE0
+     /tmp/ccMd98al.s:26     .text:000000000000001c .LVL0
+     /tmp/ccMd98al.s:957    .debug_str:000000000000017e .LASF23
+     /tmp/ccMd98al.s:931    .debug_str:00000000000000c8 .LASF24
+     /tmp/ccMd98al.s:939    .debug_str:00000000000000f8 .LASF25
+     /tmp/ccMd98al.s:935    .debug_str:00000000000000db .LASF26
+     /tmp/ccMd98al.s:221    .debug_info:0000000000000000 .Ldebug_info0
 
 UNDEFINED SYMBOLS
 __putc

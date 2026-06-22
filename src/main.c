@@ -4,6 +4,9 @@
 #include "APIC.h"
 #include "../lib/console.h"
 void my_thread_body(void) {
+    __putc('{');
+}
+void my_thread_body2(void) {
     __putc('}');
 }
 
@@ -26,6 +29,8 @@ void mainU(){
     // __putc(*(a1+1));
     thread_t t = thread_create(my_thread_body);
     thread_start(t);
+    thread_t t2 = thread_create(my_thread_body2);
+    thread_start(t2);
 }
 
 

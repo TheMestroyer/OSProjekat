@@ -14,9 +14,7 @@ struct Context {
 
 class Thread{
 protected:
-    static void threadTrampoline(Thread* t) {
-        if (t->body)t->body();
-    }
+    static void threadTrampoline(Thread* t);
     void (*body)(void);
 
     Thread* prev;
