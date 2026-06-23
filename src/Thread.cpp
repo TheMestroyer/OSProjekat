@@ -43,8 +43,8 @@ void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
 }
 void Thread::threadTrampoline(Thread* t) {
     if (t->body)t->body();
-    //Scheduler::yield(t,Scheduler::GetRunning());
-    while (true) {}//TODO: Namesti dobar return iz threada
+    Scheduler::yield(t,Scheduler::GetRunning());
+    //while (true) {}//TODO: Namesti dobar return iz threada
 }
 void Thread::start(){
     Scheduler::AddNewThread(this);

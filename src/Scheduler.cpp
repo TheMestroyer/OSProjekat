@@ -20,8 +20,8 @@ Thread* Scheduler::GetRunning(){
     return running;
 }
 void Scheduler::yield(Thread* oldThread, Thread* newThread){
-    if (oldThread != nullptr)//TODO: Add error and remove this temp logic
-        saveContext(oldThread->getContext());
+    //if (oldThread != nullptr)//TODO: Add error and remove this temp logic
+        //saveContext(oldThread->getContext());
     restoreContext(newThread->getContext());
 }
 Thread* Scheduler::GetNext(){

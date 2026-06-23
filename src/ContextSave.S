@@ -35,6 +35,7 @@ saveContext:
     sd x30,0xF0(a0)
     sd x31,0xF8(a0)
     csrr t0,sepc
+    addi t0,t0, 0x00
     sd t0,0x100(a0)
     csrr t0,sstatus
     sd t0,0x108(a0)

@@ -10,6 +10,7 @@ struct Context {
     size_t x[32];    // x0-x31, offsets 0x00-0xF
     size_t sepc;     // offset 0x100
     size_t sstatus;  // offset 0x108
+    size_t pc;
 };
 
 class Thread{

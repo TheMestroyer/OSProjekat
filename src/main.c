@@ -9,6 +9,9 @@ void my_thread_body(void) {
 void my_thread_body2(void) {
     __putc('}');
 }
+void my_thread_body3(void) {
+    __putc('3');
+}
 
 void mainU(){
     // char* a1 = mem_alloc(sizeof(char) * 20);
@@ -30,6 +33,9 @@ void mainU(){
     thread_t t = thread_create(my_thread_body);
     thread_start(t);
     thread_t t2 = thread_create(my_thread_body2);
+    thread_start(t2);
+    thread_t t3 = thread_create(my_thread_body3);
+    thread_start(t3);
     thread_start(t2);
 }
 

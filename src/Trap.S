@@ -37,7 +37,7 @@ interupt:
     sd x31,0xF8(sp)
 
     #csrw sepc,pc;
-
+    mv a0, sp
     call HandleInterupt
 
     ld x0,0x00(sp)
