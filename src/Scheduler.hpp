@@ -31,8 +31,8 @@ public:
     static Thread* GetNext();
     static void Put(Thread* thread);
     static void AddNewThread(Thread* thread);
-    static void timerTick(Thread* cur);
-    static void sleep(Thread* t, time_t dur);
+    static void timerTick(Thread* current);
+    static void sleep(Thread* thread, time_t duration);
 
 };
 

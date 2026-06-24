@@ -24,7 +24,7 @@ int mem_free(void* ptr){
 }
 
 int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg) {
-    // allocate stack separately; pass top pointer as a4 (stack_space)
+    // allocate stack separately; pass top pointer as a4
     void* stack = mem_alloc(DEFAULT_STACK_SIZE * sizeof(size_t));
     if (!stack) return -1;
     register size_t a0 asm("a0") = 0x11;
@@ -54,5 +54,50 @@ int time_sleep(time_t dur) {
     register size_t a0 asm("a0") = 0x31;
     register size_t a1 asm("a1") = (size_t)dur;
     __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+    return (int)a0;
+}
+
+int sem_open(sem_t* handle, unsigned init) {
+    register size_t a0 asm("a0") = 0x21;
+    register size_t a1 asm("a1") = (size_t)handle;
+    register size_t a2 asm("a2") = (size_t)init;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1), "r"(a2));
+    return (int)a0;
+}
+
+int sem_close(sem_t handle) {
+    register size_t a0 asm("a0") = 0x22;
+    register size_t a1 asm("a1") = (size_t)handle;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+    return (int)a0;
+}
+
+int sem_wait(sem_t id) {
+    register size_t a0 asm("a0") = 0x23;
+    register size_t a1 asm("a1") = (size_t)id;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+    return (int)a0;
+}
+
+int sem_signal(sem_t id) {
+    register size_t a0 asm("a0") = 0x24;
+    register size_t a1 asm("a1") = (size_t)id;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+    return (int)a0;
+}
+
+int sem_wait_n(sem_t id, unsigned n) {
+    register size_t a0 asm("a0") = 0x25;
+    register size_t a1 asm("a1") = (size_t)id;
+    register size_t a2 asm("a2") = (size_t)n;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1), "r"(a2));
+    return (int)a0;
+}
+
+int sem_signal_n(sem_t id, unsigned n) {
+    register size_t a0 asm("a0") = 0x26;
+    register size_t a1 asm("a1") = (size_t)id;
+    register size_t a2 asm("a2") = (size_t)n;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1), "r"(a2));
     return (int)a0;
 }

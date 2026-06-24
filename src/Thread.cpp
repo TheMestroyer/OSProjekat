@@ -19,7 +19,6 @@ void Thread::init() {
     stackPtr = nullptr;
     supervisorSp = nullptr;
     sleepDelta = 0;
-    // (stackPtr is now the externally-allocated stack top, set via setup())
     for (int i = 0; i < 32; i++) threadContext.x[i] = 0;
     threadContext.sepc = 0;
     threadContext.sstatus = 0;
@@ -69,7 +68,7 @@ void Thread::setup(Thread* parentThread, size_t* stack_top) {
 
     size_t sstatus_val;
     __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus_val));
-    sstatus_val |= (1UL << 8); // SPP=1 → S-mode after sret
+    sstatus_val |= (1UL << 8); // SPP=1
     sstatus_val |= (1UL << 5); // SPIE=1
     threadContext.sstatus = sstatus_val;
 }

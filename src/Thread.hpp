@@ -15,6 +15,7 @@ struct Context {
 
 class Thread{
     friend class Scheduler;
+    friend class Semaphore;
 protected:
     static void threadTrampoline(Thread* t);
     void (*body)(void*);

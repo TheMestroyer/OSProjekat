@@ -76,47 +76,46 @@ void Scheduler::AddNewThread(Thread* thread) {
     thread->threadContext.x[2] = reinterpret_cast<size_t>(thread->getStackTop());
 }
 
-void Scheduler::timerTick(Thread* cur) {
+void Scheduler::timerTick(Thread* current) {
     __asm__ volatile("csrw sip, zero");
 
-    // wake sleeping threads
     if (sleepQueue != nullptr) {
         if (sleepQueue->sleepDelta > 0) sleepQueue->sleepDelta--;
         while (sleepQueue != nullptr && sleepQueue->sleepDelta == 0) {
-            Thread* t = sleepQueue;
-            sleepQueue = t->getNextInQueue();
-            t->setNextInQueue(nullptr);
-            Put(t);
+            Thread* waking = sleepQueue;
+            sleepQueue = waking->getNextInQueue();
+            waking->setNextInQueue(nullptr);
+            Put(waking);
         }
     }
 
-    if (cur == nullptr) return;
+    if (current == nullptr) return;
 
     if (runningThreadTimeLeft > 0) runningThreadTimeLeft--;
     if (runningThreadTimeLeft > 0) return;
 
     Thread* next = GetNext();
     runningThreadTimeLeft = DEFAULT_TIME_SLICE;
-    if (next == nullptr) return;  // no other thread, keep running
-    Put(cur);
-    yield(cur, next);
+    if (next == nullptr) return;
+    Put(current);
+    yield(current, next);
 }
 
-void Scheduler::sleep(Thread* t, time_t dur) {
-    Thread* prev = nullptr;
-    Thread* cur  = sleepQueue;
-    time_t  rem  = dur;
+void Scheduler::sleep(Thread* thread, time_t duration) {
+    Thread* previous = nullptr;
+    Thread* current  = sleepQueue;
+    time_t  remaining = duration;
 
-    while (cur != nullptr && cur->sleepDelta <= rem) {
-        rem -= cur->sleepDelta;
-        prev = cur;
-        cur  = cur->getNextInQueue();
+    while (current != nullptr && current->sleepDelta <= remaining) {
+        remaining -= current->sleepDelta;
+        previous = current;
+        current  = current->getNextInQueue();
     }
 
-    t->sleepDelta = rem;
-    t->setNextInQueue(cur);
-    if (prev == nullptr) sleepQueue = t;
-    else prev->setNextInQueue(t);
-    if (cur != nullptr) cur->sleepDelta -= rem;
+    thread->sleepDelta = remaining;
+    thread->setNextInQueue(current);
+    if (previous == nullptr) sleepQueue = thread;
+    else previous->setNextInQueue(thread);
+    if (current != nullptr) current->sleepDelta -= remaining;
 }
 
