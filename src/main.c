@@ -4,8 +4,7 @@
 #include "APIC.h"
 #include "../lib/console.h"
 
-// prints arg char 5 times, with a busy-wait between each print
-// busy-wait forces async preemption (no voluntary yield)
+
 void body(void* arg) {
     char c = (char)(size_t)arg;
     for (int i = 0; i < 50; i++) {
