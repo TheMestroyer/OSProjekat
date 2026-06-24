@@ -50,14 +50,11 @@ void Thread::start(){
     Scheduler::AddNewThread(this);
     this->threadContext.sepc = reinterpret_cast<size_t>(&Thread::threadTrampoline);
     this->threadContext.x[10] = reinterpret_cast<size_t>(this);
-    // size_t gp_val;
-    // __asm__ volatile("mv %0, gp" : "=r"(gp_val));
-    // this->threadContext.x[3] = gp_val;
-    // size_t sstatus_val;
-    // __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus_val));
-    // sstatus_val |= (1UL << 8);
-    // sstatus_val |= (1UL << 5);
-    // this->threadContext.sstatus = sstatus_val;
+    size_t sstatus_val;
+    __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus_val));
+    sstatus_val |= (1UL << 8);
+    sstatus_val |= (1UL << 5);
+    this->threadContext.sstatus = sstatus_val;
     Scheduler::yield(Scheduler::GetRunning(), this);
 }
 void Thread::join(){
