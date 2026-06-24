@@ -7,37 +7,51 @@
 #include "Scheduler.hpp"
 #include "../lib/console.h"
 
+extern "C" void restoreContext(size_t* ctx);
+
 extern "C" void HandleInterupt(size_t* frame){
-    size_t code = frame[10];
+    uint64 scause;
+    __asm__ volatile("csrr %0, scause" : "=r"(scause));
+
     Thread* current = Scheduler::GetRunning();
     if (current != nullptr) {
         auto& ctx = current->threadContext;
         for (int i = 0; i < 32; i++) ctx.x[i] = frame[i];
         ctx.x[2] = (size_t)frame + 256;
 
-        size_t scause, sepc, sstatus;
-        __asm__ volatile("csrr %0, scause"  : "=r"(scause));
+        size_t sepc, sstatus;
         __asm__ volatile("csrr %0, sepc"    : "=r"(sepc));
         __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus));
-        // advance past ecall instruction
-        if ((scause & 0xF) == 8 || (scause & 0xF) == 9) sepc += 4;
+        if (scause == 8 || scause == 9) sepc += 4;
         ctx.sepc    = sepc;
         ctx.sstatus = sstatus;
     }
 
-    uint64 scause=0;
-    __asm__ volatile("csrr %[scause],scause":[scause]"=r"(scause));
-    if (scause !=8&&scause !=9) {
+    // timer (supervisor software interrupt: MSB+LSB both 1)
+    if (scause == 0x8000000000000001UL) {
+        Scheduler::timerTick(current);
+        return;
+    }
+
+    // non-ecall trap: exception → skip instruction; unhandled interrupt → ignore
+    if (scause != 8 && scause != 9) {
+        if ((scause >> 63) == 0) {  // exception, not interrupt
+            uint64 sepc;
+            __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
+            __putc('!');
+            __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+        }
+        return;
+    }
+
+    // ecall: advance CSR sepc past the ecall instruction
+    {
         uint64 sepc;
         __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
-        __putc('!');
         __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
-        return;
-
     }
-    uint64 sepc;
-    __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
-    __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+
+    size_t code = frame[10];
     switch (code) {
         case 0x01: {
             size_t size = frame[11];
@@ -50,12 +64,61 @@ extern "C" void HandleInterupt(size_t* frame){
             MemoryAllocator::GetInstance().FreeFragment(ptr);
             break;
         }
-        case 0x03: {//TODO:Check code
-            Thread* t = (Thread*)frame[11];
-            ((Thread*)t)->start();
+        case 0x11: {
+            // thread_create: a1=handle*, a2=start_routine, a3=arg, a4=stack_space (top of pre-alloc'd stack)
+            thread_t* handle             = reinterpret_cast<thread_t*>(frame[11]);
+            void (*start_routine)(void*) = reinterpret_cast<void(*)(void*)>(frame[12]);
+            void* threadArg              = reinterpret_cast<void*>(frame[13]);
+            size_t* stack_space          = reinterpret_cast<size_t*>(frame[14]);
+
+            void* mem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(Thread));
+            if (!mem) {
+                if (current) {
+                    current->threadContext.x[10] = (size_t)-1;
+                    restoreContext(current->getContext());
+                }
+                return;
+            }
+            Thread* t = reinterpret_cast<Thread*>(mem);
+            t->init();
+            t->setBody(start_routine, threadArg);
+            t->setup(current, stack_space);
+
+            *handle = reinterpret_cast<thread_t>(t);
+            Scheduler::Put(t);   // enqueue; caller continues running
+            if (current) current->threadContext.x[10] = 0;
+            __asm__ volatile("li a0, 0");  // return 0 via Trap.S path (x10 not restored from frame)
             break;
         }
-
+        case 0x12: {
+            // thread_exit: terminate current thread, switch to next ready thread
+            Scheduler::ThreadExit(current);
+            break;
+        }
+        case 0x13: {
+            // thread_dispatch: voluntarily yield to next ready thread
+            Thread* next = Scheduler::GetNext();
+            if (next == nullptr) {
+                // no other thread ready — keep running current
+                __asm__ volatile("li a0, 0");
+                break;
+            }
+            if (current) current->threadContext.x[10] = 0; // dispatch returns 0 when resumed
+            Scheduler::Put(current);
+            Scheduler::yield(current, next); // never returns here
+            break;
+        }
+        case 0x31: {
+            // time_sleep: a1=duration (in timer periods)
+            time_t dur = (time_t)frame[11];
+            if (current) current->threadContext.x[10] = 0;
+            if (dur == 0) { __asm__ volatile("li a0, 0"); break; }
+            Scheduler::sleep(current, dur);
+            Thread* next = Scheduler::GetNext();
+            if (next == nullptr) { while(true){} }
+            Scheduler::yield(current, next);
+            break;
+        }
         default: {
             break;
         }
@@ -63,33 +126,9 @@ extern "C" void HandleInterupt(size_t* frame){
     return;
 }
 
-inline void* operator new(size_t, void* p) { return p; }
-
-
 extern "C" {
-thread_t thread_create(void (*body)(void)) {
-    void* mem = mem_alloc(sizeof(Thread));
-    Thread* t = reinterpret_cast<Thread*>(mem);
-    t->init();
-    t->setBody(body);
-    return reinterpret_cast<thread_t>(t);
-}
-
-int thread_start(thread_t handle) {//TODO:Change name
-    size_t code = 0x03;
-    __asm__ volatile("mv a1, %0" :: "r"(handle));
-    __asm__ volatile("mv a0, %0" :: "r"(code));
-    __asm__ volatile("ecall");
-    return 0;
-}
-
-int thread_join(thread_t t) {
-    ((Thread*)t)->join();
-    return 0;
-}
 int start_main_thread() {
     Scheduler::SetupStartThread();
     return 0;
 }
 }
-

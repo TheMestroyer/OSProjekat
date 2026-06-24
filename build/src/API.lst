@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccLXXyka.s 			page 1
+GAS LISTING /tmp/ccXTE6El.s 			page 1
 
 
    1              		.file	"API.c"
@@ -18,8 +18,9 @@ GAS LISTING /tmp/ccLXXyka.s 			page 1
    4:src/API.c     **** 
    5:src/API.c     **** #include "./APIC.h"
    6:src/API.c     **** #include "../lib/hw.h"
-   7:src/API.c     **** void* mem_alloc(size_t size){
-  13              		.loc 1 7 29
+   7:src/API.c     **** 
+   8:src/API.c     **** void* mem_alloc(size_t size){
+  13              		.loc 1 8 29
   14              		.cfi_startproc
   15              	.LVL0:
   16 0000 130101FF 		addi	sp,sp,-16
@@ -28,41 +29,40 @@ GAS LISTING /tmp/ccLXXyka.s 			page 1
   19              		.cfi_offset 8, -8
   20 0008 13040101 		addi	s0,sp,16
   21              		.cfi_def_cfa 8, 0
-   8:src/API.c     ****     uint64 code=0x01;
-  22              		.loc 1 8 5
+   9:src/API.c     ****     uint64 code=0x01;
+  22              		.loc 1 9 5
   23              	.LVL1:
-   9:src/API.c     ****     __asm__ volatile("mv a1,%[size]"::[size]"r"(size));
-  24              		.loc 1 9 5
+  10:src/API.c     ****     __asm__ volatile("mv a1,%[size]"::[size]"r"(size));
+  24              		.loc 1 10 5
   25              	#APP
-  26              	# 9 "src/API.c" 1
-  10              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
+  26              	# 10 "src/API.c" 1
+  11              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
   27              		mv a1,a0
   28              	# 0 "" 2
-  29              		.loc 1 10 5
+  29              		.loc 1 11 5
   30              	#NO_APP
   31 0010 93071000 		li	a5,1
   32              	#APP
-  33              	# 10 "src/API.c" 1
-  11              	    __asm__ volatile("ecall");
+  33              	# 11 "src/API.c" 1
+  12              	    __asm__ volatile("ecall");
   34              		mv a0,a5
   35              	# 0 "" 2
-  36              		.loc 1 11 5
-  37              	# 11 "src/API.c" 1
-  12              	    void* value;
+  36              		.loc 1 12 5
+  37              	# 12 "src/API.c" 1
+  13              	    void* value;
   38              		ecall
   39              	# 0 "" 2
-  40              		.loc 1 12 5
-  13:src/API.c     ****     __asm__ volatile ("mv %0, a0" : "=r"(value));
-  41              		.loc 1 13 5
-  42              	# 13 "src/API.c" 1
-  14              	
+  40              		.loc 1 13 5
+  14:src/API.c     ****     __asm__ volatile ("mv %0, a0" : "=r"(value));
+  41              		.loc 1 14 5
+  42              	# 14 "src/API.c" 1
+  15              	    return (void*)value;
   43              		mv a0, a0
+GAS LISTING /tmp/ccXTE6El.s 			page 2
+
+
   44              	# 0 "" 2
-GAS LISTING /tmp/ccLXXyka.s 			page 2
-
-
   45              	.LVL2:
-  15:src/API.c     ****     return (void*)value;
   46              		.loc 1 15 5
   16:src/API.c     **** }
   47              		.loc 1 16 1 is_stmt 0
@@ -80,10 +80,8 @@ GAS LISTING /tmp/ccLXXyka.s 			page 1
   61              	mem_free:
   62              	.LFB1:
   17:src/API.c     **** 
-  18:src/API.c     **** 
-  19:src/API.c     **** 
-  20:src/API.c     **** int mem_free(void* ptr){
-  63              		.loc 1 20 24 is_stmt 1
+  18:src/API.c     **** int mem_free(void* ptr){
+  63              		.loc 1 18 24 is_stmt 1
   64              		.cfi_startproc
   65              	.LVL3:
   66 002c 130101FF 		addi	sp,sp,-16
@@ -92,37 +90,37 @@ GAS LISTING /tmp/ccLXXyka.s 			page 1
   69              		.cfi_offset 8, -8
   70 0034 13040101 		addi	s0,sp,16
   71              		.cfi_def_cfa 8, 0
-  21:src/API.c     ****     uint64 code=0x02;
-  72              		.loc 1 21 5
+  19:src/API.c     ****     uint64 code=0x02;
+  72              		.loc 1 19 5
   73              	.LVL4:
-  22:src/API.c     ****     __asm__ volatile("mv a1,a0");
-  74              		.loc 1 22 5
+  20:src/API.c     ****     __asm__ volatile("mv a1,a0");
+  74              		.loc 1 20 5
   75              	#APP
-  76              	# 22 "src/API.c" 1
-  23              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
+  76              	# 20 "src/API.c" 1
+  21              	    __asm__ volatile("mv a0,%[code]"::[code]"r"(code));
   77              		mv a1,a0
   78              	# 0 "" 2
-  79              		.loc 1 23 5
+  79              		.loc 1 21 5
   80              	#NO_APP
   81 003c 93072000 		li	a5,2
   82              	#APP
-  83              	# 23 "src/API.c" 1
-  24              	    __asm__ volatile("ecall");
+  83              	# 21 "src/API.c" 1
+  22              	    __asm__ volatile("ecall");
   84              		mv a0,a5
   85              	# 0 "" 2
-  86              		.loc 1 24 5
-  87              	# 24 "src/API.c" 1
-  25              	    return 0;
+  86              		.loc 1 22 5
+  87              	# 22 "src/API.c" 1
+  23              	    return 0;
   88              		ecall
   89              	# 0 "" 2
-  90              		.loc 1 25 5
-  26:src/API.c     **** }
-  91              		.loc 1 26 1 is_stmt 0
-GAS LISTING /tmp/ccLXXyka.s 			page 3
-
-
+  90              		.loc 1 23 5
+  24:src/API.c     **** }
+  91              		.loc 1 24 1 is_stmt 0
   92              	#NO_APP
   93 0048 13050000 		li	a0,0
+GAS LISTING /tmp/ccXTE6El.s 			page 3
+
+
   94              	.LVL5:
   95 004c 03348100 		ld	s0,8(sp)
   96              		.cfi_restore 8
@@ -132,91 +130,456 @@ GAS LISTING /tmp/ccLXXyka.s 			page 1
  100 0054 67800000 		jr	ra
  101              		.cfi_endproc
  102              	.LFE1:
- 104              	.Letext0:
- 105              		.file 2 "src/./../lib/hw.h"
-GAS LISTING /tmp/ccLXXyka.s 			page 4
+ 104              		.align	2
+ 105              		.globl	thread_create
+ 107              	thread_create:
+ 108              	.LFB2:
+  25:src/API.c     **** 
+  26:src/API.c     **** int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg) {
+ 109              		.loc 1 26 78 is_stmt 1
+ 110              		.cfi_startproc
+ 111              	.LVL6:
+ 112 0058 130101FD 		addi	sp,sp,-48
+ 113              		.cfi_def_cfa_offset 48
+ 114 005c 23341102 		sd	ra,40(sp)
+ 115 0060 23308102 		sd	s0,32(sp)
+ 116 0064 233C9100 		sd	s1,24(sp)
+ 117 0068 23382101 		sd	s2,16(sp)
+ 118 006c 23343101 		sd	s3,8(sp)
+ 119              		.cfi_offset 1, -8
+ 120              		.cfi_offset 8, -16
+ 121              		.cfi_offset 9, -24
+ 122              		.cfi_offset 18, -32
+ 123              		.cfi_offset 19, -40
+ 124 0070 13040103 		addi	s0,sp,48
+ 125              		.cfi_def_cfa 8, 0
+ 126 0074 93090500 		mv	s3,a0
+ 127 0078 13890500 		mv	s2,a1
+ 128 007c 93040600 		mv	s1,a2
+  27:src/API.c     ****     // allocate stack separately; pass top pointer as a4 (stack_space)
+  28:src/API.c     ****     void* stack = mem_alloc(DEFAULT_STACK_SIZE * sizeof(size_t));
+ 129              		.loc 1 28 5
+ 130              		.loc 1 28 19 is_stmt 0
+ 131 0080 37850000 		li	a0,32768
+ 132              	.LVL7:
+ 133 0084 97000000 		call	mem_alloc
+ 133      E7800000 
+ 134              	.LVL8:
+  29:src/API.c     ****     if (!stack) return -1;
+ 135              		.loc 1 29 5 is_stmt 1
+ 136              		.loc 1 29 8 is_stmt 0
+ 137 008c 63020504 		beqz	a0,.L7
+ 138 0090 13070500 		mv	a4,a0
+  30:src/API.c     ****     register size_t a0 asm("a0") = 0x11;
+ 139              		.loc 1 30 5 is_stmt 1
+ 140              		.loc 1 30 21 is_stmt 0
+ 141 0094 13051001 		li	a0,17
+ 142              	.LVL9:
+  31:src/API.c     ****     register size_t a1 asm("a1") = (size_t)handle;
+ 143              		.loc 1 31 5 is_stmt 1
+ 144              		.loc 1 31 21 is_stmt 0
+GAS LISTING /tmp/ccXTE6El.s 			page 4
+
+
+ 145 0098 93850900 		mv	a1,s3
+  32:src/API.c     ****     register size_t a2 asm("a2") = (size_t)start_routine;
+ 146              		.loc 1 32 5 is_stmt 1
+ 147              		.loc 1 32 21 is_stmt 0
+ 148 009c 13060900 		mv	a2,s2
+  33:src/API.c     ****     register size_t a3 asm("a3") = (size_t)arg;
+ 149              		.loc 1 33 5 is_stmt 1
+ 150              		.loc 1 33 21 is_stmt 0
+ 151 00a0 93860400 		mv	a3,s1
+  34:src/API.c     ****     register size_t a4 asm("a4") = (size_t)stack + DEFAULT_STACK_SIZE * sizeof(size_t);
+ 152              		.loc 1 34 5 is_stmt 1
+ 153              		.loc 1 34 21 is_stmt 0
+ 154 00a4 B7870000 		li	a5,32768
+ 155 00a8 3307F700 		add	a4,a4,a5
+ 156              	.LVL10:
+  35:src/API.c     ****     __asm__ volatile("ecall"
+ 157              		.loc 1 35 5 is_stmt 1
+ 158              	#APP
+ 159              	# 35 "src/API.c" 1
+  36              	        : "+r"(a0)
+  37:src/API.c     ****         : "r"(a1), "r"(a2), "r"(a3), "r"(a4)
+  38:src/API.c     ****     );
+  39:src/API.c     ****     return (int)a0;
+ 160              		ecall
+ 161              	# 0 "" 2
+ 162              		.loc 1 39 5
+ 163              		.loc 1 39 12 is_stmt 0
+ 164              	#NO_APP
+ 165 00b0 1B050500 		sext.w	a0,a0
+ 166              	.LVL11:
+ 167              	.L6:
+  40:src/API.c     **** }
+ 168              		.loc 1 40 1
+ 169 00b4 83308102 		ld	ra,40(sp)
+ 170              		.cfi_remember_state
+ 171              		.cfi_restore 1
+ 172 00b8 03340102 		ld	s0,32(sp)
+ 173              		.cfi_restore 8
+ 174              		.cfi_def_cfa 2, 48
+ 175 00bc 83348101 		ld	s1,24(sp)
+ 176              		.cfi_restore 9
+ 177              	.LVL12:
+ 178 00c0 03390101 		ld	s2,16(sp)
+ 179              		.cfi_restore 18
+ 180              	.LVL13:
+ 181 00c4 83398100 		ld	s3,8(sp)
+ 182              		.cfi_restore 19
+ 183              	.LVL14:
+ 184 00c8 13010103 		addi	sp,sp,48
+ 185              		.cfi_def_cfa_offset 0
+ 186 00cc 67800000 		jr	ra
+ 187              	.LVL15:
+ 188              	.L7:
+ 189              		.cfi_restore_state
+  29:src/API.c     ****     register size_t a0 asm("a0") = 0x11;
+ 190              		.loc 1 29 24
+ 191 00d0 1305F0FF 		li	a0,-1
+GAS LISTING /tmp/ccXTE6El.s 			page 5
+
+
+ 192              	.LVL16:
+ 193 00d4 6FF01FFE 		j	.L6
+ 194              		.cfi_endproc
+ 195              	.LFE2:
+ 197              		.align	2
+ 198              		.globl	thread_exit
+ 200              	thread_exit:
+ 201              	.LFB3:
+  41:src/API.c     **** 
+  42:src/API.c     **** int thread_exit(void) {
+ 202              		.loc 1 42 23 is_stmt 1
+ 203              		.cfi_startproc
+ 204 00d8 130101FF 		addi	sp,sp,-16
+ 205              		.cfi_def_cfa_offset 16
+ 206 00dc 23348100 		sd	s0,8(sp)
+ 207              		.cfi_offset 8, -8
+ 208 00e0 13040101 		addi	s0,sp,16
+ 209              		.cfi_def_cfa 8, 0
+  43:src/API.c     ****     register size_t a0 asm("a0") = 0x12;
+ 210              		.loc 1 43 5
+ 211              		.loc 1 43 21 is_stmt 0
+ 212 00e4 13052001 		li	a0,18
+  44:src/API.c     ****     __asm__ volatile("ecall" : "+r"(a0));
+ 213              		.loc 1 44 5 is_stmt 1
+ 214              	#APP
+ 215              	# 44 "src/API.c" 1
+  45              	    return (int)a0;
+ 216              		ecall
+ 217              	# 0 "" 2
+ 218              		.loc 1 45 5
+  46:src/API.c     **** }
+ 219              		.loc 1 46 1 is_stmt 0
+ 220              	#NO_APP
+ 221 00ec 1B050500 		sext.w	a0,a0
+ 222 00f0 03348100 		ld	s0,8(sp)
+ 223              		.cfi_restore 8
+ 224              		.cfi_def_cfa 2, 16
+ 225 00f4 13010101 		addi	sp,sp,16
+ 226              		.cfi_def_cfa_offset 0
+ 227 00f8 67800000 		jr	ra
+ 228              		.cfi_endproc
+ 229              	.LFE3:
+ 231              		.align	2
+ 232              		.globl	thread_dispatch
+ 234              	thread_dispatch:
+ 235              	.LFB4:
+  47:src/API.c     **** 
+  48:src/API.c     **** void thread_dispatch(void) {
+ 236              		.loc 1 48 28 is_stmt 1
+ 237              		.cfi_startproc
+ 238 00fc 130101FF 		addi	sp,sp,-16
+ 239              		.cfi_def_cfa_offset 16
+ 240 0100 23348100 		sd	s0,8(sp)
+ 241              		.cfi_offset 8, -8
+ 242 0104 13040101 		addi	s0,sp,16
+ 243              		.cfi_def_cfa 8, 0
+  49:src/API.c     ****     register size_t a0 asm("a0") = 0x13;
+GAS LISTING /tmp/ccXTE6El.s 			page 6
+
+
+ 244              		.loc 1 49 5
+ 245              		.loc 1 49 21 is_stmt 0
+ 246 0108 13053001 		li	a0,19
+  50:src/API.c     ****     __asm__ volatile("ecall" : "+r"(a0));
+ 247              		.loc 1 50 5 is_stmt 1
+ 248              	#APP
+ 249              	# 50 "src/API.c" 1
+  51              	}
+ 250              		ecall
+ 251              	# 0 "" 2
+ 252              		.loc 1 51 1 is_stmt 0
+ 253              	#NO_APP
+ 254 0110 03348100 		ld	s0,8(sp)
+ 255              		.cfi_restore 8
+ 256              		.cfi_def_cfa 2, 16
+ 257 0114 13010101 		addi	sp,sp,16
+ 258              		.cfi_def_cfa_offset 0
+ 259 0118 67800000 		jr	ra
+ 260              		.cfi_endproc
+ 261              	.LFE4:
+ 263              		.align	2
+ 264              		.globl	time_sleep
+ 266              	time_sleep:
+ 267              	.LFB5:
+  52:src/API.c     **** 
+  53:src/API.c     **** int time_sleep(time_t dur) {
+ 268              		.loc 1 53 28 is_stmt 1
+ 269              		.cfi_startproc
+ 270              	.LVL17:
+ 271 011c 130101FF 		addi	sp,sp,-16
+ 272              		.cfi_def_cfa_offset 16
+ 273 0120 23348100 		sd	s0,8(sp)
+ 274              		.cfi_offset 8, -8
+ 275 0124 13040101 		addi	s0,sp,16
+ 276              		.cfi_def_cfa 8, 0
+ 277 0128 93050500 		mv	a1,a0
+  54:src/API.c     ****     register size_t a0 asm("a0") = 0x31;
+ 278              		.loc 1 54 5
+ 279              		.loc 1 54 21 is_stmt 0
+ 280 012c 13051003 		li	a0,49
+ 281              	.LVL18:
+  55:src/API.c     ****     register size_t a1 asm("a1") = (size_t)dur;
+ 282              		.loc 1 55 5 is_stmt 1
+  56:src/API.c     ****     __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+ 283              		.loc 1 56 5
+ 284              	#APP
+ 285              	# 56 "src/API.c" 1
+  57              	    return (int)a0;
+ 286              		ecall
+ 287              	# 0 "" 2
+ 288              		.loc 1 57 5
+  58:src/API.c     **** }...
+ 289              		.loc 1 58 1 is_stmt 0
+ 290              	#NO_APP
+ 291 0134 1B050500 		sext.w	a0,a0
+ 292 0138 03348100 		ld	s0,8(sp)
+ 293              		.cfi_restore 8
+GAS LISTING /tmp/ccXTE6El.s 			page 7
+
+
+ 294              		.cfi_def_cfa 2, 16
+ 295 013c 13010101 		addi	sp,sp,16
+ 296              		.cfi_def_cfa_offset 0
+ 297 0140 67800000 		jr	ra
+ 298              		.cfi_endproc
+ 299              	.LFE5:
+ 301              	.Letext0:
+ 302              		.file 2 "src/./../lib/hw.h"
+ 303              		.file 3 "src/./APIC.h"
+GAS LISTING /tmp/ccXTE6El.s 			page 8
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 API.c
-     /tmp/ccLXXyka.s:10     .text:0000000000000000 mem_alloc
-     /tmp/ccLXXyka.s:14     .text:0000000000000000 .L0 
-     /tmp/ccLXXyka.s:16     .text:0000000000000000 .L0 
-     /tmp/ccLXXyka.s:17     .text:0000000000000004 .L0 
-     /tmp/ccLXXyka.s:19     .text:0000000000000008 .L0 
-     /tmp/ccLXXyka.s:21     .text:000000000000000c .L0 
-     /tmp/ccLXXyka.s:24     .text:000000000000000c .L0 
-           src/API.c:9      .text:000000000000000c .L0 
-     /tmp/ccLXXyka.s:31     .text:0000000000000010 .L0 
-           src/API.c:11     .text:0000000000000018 .L0 
-     /tmp/ccLXXyka.s:41     .text:000000000000001c .L0 
-           src/API.c:13     .text:000000000000001c .L0 
-     /tmp/ccLXXyka.s:47     .text:0000000000000020 .L0 
-     /tmp/ccLXXyka.s:49     .text:0000000000000020 .L0 
-     /tmp/ccLXXyka.s:50     .text:0000000000000024 .L0 
-     /tmp/ccLXXyka.s:51     .text:0000000000000024 .L0 
-     /tmp/ccLXXyka.s:53     .text:0000000000000028 .L0 
-     /tmp/ccLXXyka.s:55     .text:000000000000002c .L0 
-     /tmp/ccLXXyka.s:61     .text:000000000000002c mem_free
-     /tmp/ccLXXyka.s:64     .text:000000000000002c .L0 
-     /tmp/ccLXXyka.s:66     .text:000000000000002c .L0 
-     /tmp/ccLXXyka.s:67     .text:0000000000000030 .L0 
-     /tmp/ccLXXyka.s:69     .text:0000000000000034 .L0 
-     /tmp/ccLXXyka.s:71     .text:0000000000000038 .L0 
-     /tmp/ccLXXyka.s:74     .text:0000000000000038 .L0 
-           src/API.c:22     .text:0000000000000038 .L0 
-     /tmp/ccLXXyka.s:81     .text:000000000000003c .L0 
-           src/API.c:24     .text:0000000000000044 .L0 
-     /tmp/ccLXXyka.s:91     .text:0000000000000048 .L0 
-     /tmp/ccLXXyka.s:93     .text:0000000000000048 .L0 
-     /tmp/ccLXXyka.s:96     .text:0000000000000050 .L0 
-     /tmp/ccLXXyka.s:97     .text:0000000000000050 .L0 
-     /tmp/ccLXXyka.s:99     .text:0000000000000054 .L0 
-     /tmp/ccLXXyka.s:101    .text:0000000000000058 .L0 
-     /tmp/ccLXXyka.s:106    .text:0000000000000058 .L0 
+     /tmp/ccXTE6El.s:10     .text:0000000000000000 mem_alloc
+     /tmp/ccXTE6El.s:14     .text:0000000000000000 .L0 
+     /tmp/ccXTE6El.s:16     .text:0000000000000000 .L0 
+     /tmp/ccXTE6El.s:17     .text:0000000000000004 .L0 
+     /tmp/ccXTE6El.s:19     .text:0000000000000008 .L0 
+     /tmp/ccXTE6El.s:21     .text:000000000000000c .L0 
+     /tmp/ccXTE6El.s:24     .text:000000000000000c .L0 
+           src/API.c:10     .text:000000000000000c .L0 
+     /tmp/ccXTE6El.s:31     .text:0000000000000010 .L0 
+           src/API.c:12     .text:0000000000000018 .L0 
+     /tmp/ccXTE6El.s:41     .text:000000000000001c .L0 
+           src/API.c:14     .text:000000000000001c .L0 
+     /tmp/ccXTE6El.s:47     .text:0000000000000020 .L0 
+     /tmp/ccXTE6El.s:49     .text:0000000000000020 .L0 
+     /tmp/ccXTE6El.s:50     .text:0000000000000024 .L0 
+     /tmp/ccXTE6El.s:51     .text:0000000000000024 .L0 
+     /tmp/ccXTE6El.s:53     .text:0000000000000028 .L0 
+     /tmp/ccXTE6El.s:55     .text:000000000000002c .L0 
+     /tmp/ccXTE6El.s:61     .text:000000000000002c mem_free
+     /tmp/ccXTE6El.s:64     .text:000000000000002c .L0 
+     /tmp/ccXTE6El.s:66     .text:000000000000002c .L0 
+     /tmp/ccXTE6El.s:67     .text:0000000000000030 .L0 
+     /tmp/ccXTE6El.s:69     .text:0000000000000034 .L0 
+     /tmp/ccXTE6El.s:71     .text:0000000000000038 .L0 
+     /tmp/ccXTE6El.s:74     .text:0000000000000038 .L0 
+           src/API.c:20     .text:0000000000000038 .L0 
+     /tmp/ccXTE6El.s:81     .text:000000000000003c .L0 
+           src/API.c:22     .text:0000000000000044 .L0 
+     /tmp/ccXTE6El.s:91     .text:0000000000000048 .L0 
+     /tmp/ccXTE6El.s:93     .text:0000000000000048 .L0 
+     /tmp/ccXTE6El.s:96     .text:0000000000000050 .L0 
+     /tmp/ccXTE6El.s:97     .text:0000000000000050 .L0 
+     /tmp/ccXTE6El.s:99     .text:0000000000000054 .L0 
+     /tmp/ccXTE6El.s:101    .text:0000000000000058 .L0 
+     /tmp/ccXTE6El.s:107    .text:0000000000000058 thread_create
+     /tmp/ccXTE6El.s:110    .text:0000000000000058 .L0 
+     /tmp/ccXTE6El.s:112    .text:0000000000000058 .L0 
+     /tmp/ccXTE6El.s:113    .text:000000000000005c .L0 
+     /tmp/ccXTE6El.s:119    .text:0000000000000070 .L0 
+     /tmp/ccXTE6El.s:120    .text:0000000000000070 .L0 
+     /tmp/ccXTE6El.s:121    .text:0000000000000070 .L0 
+     /tmp/ccXTE6El.s:122    .text:0000000000000070 .L0 
+     /tmp/ccXTE6El.s:123    .text:0000000000000070 .L0 
+     /tmp/ccXTE6El.s:125    .text:0000000000000074 .L0 
+     /tmp/ccXTE6El.s:130    .text:0000000000000080 .L0 
+     /tmp/ccXTE6El.s:131    .text:0000000000000080 .L0 
+     /tmp/ccXTE6El.s:136    .text:000000000000008c .L0 
+     /tmp/ccXTE6El.s:137    .text:000000000000008c .L0 
+     /tmp/ccXTE6El.s:140    .text:0000000000000094 .L0 
+     /tmp/ccXTE6El.s:141    .text:0000000000000094 .L0 
+     /tmp/ccXTE6El.s:144    .text:0000000000000098 .L0 
+     /tmp/ccXTE6El.s:145    .text:0000000000000098 .L0 
+     /tmp/ccXTE6El.s:147    .text:000000000000009c .L0 
+     /tmp/ccXTE6El.s:148    .text:000000000000009c .L0 
+     /tmp/ccXTE6El.s:150    .text:00000000000000a0 .L0 
+GAS LISTING /tmp/ccXTE6El.s 			page 9
+
+
+     /tmp/ccXTE6El.s:151    .text:00000000000000a0 .L0 
+     /tmp/ccXTE6El.s:153    .text:00000000000000a4 .L0 
+     /tmp/ccXTE6El.s:154    .text:00000000000000a4 .L0 
+           src/API.c:35     .text:00000000000000ac .L0 
+     /tmp/ccXTE6El.s:163    .text:00000000000000b0 .L0 
+     /tmp/ccXTE6El.s:165    .text:00000000000000b0 .L0 
+     /tmp/ccXTE6El.s:169    .text:00000000000000b4 .L0 
+     /tmp/ccXTE6El.s:170    .text:00000000000000b8 .L0 
+     /tmp/ccXTE6El.s:171    .text:00000000000000b8 .L0 
+     /tmp/ccXTE6El.s:173    .text:00000000000000bc .L0 
+     /tmp/ccXTE6El.s:174    .text:00000000000000bc .L0 
+     /tmp/ccXTE6El.s:176    .text:00000000000000c0 .L0 
+     /tmp/ccXTE6El.s:179    .text:00000000000000c4 .L0 
+     /tmp/ccXTE6El.s:182    .text:00000000000000c8 .L0 
+     /tmp/ccXTE6El.s:185    .text:00000000000000cc .L0 
+     /tmp/ccXTE6El.s:189    .text:00000000000000d0 .L0 
+     /tmp/ccXTE6El.s:191    .text:00000000000000d0 .L0 
+     /tmp/ccXTE6El.s:194    .text:00000000000000d8 .L0 
+     /tmp/ccXTE6El.s:200    .text:00000000000000d8 thread_exit
+     /tmp/ccXTE6El.s:203    .text:00000000000000d8 .L0 
+     /tmp/ccXTE6El.s:204    .text:00000000000000d8 .L0 
+     /tmp/ccXTE6El.s:205    .text:00000000000000dc .L0 
+     /tmp/ccXTE6El.s:207    .text:00000000000000e0 .L0 
+     /tmp/ccXTE6El.s:209    .text:00000000000000e4 .L0 
+     /tmp/ccXTE6El.s:211    .text:00000000000000e4 .L0 
+     /tmp/ccXTE6El.s:212    .text:00000000000000e4 .L0 
+           src/API.c:44     .text:00000000000000e8 .L0 
+     /tmp/ccXTE6El.s:219    .text:00000000000000ec .L0 
+     /tmp/ccXTE6El.s:221    .text:00000000000000ec .L0 
+     /tmp/ccXTE6El.s:223    .text:00000000000000f4 .L0 
+     /tmp/ccXTE6El.s:224    .text:00000000000000f4 .L0 
+     /tmp/ccXTE6El.s:226    .text:00000000000000f8 .L0 
+     /tmp/ccXTE6El.s:228    .text:00000000000000fc .L0 
+     /tmp/ccXTE6El.s:234    .text:00000000000000fc thread_dispatch
+     /tmp/ccXTE6El.s:237    .text:00000000000000fc .L0 
+     /tmp/ccXTE6El.s:238    .text:00000000000000fc .L0 
+     /tmp/ccXTE6El.s:239    .text:0000000000000100 .L0 
+     /tmp/ccXTE6El.s:241    .text:0000000000000104 .L0 
+     /tmp/ccXTE6El.s:243    .text:0000000000000108 .L0 
+     /tmp/ccXTE6El.s:245    .text:0000000000000108 .L0 
+     /tmp/ccXTE6El.s:246    .text:0000000000000108 .L0 
+           src/API.c:50     .text:000000000000010c .L0 
+     /tmp/ccXTE6El.s:254    .text:0000000000000110 .L0 
+     /tmp/ccXTE6El.s:255    .text:0000000000000114 .L0 
+     /tmp/ccXTE6El.s:256    .text:0000000000000114 .L0 
+     /tmp/ccXTE6El.s:258    .text:0000000000000118 .L0 
+     /tmp/ccXTE6El.s:260    .text:000000000000011c .L0 
+     /tmp/ccXTE6El.s:266    .text:000000000000011c time_sleep
+     /tmp/ccXTE6El.s:269    .text:000000000000011c .L0 
+     /tmp/ccXTE6El.s:271    .text:000000000000011c .L0 
+     /tmp/ccXTE6El.s:272    .text:0000000000000120 .L0 
+     /tmp/ccXTE6El.s:274    .text:0000000000000124 .L0 
+     /tmp/ccXTE6El.s:276    .text:0000000000000128 .L0 
+     /tmp/ccXTE6El.s:279    .text:000000000000012c .L0 
+     /tmp/ccXTE6El.s:280    .text:000000000000012c .L0 
+     /tmp/ccXTE6El.s:283    .text:0000000000000130 .L0 
+           src/API.c:56     .text:0000000000000130 .L0 
+GAS LISTING /tmp/ccXTE6El.s 			page 10
+
+
+     /tmp/ccXTE6El.s:289    .text:0000000000000134 .L0 
+     /tmp/ccXTE6El.s:291    .text:0000000000000134 .L0 
+     /tmp/ccXTE6El.s:293    .text:000000000000013c .L0 
+     /tmp/ccXTE6El.s:294    .text:000000000000013c .L0 
+     /tmp/ccXTE6El.s:296    .text:0000000000000140 .L0 
+     /tmp/ccXTE6El.s:298    .text:0000000000000144 .L0 
+     /tmp/ccXTE6El.s:304    .text:0000000000000144 .L0 
                      .debug_frame:0000000000000000 .L0 
-     /tmp/ccLXXyka.s:295    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/ccLXXyka.s:632    .debug_str:000000000000014e .LASF20
-     /tmp/ccLXXyka.s:596    .debug_str:0000000000000041 .LASF21
-     /tmp/ccLXXyka.s:604    .debug_str:0000000000000077 .LASF22
-     /tmp/ccLXXyka.s:5      .text:0000000000000000 .Ltext0
-     /tmp/ccLXXyka.s:104    .text:0000000000000058 .Letext0
-     /tmp/ccLXXyka.s:584    .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/ccLXXyka.s:586    .debug_str:0000000000000000 .LASF0
-     /tmp/ccLXXyka.s:618    .debug_str:00000000000000f7 .LASF1
-     /tmp/ccLXXyka.s:610    .debug_str:00000000000000aa .LASF2
-     /tmp/ccLXXyka.s:602    .debug_str:0000000000000070 .LASF4
-     /tmp/ccLXXyka.s:598    .debug_str:000000000000004b .LASF3
-     /tmp/ccLXXyka.s:592    .debug_str:000000000000002a .LASF5
-     /tmp/ccLXXyka.s:600    .debug_str:000000000000005d .LASF6
-     /tmp/ccLXXyka.s:616    .debug_str:00000000000000e4 .LASF7
-     /tmp/ccLXXyka.s:628    .debug_str:0000000000000134 .LASF8
-     /tmp/ccLXXyka.s:588    .debug_str:000000000000000d .LASF9
-     /tmp/ccLXXyka.s:590    .debug_str:000000000000001b .LASF10
-     /tmp/ccLXXyka.s:622    .debug_str:000000000000011a .LASF11
-GAS LISTING /tmp/ccLXXyka.s 			page 5
+     /tmp/ccXTE6El.s:188    .text:00000000000000d0 .L7
+     /tmp/ccXTE6El.s:167    .text:00000000000000b4 .L6
+     /tmp/ccXTE6El.s:680    .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccXTE6El.s:1200   .debug_str:00000000000000f8 .LASF31
+     /tmp/ccXTE6El.s:1206   .debug_str:00000000000001ae .LASF32
+     /tmp/ccXTE6El.s:1184   .debug_str:0000000000000081 .LASF33
+     /tmp/ccXTE6El.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccXTE6El.s:301    .text:0000000000000144 .Letext0
+     /tmp/ccXTE6El.s:1162   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccXTE6El.s:1202   .debug_str:0000000000000196 .LASF0
+     /tmp/ccXTE6El.s:1188   .debug_str:00000000000000b1 .LASF1
+     /tmp/ccXTE6El.s:1182   .debug_str:0000000000000073 .LASF2
+     /tmp/ccXTE6El.s:1172   .debug_str:000000000000002e .LASF4
+     /tmp/ccXTE6El.s:1186   .debug_str:000000000000009f .LASF3
+     /tmp/ccXTE6El.s:1166   .debug_str:0000000000000013 .LASF5
+     /tmp/ccXTE6El.s:1208   .debug_str:00000000000001b8 .LASF6
+     /tmp/ccXTE6El.s:1164   .debug_str:0000000000000000 .LASF7
+     /tmp/ccXTE6El.s:1178   .debug_str:0000000000000051 .LASF8
+     /tmp/ccXTE6El.s:1210   .debug_str:00000000000001bf .LASF9
+     /tmp/ccXTE6El.s:1170   .debug_str:0000000000000020 .LASF10
+     /tmp/ccXTE6El.s:1230   .debug_str:0000000000000242 .LASF11
+     /tmp/ccXTE6El.s:1180   .debug_str:0000000000000064 .LASF12
+     /tmp/ccXTE6El.s:1224   .debug_str:0000000000000223 .LASF13
+     /tmp/ccXTE6El.s:1216   .debug_str:00000000000001ee .LASF14
+     /tmp/ccXTE6El.s:1192   .debug_str:00000000000000d2 .LASF15
+     /tmp/ccXTE6El.s:1176   .debug_str:000000000000003b .LASF16
+     /tmp/ccXTE6El.s:1212   .debug_str:00000000000001cf .LASF17
+     /tmp/ccXTE6El.s:1214   .debug_str:00000000000001e5 .LASF18
+     /tmp/ccXTE6El.s:1204   .debug_str:00000000000001a3 .LASF19
+     /tmp/ccXTE6El.s:267    .text:000000000000011c .LFB5
+     /tmp/ccXTE6El.s:299    .text:0000000000000144 .LFE5
+     /tmp/ccXTE6El.s:1023   .debug_loc:0000000000000000 .LLST6
+     /tmp/ccXTE6El.s:1220   .debug_str:0000000000000207 .LASF27
+     /tmp/ccXTE6El.s:235    .text:00000000000000fc .LFB4
+     /tmp/ccXTE6El.s:261    .text:000000000000011c .LFE4
+     /tmp/ccXTE6El.s:1222   .debug_str:0000000000000217 .LASF20
+     /tmp/ccXTE6El.s:201    .text:00000000000000d8 .LFB3
+     /tmp/ccXTE6El.s:229    .text:00000000000000fc .LFE3
+     /tmp/ccXTE6El.s:1190   .debug_str:00000000000000c4 .LASF21
+     /tmp/ccXTE6El.s:108    .text:0000000000000058 .LFB2
+     /tmp/ccXTE6El.s:195    .text:00000000000000d8 .LFE2
+     /tmp/ccXTE6El.s:1194   .debug_str:00000000000000de .LASF22
+     /tmp/ccXTE6El.s:1034   .debug_loc:0000000000000036 .LLST2
+     /tmp/ccXTE6El.s:1196   .debug_str:00000000000000e5 .LASF23
+     /tmp/ccXTE6El.s:1056   .debug_loc:0000000000000095 .LLST3
+     /tmp/ccXTE6El.s:1078   .debug_loc:00000000000000f4 .LLST4
+     /tmp/ccXTE6El.s:1174   .debug_str:0000000000000035 .LASF24
+     /tmp/ccXTE6El.s:1100   .debug_loc:0000000000000153 .LLST5
+     /tmp/ccXTE6El.s:134    .text:000000000000008c .LVL8
+GAS LISTING /tmp/ccXTE6El.s 			page 11
 
 
-     /tmp/ccLXXyka.s:594    .debug_str:0000000000000031 .LASF12
-     /tmp/ccLXXyka.s:620    .debug_str:000000000000010a .LASF13
-     /tmp/ccLXXyka.s:608    .debug_str:000000000000009e .LASF14
-     /tmp/ccLXXyka.s:614    .debug_str:00000000000000ce .LASF15
-     /tmp/ccLXXyka.s:612    .debug_str:00000000000000b8 .LASF16
-     /tmp/ccLXXyka.s:606    .debug_str:0000000000000095 .LASF23
-     /tmp/ccLXXyka.s:62     .text:000000000000002c .LFB1
-     /tmp/ccLXXyka.s:102    .text:0000000000000058 .LFE1
-     /tmp/ccLXXyka.s:543    .debug_loc:0000000000000000 .LLST1
-     /tmp/ccLXXyka.s:634    .debug_str:00000000000001ec .LASF17
-     /tmp/ccLXXyka.s:630    .debug_str:0000000000000144 .LASF24
-     /tmp/ccLXXyka.s:11     .text:0000000000000000 .LFB0
-     /tmp/ccLXXyka.s:56     .text:000000000000002c .LFE0
-     /tmp/ccLXXyka.s:624    .debug_str:0000000000000129 .LASF18
-     /tmp/ccLXXyka.s:557    .debug_loc:0000000000000039 .LLST0
-     /tmp/ccLXXyka.s:626    .debug_str:000000000000012e .LASF19
-     /tmp/ccLXXyka.s:65     .text:000000000000002c .LVL3
-     /tmp/ccLXXyka.s:94     .text:000000000000004c .LVL5
-     /tmp/ccLXXyka.s:15     .text:0000000000000000 .LVL0
-     /tmp/ccLXXyka.s:45     .text:0000000000000020 .LVL2
-     /tmp/ccLXXyka.s:107    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccXTE6El.s:1218   .debug_str:00000000000001fe .LASF25
+     /tmp/ccXTE6El.s:62     .text:000000000000002c .LFB1
+     /tmp/ccXTE6El.s:102    .text:0000000000000058 .LFE1
+     /tmp/ccXTE6El.s:1121   .debug_loc:00000000000001b3 .LLST1
+     /tmp/ccXTE6El.s:1198   .debug_str:00000000000000f3 .LASF26
+     /tmp/ccXTE6El.s:1226   .debug_str:0000000000000233 .LASF28
+     /tmp/ccXTE6El.s:11     .text:0000000000000000 .LFB0
+     /tmp/ccXTE6El.s:56     .text:000000000000002c .LFE0
+     /tmp/ccXTE6El.s:1228   .debug_str:000000000000023d .LASF29
+     /tmp/ccXTE6El.s:1135   .debug_loc:00000000000001ec .LLST0
+     /tmp/ccXTE6El.s:1168   .debug_str:000000000000001a .LASF30
+     /tmp/ccXTE6El.s:270    .text:000000000000011c .LVL17
+     /tmp/ccXTE6El.s:281    .text:0000000000000130 .LVL18
+     /tmp/ccXTE6El.s:111    .text:0000000000000058 .LVL6
+     /tmp/ccXTE6El.s:132    .text:0000000000000084 .LVL7
+     /tmp/ccXTE6El.s:183    .text:00000000000000c8 .LVL14
+     /tmp/ccXTE6El.s:187    .text:00000000000000d0 .LVL15
+     /tmp/ccXTE6El.s:180    .text:00000000000000c4 .LVL13
+     /tmp/ccXTE6El.s:177    .text:00000000000000c0 .LVL12
+     /tmp/ccXTE6El.s:142    .text:0000000000000098 .LVL9
+     /tmp/ccXTE6El.s:156    .text:00000000000000ac .LVL10
+     /tmp/ccXTE6El.s:166    .text:00000000000000b4 .LVL11
+     /tmp/ccXTE6El.s:192    .text:00000000000000d4 .LVL16
+     /tmp/ccXTE6El.s:65     .text:000000000000002c .LVL3
+     /tmp/ccXTE6El.s:94     .text:000000000000004c .LVL5
+     /tmp/ccXTE6El.s:15     .text:0000000000000000 .LVL0
+     /tmp/ccXTE6El.s:45     .text:0000000000000020 .LVL2
+     /tmp/ccXTE6El.s:305    .debug_info:0000000000000000 .Ldebug_info0
 
 NO UNDEFINED SYMBOLS

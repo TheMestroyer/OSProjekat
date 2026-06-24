@@ -3,40 +3,25 @@
 //
 #include "APIC.h"
 #include "../lib/console.h"
-void my_thread_body(void) {
-    __putc('{');
-}
-void my_thread_body2(void) {
-    __putc('}');
-}
-void my_thread_body3(void) {
-    __putc('3');
+
+// prints arg char 5 times, with a busy-wait between each print
+// busy-wait forces async preemption (no voluntary yield)
+void body(void* arg) {
+    char c = (char)(size_t)arg;
+    for (int i = 0; i < 50; i++) {
+        for (volatile long j = 0; j < 5000000L; j++);
+        __putc(c);
+    }
 }
 
-void mainU(){
-    // char* a1 = mem_alloc(sizeof(char) * 20);
-    // *a1 = 'a';
-    // *(a1+sizeof(char)) ='b';
-    // __putc(*a1);
-    // __putc(*(a1+1));
-    // *(a1+11) = 'h';
-    // char* a2 = mem_alloc(sizeof(char) * 10);
-    // *a2 = 'c';
-    // *(a2+sizeof(char)) ='d';
-    // mem_free(a1);
-    // char* a3 = mem_alloc(sizeof(char) * 10);
-    // *(a3+sizeof(char)) ='f';
-    // __putc(*a3);
-    // __putc(*(a3+1));
-    // __putc(*a1);
-    // __putc(*(a1+1));
-    thread_t t = thread_create(my_thread_body);
-    thread_start(t);
-    thread_t t2 = thread_create(my_thread_body2);
-    thread_start(t2);
-    thread_t t3 = thread_create(my_thread_body3);
-    thread_start(t3);
-    thread_start(t2);
+void userMain() {
+    thread_t t1, t2, t3;
+    thread_create(&t1, body, (void*)'A');
+    thread_create(&t2, body, (void*)'B');
+    thread_create(&t3, body, (void*)'C');
+    thread_dispatch();
+    __putc('\n');
+    while (1) {}
 }
 
 
@@ -56,8 +41,8 @@ void drop_to_user(void (*fn)()) {
 void interupt();
 int main() {
     start_main_thread();
-    __asm__ volatile("csrw sie, zero");
     __asm__ volatile("csrw stvec, %[v]" :: [v]"r"(&interupt));
-    drop_to_user(mainU);
+    __asm__ volatile("csrw sie, %0"    :: "r"((uint64)0x2));  // enable SSIE (timer)
+    drop_to_user(userMain);
     return 0;
 }

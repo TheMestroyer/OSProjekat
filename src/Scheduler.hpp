@@ -15,6 +15,7 @@ class Scheduler{
     static Thread* running;
     static Thread* readyQueue;
     static Thread* readyQueueEnd;
+    static Thread* sleepQueue;
     static void* free_stacks;
     static size_t* stack_cursor;
 
@@ -25,13 +26,13 @@ public:
     static void SetupStartThread();
 
     static Thread* GetRunning();
-    //Switches from oldThread to newThread
     static void yield(Thread* oldThread, Thread* newThread);
-    //Gets and removes the thread from the scheduler if its there
+    static void ThreadExit(Thread* t);
     static Thread* GetNext();
-    //Adds the thread to the scheduler if not already there
     static void Put(Thread* thread);
     static void AddNewThread(Thread* thread);
+    static void timerTick(Thread* cur);
+    static void sleep(Thread* t, time_t dur);
 
 };
 
