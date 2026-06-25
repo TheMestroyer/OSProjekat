@@ -68,6 +68,7 @@ void Konsole::init() {
     void* stackMem = MemoryAllocator::GetInstance().AllocateFragment(DEFAULT_STACK_SIZE * sizeof(size_t));
     size_t* stackTop = reinterpret_cast<size_t*>((char*)stackMem + DEFAULT_STACK_SIZE * sizeof(size_t));
     outputThread->setup(nullptr, stackTop);
+    outputThread->threadContext.sstatus |= (1UL << 8);
     Scheduler::Put(outputThread);
 }
 
@@ -93,11 +94,17 @@ void Konsole::handleInterrupt() {
 }
 
 int Konsole::putcKernel(KThread* caller, char c) {
-      while (!(*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_TX_STATUS_BIT));
-      *((volatile uint8*)CONSOLE_TX_DATA) = c;
-      if (caller) caller->threadContext.x[10] = 0;
-      return 0;
-  }
+    int nextTail = (outputTail + 1) % BUFFER_SIZE;
+    if (nextTail == outputHead) {
+        if (caller) caller->threadContext.x[10] = (size_t)-1;
+        return -1;
+    }
+    outputBuffer[outputTail] = c;
+    outputTail = nextTail;
+    outputItems.signal();
+    if (caller) caller->threadContext.x[10] = 0;
+    return 0;
+}
 
 
 int Konsole::getcKernel(KThread* caller) {

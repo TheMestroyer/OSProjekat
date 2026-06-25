@@ -18,6 +18,7 @@ void KThread::init() {
     next = nullptr;
     stackPtr = nullptr;
     supervisorSp = nullptr;
+    stackBase = nullptr;
     sleepDelta = 0;
     for (int i = 0; i < 32; i++) threadContext.x[i] = 0;
     threadContext.sepc = 0;

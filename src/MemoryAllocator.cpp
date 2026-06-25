@@ -6,8 +6,8 @@
 #include "../lib/console.h"
 
 MemoryAllocator::MemoryAllocator() {
-    size_t HEAP_SIZE = (uint*)HEAP_END_ADDR-(uint*)HEAP_START_ADDR;
-    size_t HEAP_SIZE_BLCK = HEAP_SIZE/64;
+    size_t HEAP_SIZE = (uint8*)HEAP_END_ADDR-(uint8*)HEAP_START_ADDR;
+    size_t HEAP_SIZE_BLCK = HEAP_SIZE/MEM_BLOCK_SIZE;
     head = (Fragment*)HEAP_START_ADDR;
     Fragment* startFrag = (Fragment*)head;
     startFrag->free=1;
@@ -52,8 +52,8 @@ void *MemoryAllocator::AllocateFragment(size_t size) {
 }
 
 int MemoryAllocator::FreeFragment(void *startLoc) {
+    if(!startLoc)return -1;
     Fragment* curr=(Fragment*)((uint8*)startLoc-HEADER_BLOCKS*MEM_BLOCK_SIZE);
-    if(!curr)return -1;
     curr->free=1;
     if(curr->next&&((Fragment*)curr->next)->free==1)
     {

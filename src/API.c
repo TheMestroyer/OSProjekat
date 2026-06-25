@@ -32,9 +32,10 @@ int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg) {
     register size_t a2 asm("a2") = (size_t)start_routine;
     register size_t a3 asm("a3") = (size_t)arg;
     register size_t a4 asm("a4") = (size_t)stack + DEFAULT_STACK_SIZE * sizeof(size_t);
+    register size_t a5 asm("a5") = (size_t)stack;
     __asm__ volatile("ecall"
         : "+r"(a0)
-        : "r"(a1), "r"(a2), "r"(a3), "r"(a4)
+        : "r"(a1), "r"(a2), "r"(a3), "r"(a4), "r"(a5)
     );
     return (int)a0;
 }

@@ -28,6 +28,7 @@ protected:
     size_t* supervisorSp;
     time_t sleepDelta;
 public:
+    void* stackBase;
     Context threadContext;
     KThread();
     void copyContext(size_t* ctx);

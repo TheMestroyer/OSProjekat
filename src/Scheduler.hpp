@@ -18,6 +18,7 @@ class Scheduler{
     static KThread* sleepQueue;
     static void* free_stacks;
     static size_t* stack_cursor;
+    static KThread* deadThread;
 
     static void SaveContext();
     static void RestoreContext(KThread* thread);
@@ -33,6 +34,7 @@ public:
     static void AddNewThread(KThread* thread);
     static void timerTick(KThread* current);
     static void sleep(KThread* thread, time_t duration);
+    static void freeDead();
 
 };
 

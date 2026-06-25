@@ -15,6 +15,8 @@ extern "C" void HandleInterupt(size_t* frame){
     uint64 scause;
     __asm__ volatile("csrr %0, scause" : "=r"(scause));
 
+    Scheduler::freeDead();
+
     KThread* current = Scheduler::GetRunning();
     if (current != nullptr) {
         auto& ctx = current->threadContext;
@@ -87,6 +89,7 @@ extern "C" void HandleInterupt(size_t* frame){
             t->init();
             t->setBody(start_routine, threadArg);
             t->setup(current, stack_space);
+            t->stackBase = reinterpret_cast<void*>(frame[15]);
 
             *handle = reinterpret_cast<thread_t>(t);
             Scheduler::Put(t);

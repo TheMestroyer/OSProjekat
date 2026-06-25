@@ -13,6 +13,7 @@ KThread* Scheduler::running = nullptr;
 KThread* Scheduler::readyQueue = nullptr;
 KThread* Scheduler::readyQueueEnd = nullptr;
 KThread* Scheduler::sleepQueue = nullptr;
+KThread* Scheduler::deadThread = nullptr;
 time_t   Scheduler::runningThreadTimeLeft = DEFAULT_TIME_SLICE;
 size_t*  Scheduler::stack_cursor = nullptr;
 
@@ -26,12 +27,21 @@ void Scheduler::yield(KThread* oldThread, KThread* newThread){
 }
 
 void Scheduler::ThreadExit(KThread* t) {
+    deadThread = t;
     KThread* next = GetNext();
     if (next == nullptr) {
         next = t->getParent();
         if (next == nullptr) { while (true) {} }
     }
     yield(t, next);
+}
+
+void Scheduler::freeDead() {
+    if (deadThread == nullptr) return;
+    KThread* dead = deadThread;
+    deadThread = nullptr;
+    if (dead->stackBase) MemoryAllocator::GetInstance().FreeFragment(dead->stackBase);
+    MemoryAllocator::GetInstance().FreeFragment(dead);
 }
 KThread* Scheduler::GetNext() {
     if (readyQueue == nullptr) return nullptr;
@@ -73,6 +83,7 @@ void Scheduler::SetupStartThread() {
     SetupStartStack();
 
     running = static_cast<KThread*>(MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread)));
+    running->init();
     setupStartContext(running->getContext());
     runningThreadTimeLeft = DEFAULT_TIME_SLICE;
 
