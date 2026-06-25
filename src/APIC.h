@@ -3,11 +3,11 @@
 //
 
 #ifndef PROJECT_BASE_V1_1_APIC_H
-  #define PROJECT_BASE_V1_1_APIC_H
-  #include "../lib/hw.h"
+#define PROJECT_BASE_V1_1_APIC_H
+#include "../lib/hw.h"
 
-  #ifdef __cplusplus
-  class Thread;
+#ifdef __cplusplus
+class Thread;
 typedef Thread _thread;
 typedef _thread* thread_t;
 class Semaphore;
@@ -26,6 +26,10 @@ int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg);
 int thread_exit(void);
 void thread_dispatch(void);
 int time_sleep(time_t dur);
+
+#define EOF (-1)
+char getc(void);
+void putc(char c);
 
 int sem_open(sem_t* handle, unsigned init);
 int sem_close(sem_t handle);

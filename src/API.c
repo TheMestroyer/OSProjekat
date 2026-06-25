@@ -24,7 +24,7 @@ int mem_free(void* ptr){
 }
 
 int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg) {
-    // allocate stack separately; pass top pointer as a4
+    // allocate stack separately; pass top pointer as a4 (stack_space)
     void* stack = mem_alloc(DEFAULT_STACK_SIZE * sizeof(size_t));
     if (!stack) return -1;
     register size_t a0 asm("a0") = 0x11;
@@ -92,6 +92,18 @@ int sem_wait_n(sem_t id, unsigned n) {
     register size_t a2 asm("a2") = (size_t)n;
     __asm__ volatile("ecall" : "+r"(a0) : "r"(a1), "r"(a2));
     return (int)a0;
+}
+
+char getc(void) {
+    register size_t a0 asm("a0") = 0x41;
+    __asm__ volatile("ecall" : "+r"(a0));
+    return (char)a0;
+}
+
+void putc(char c) {
+    register size_t a0 asm("a0") = 0x42;
+    register size_t a1 asm("a1") = (size_t)(unsigned char)c;
+    __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
 }
 
 int sem_signal_n(sem_t id, unsigned n) {
