@@ -32,19 +32,19 @@ extern "C" void HandleInterupt(size_t* frame){
     // timer (supervisor software interrupt: MSB+LSB both 1)
     if (scause == 0x8000000000000001UL) {
         Scheduler::timerTick(current);
+        if (current) __asm__ volatile("mv a0, %0" :: "r"(current->threadContext.x[10]));
         return;
     }
 
     if (scause == 0x8000000000000009UL) {
         Konsole::handleInterrupt();
+        if (current) __asm__ volatile("mv a0, %0" :: "r"(current->threadContext.x[10]));
         return;
     }
 
     if (scause != 8 && scause != 9) {
-        if ((scause >> 63) == 0) {  // exception, not interrupt
-            uint64 sepc;
-            __asm__ volatile("csrr %0, sepc" : "=r"(sepc));
-            __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
+        if ((scause >> 63) == 0 && current != nullptr) {
+            Scheduler::ThreadExit(current);
         }
         return;
     }

@@ -68,12 +68,12 @@ void KThread::setup(KThread* parentThread, size_t* stack_top) {
 
     size_t sstatus_val;
     __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus_val));
-    sstatus_val |= (1UL << 8); // SPP=1
+    sstatus_val &= ~(1UL << 8); // SPP=0
     sstatus_val |= (1UL << 5); // SPIE=1
     threadContext.sstatus = sstatus_val;
 }
 
 void KThread::threadTrampoline(KThread* t) {
     if (t->body) t->body(t->arg);
-    Scheduler::ThreadExit(t);
+    __asm__ volatile("li a0, 0x12; ecall");
 }

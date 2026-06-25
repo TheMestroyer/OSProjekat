@@ -97,7 +97,7 @@ void testConsumerProducer() {
     printString(".\n");
 
     if (threadNum > n) {
-        printString("Broj proizvodjaca ne sme biti manji od velicine bafera!\n");
+        printString("Broj proizvodjaca ne sme biti veci od velicine bafera!\n");
         return;
     } else if (threadNum < 1) {
         printString("Broj proizvodjaca mora biti veci od nula!\n");

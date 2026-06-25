@@ -93,17 +93,12 @@ void Konsole::handleInterrupt() {
 }
 
 int Konsole::putcKernel(KThread* caller, char c) {
-    int nextTail = (outputTail + 1) % BUFFER_SIZE;
-    if (nextTail == outputHead) {
-        if (caller) caller->threadContext.x[10] = (size_t)-1;
-        return -1;
-    }
-    outputBuffer[outputTail] = c;
-    outputTail = nextTail;
-    outputItems.signal();
-    if (caller) caller->threadContext.x[10] = 0;
-    return 0;
-}
+      while (!(*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_TX_STATUS_BIT));
+      *((volatile uint8*)CONSOLE_TX_DATA) = c;
+      if (caller) caller->threadContext.x[10] = 0;
+      return 0;
+  }
+
 
 int Konsole::getcKernel(KThread* caller) {
     if (inputHead != inputTail) {

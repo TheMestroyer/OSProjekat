@@ -63,9 +63,11 @@ void Scheduler::SetupStartStack() {
     );
 }
 
+extern "C" void thread_dispatch(void);
 static void idleBody(void*) {
-    while (true) { __asm__ volatile("wfi"); }
+    while (true) { thread_dispatch(); }
 }
+
 
 void Scheduler::SetupStartThread() {
     SetupStartStack();
