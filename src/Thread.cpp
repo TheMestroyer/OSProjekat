@@ -7,10 +7,10 @@
 
 #include "../lib/console.h"
 
-Thread::Thread() {
+KThread::KThread() {
 }
 
-void Thread::init() {
+void KThread::init() {
     body = nullptr;
     arg = nullptr;
     parent = nullptr;
@@ -25,7 +25,7 @@ void Thread::init() {
     threadContext.pc = 0;
 }
 
-void Thread::copyContext(size_t* ctx) {
+void KThread::copyContext(size_t* ctx) {
     Context* cont = reinterpret_cast<Context*>(ctx);
     for (int i = 0;i<32;i++) {
         threadContext.x[i] = cont->x[i];
@@ -35,27 +35,27 @@ void Thread::copyContext(size_t* ctx) {
     threadContext.sstatus =cont->sstatus;
 }
 
-size_t* Thread::getContext() {
+size_t* KThread::getContext() {
     return reinterpret_cast<size_t*>(&threadContext);
 }
-Thread* Thread::getNextInQueue(){
+KThread* KThread::getNextInQueue(){
     return next;
 }
-Thread* Thread::getPrevInQueue(){
+KThread* KThread::getPrevInQueue(){
     return prev;
 }
-void Thread::setNextInQueue(Thread* next){
+void KThread::setNextInQueue(KThread* next){
     this->next = next;
 }
-void Thread::setPrevInQueue(Thread* prev){
+void KThread::setPrevInQueue(KThread* prev){
     this->prev = prev;
 }
-void Thread::setNextAndPrevInQueue(Thread* next, Thread* prev){
+void KThread::setNextAndPrevInQueue(KThread* next, KThread* prev){
     setNextInQueue(next);
     setPrevInQueue(prev);
 }
 
-void Thread::setup(Thread* parentThread, size_t* stack_top) {
+void KThread::setup(KThread* parentThread, size_t* stack_top) {
     parent = parentThread;
     stackPtr = stack_top;
     threadContext.x[2] = reinterpret_cast<size_t>(stack_top);
@@ -73,7 +73,7 @@ void Thread::setup(Thread* parentThread, size_t* stack_top) {
     threadContext.sstatus = sstatus_val;
 }
 
-void Thread::threadTrampoline(Thread* t) {
+void KThread::threadTrampoline(KThread* t) {
     if (t->body) t->body(t->arg);
     Scheduler::ThreadExit(t);
 }

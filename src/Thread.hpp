@@ -13,34 +13,34 @@ struct Context {
     size_t pc;
 };
 
-class Thread{
+class KThread{
     friend class Scheduler;
-    friend class Semaphore;
+    friend class KSemaphore;
 protected:
-    static void threadTrampoline(Thread* t);
+    static void threadTrampoline(KThread* t);
     void (*body)(void*);
     void* arg;
-    Thread* parent;
+    KThread* parent;
 
-    Thread* prev;
-    Thread* next;
+    KThread* prev;
+    KThread* next;
     size_t* stackPtr;
     size_t* supervisorSp;
     time_t sleepDelta;
 public:
     Context threadContext;
-    Thread();
+    KThread();
     void copyContext(size_t* ctx);
     void init();
     size_t* getStackTop() { return stackPtr; }
     size_t* getContext();
-    Thread* getParent() { return parent; }
-    Thread* getNextInQueue();
-    Thread* getPrevInQueue();
-    void setNextInQueue(Thread* next);
-    void setPrevInQueue(Thread* prev);
-    void setNextAndPrevInQueue(Thread* next, Thread* prev);
-    void setup(Thread* parentThread, size_t* stack_top);
+    KThread* getParent() { return parent; }
+    KThread* getNextInQueue();
+    KThread* getPrevInQueue();
+    void setNextInQueue(KThread* next);
+    void setPrevInQueue(KThread* prev);
+    void setNextAndPrevInQueue(KThread* next, KThread* prev);
+    void setup(KThread* parentThread, size_t* stack_top);
     void setBody(void (*b)(void*), void* a) { body = b; arg = a; }
 };
 

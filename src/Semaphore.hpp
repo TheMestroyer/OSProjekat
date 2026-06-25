@@ -8,19 +8,19 @@
 #include "../lib/hw.h"
 #include "Thread.hpp"
 
-class Semaphore {
+class KSemaphore {
     int value;
     bool closed;
-    Thread* blockedHead;
-    Thread* blockedTail;
+    KThread* blockedHead;
+    KThread* blockedTail;
 
-    void enqueue(Thread* thread);
-    Thread* dequeue();
+    void enqueue(KThread* thread);
+    KThread* dequeue();
 public:
     void init(unsigned initialValue);
-    int wait(Thread* caller);
+    int wait(KThread* caller);
     int signal();
-    int waitN(Thread* caller, unsigned n);
+    int waitN(KThread* caller, unsigned n);
     int signalN(unsigned n);
     int close();
 };

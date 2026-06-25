@@ -12,27 +12,27 @@
 
 class Scheduler{
     static time_t runningThreadTimeLeft;
-    static Thread* running;
-    static Thread* readyQueue;
-    static Thread* readyQueueEnd;
-    static Thread* sleepQueue;
+    static KThread* running;
+    static KThread* readyQueue;
+    static KThread* readyQueueEnd;
+    static KThread* sleepQueue;
     static void* free_stacks;
     static size_t* stack_cursor;
 
     static void SaveContext();
-    static void RestoreContext(Thread* thread);
+    static void RestoreContext(KThread* thread);
 public:
     static void SetupStartStack();
     static void SetupStartThread();
 
-    static Thread* GetRunning();
-    static void yield(Thread* oldThread, Thread* newThread);
-    static void ThreadExit(Thread* t);
-    static Thread* GetNext();
-    static void Put(Thread* thread);
-    static void AddNewThread(Thread* thread);
-    static void timerTick(Thread* current);
-    static void sleep(Thread* thread, time_t duration);
+    static KThread* GetRunning();
+    static void yield(KThread* oldThread, KThread* newThread);
+    static void ThreadExit(KThread* t);
+    static KThread* GetNext();
+    static void Put(KThread* thread);
+    static void AddNewThread(KThread* thread);
+    static void timerTick(KThread* current);
+    static void sleep(KThread* thread, time_t duration);
 
 };
 

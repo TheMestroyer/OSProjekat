@@ -3,40 +3,39 @@
 //
 
 #include "Scheduler.hpp"
-
 #include "MemoryAllocator.hpp"
 
 extern "C" void saveContext(size_t* ctx);
 extern "C" void restoreContext(size_t* ctx);
 extern "C" void setupStartContext(size_t* ctx);
 
-Thread* Scheduler::running = nullptr;
-Thread* Scheduler::readyQueue = nullptr;
-Thread* Scheduler::readyQueueEnd = nullptr;
-Thread* Scheduler::sleepQueue = nullptr;
-time_t  Scheduler::runningThreadTimeLeft = DEFAULT_TIME_SLICE;
-size_t* Scheduler::stack_cursor = nullptr;
+KThread* Scheduler::running = nullptr;
+KThread* Scheduler::readyQueue = nullptr;
+KThread* Scheduler::readyQueueEnd = nullptr;
+KThread* Scheduler::sleepQueue = nullptr;
+time_t   Scheduler::runningThreadTimeLeft = DEFAULT_TIME_SLICE;
+size_t*  Scheduler::stack_cursor = nullptr;
 
 
-Thread* Scheduler::GetRunning(){
+KThread* Scheduler::GetRunning(){
     return running;
 }
-void Scheduler::yield(Thread* oldThread, Thread* newThread){
+void Scheduler::yield(KThread* oldThread, KThread* newThread){
     running = newThread;
     restoreContext(newThread->getContext());
 }
 
-void Scheduler::ThreadExit(Thread* t) {
-    Thread* next = GetNext();
+void Scheduler::ThreadExit(KThread* t) {
+    KThread* next = GetNext();
     if (next == nullptr) {
         next = t->getParent();
         if (next == nullptr) { while (true) {} }
     }
     yield(t, next);
 }
-Thread* Scheduler::GetNext() {
+KThread* Scheduler::GetNext() {
     if (readyQueue == nullptr) return nullptr;
-    Thread* toRet = readyQueue;
+    KThread* toRet = readyQueue;
     readyQueue = readyQueue->getNextInQueue();
     if (readyQueue != nullptr) readyQueue->setPrevInQueue(nullptr);
     else readyQueueEnd = nullptr;
@@ -44,7 +43,7 @@ Thread* Scheduler::GetNext() {
     toRet->setPrevInQueue(nullptr);
     return toRet;
 }
-void Scheduler::Put(Thread* thread) {
+void Scheduler::Put(KThread* thread) {
     thread->setNextInQueue(nullptr);
     if (readyQueueEnd != nullptr) {
         thread->setPrevInQueue(readyQueueEnd);
@@ -59,30 +58,43 @@ void Scheduler::Put(Thread* thread) {
 extern "C" char end[];
 
 void Scheduler::SetupStartStack() {
-
     Scheduler::stack_cursor = reinterpret_cast<size_t*>(
         ((reinterpret_cast<size_t>(end) + 7) & ~7)
     );
 }
 
-void Scheduler::SetupStartThread() {
-    SetupStartStack();
-    running = static_cast<Thread*>(MemoryAllocator::GetInstance().AllocateFragment(sizeof(Thread)));
-    setupStartContext(running->getContext());
-    runningThreadTimeLeft = DEFAULT_TIME_SLICE;
+static void idleBody(void*) {
+    while (true) { __asm__ volatile("wfi"); }
 }
 
-void Scheduler::AddNewThread(Thread* thread) {
+void Scheduler::SetupStartThread() {
+    SetupStartStack();
+
+    running = static_cast<KThread*>(MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread)));
+    setupStartContext(running->getContext());
+    runningThreadTimeLeft = DEFAULT_TIME_SLICE;
+
+    void* idleMem   = MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread));
+    KThread* idle   = reinterpret_cast<KThread*>(idleMem);
+    idle->init();
+    idle->setBody(idleBody, nullptr);
+    void* idleStack = MemoryAllocator::GetInstance().AllocateFragment(DEFAULT_STACK_SIZE * sizeof(size_t));
+    size_t* idleTop = reinterpret_cast<size_t*>((char*)idleStack + DEFAULT_STACK_SIZE * sizeof(size_t));
+    idle->setup(nullptr, idleTop);
+    Put(idle);
+}
+
+void Scheduler::AddNewThread(KThread* thread) {
     thread->threadContext.x[2] = reinterpret_cast<size_t>(thread->getStackTop());
 }
 
-void Scheduler::timerTick(Thread* current) {
+void Scheduler::timerTick(KThread* current) {
     __asm__ volatile("csrw sip, zero");
 
     if (sleepQueue != nullptr) {
         if (sleepQueue->sleepDelta > 0) sleepQueue->sleepDelta--;
         while (sleepQueue != nullptr && sleepQueue->sleepDelta == 0) {
-            Thread* waking = sleepQueue;
+            KThread* waking = sleepQueue;
             sleepQueue = waking->getNextInQueue();
             waking->setNextInQueue(nullptr);
             Put(waking);
@@ -94,17 +106,17 @@ void Scheduler::timerTick(Thread* current) {
     if (runningThreadTimeLeft > 0) runningThreadTimeLeft--;
     if (runningThreadTimeLeft > 0) return;
 
-    Thread* next = GetNext();
+    KThread* next = GetNext();
     runningThreadTimeLeft = DEFAULT_TIME_SLICE;
     if (next == nullptr) return;
     Put(current);
     yield(current, next);
 }
 
-void Scheduler::sleep(Thread* thread, time_t duration) {
-    Thread* previous = nullptr;
-    Thread* current  = sleepQueue;
-    time_t  remaining = duration;
+void Scheduler::sleep(KThread* thread, time_t duration) {
+    KThread* previous = nullptr;
+    KThread* current  = sleepQueue;
+    time_t   remaining = duration;
 
     while (current != nullptr && current->sleepDelta <= remaining) {
         remaining -= current->sleepDelta;
@@ -118,4 +130,3 @@ void Scheduler::sleep(Thread* thread, time_t duration) {
     else previous->setNextInQueue(thread);
     if (current != nullptr) current->sleepDelta -= remaining;
 }
-

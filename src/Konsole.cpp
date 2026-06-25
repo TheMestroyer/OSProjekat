@@ -14,12 +14,12 @@ int Konsole::inputTail = 0;
 char Konsole::outputBuffer[BUFFER_SIZE];
 int Konsole::outputHead = 0;
 int Konsole::outputTail = 0;
-Semaphore Konsole::outputItems;
+KSemaphore Konsole::outputItems;
 
-Thread* Konsole::getcWaiterHead = nullptr;
-Thread* Konsole::getcWaiterTail = nullptr;
+KThread* Konsole::getcWaiterHead = nullptr;
+KThread* Konsole::getcWaiterTail = nullptr;
 
-void Konsole::enqueueGetcWaiter(Thread* thread) {
+void Konsole::enqueueGetcWaiter(KThread* thread) {
     thread->setNextInQueue(nullptr);
     if (getcWaiterTail != nullptr) {
         thread->setPrevInQueue(getcWaiterTail);
@@ -31,9 +31,9 @@ void Konsole::enqueueGetcWaiter(Thread* thread) {
     getcWaiterTail = thread;
 }
 
-Thread* Konsole::dequeueGetcWaiter() {
+KThread* Konsole::dequeueGetcWaiter() {
     if (getcWaiterHead == nullptr) return nullptr;
-    Thread* thread = getcWaiterHead;
+    KThread* thread = getcWaiterHead;
     getcWaiterHead = thread->getNextInQueue();
     if (getcWaiterHead != nullptr) getcWaiterHead->setPrevInQueue(nullptr);
     else getcWaiterTail = nullptr;
@@ -46,7 +46,7 @@ void Konsole::outputThreadBody(void*) {
     while (true) {
         sem_wait((sem_t)&outputItems);
         while (!(*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_TX_STATUS_BIT));
-        if (outputHead!=outputTail) {//TODO:Maybe gonna cause problems
+        if (outputHead!=outputTail) {
             char c = outputBuffer[outputHead];
             outputHead = (outputHead + 1) % BUFFER_SIZE;
             *((volatile uint8*)CONSOLE_TX_DATA) = c;
@@ -60,8 +60,8 @@ void Konsole::init() {
     getcWaiterHead = nullptr; getcWaiterTail = nullptr;
     outputItems.init(0);
 
-    void* threadMem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(Thread));
-    Thread* outputThread = reinterpret_cast<Thread*>(threadMem);
+    void* threadMem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread));
+    KThread* outputThread = reinterpret_cast<KThread*>(threadMem);
     outputThread->init();
     outputThread->setBody(outputThreadBody, nullptr);
 
@@ -74,16 +74,9 @@ void Konsole::init() {
 void Konsole::handleInterrupt() {
     int irq = plic_claim();
     if (irq == (int)CONSOLE_IRQ) {
-        while (!(*((volatile uint8*)CONSOLE_STATUS) & (CONSOLE_RX_STATUS_BIT | CONSOLE_TX_STATUS_BIT))){};
-        volatile int a = *((volatile uint8*)CONSOLE_STATUS) & CONSOLE_RX_STATUS_BIT;
-        volatile int b = *((volatile uint8*)CONSOLE_STATUS) & CONSOLE_TX_STATUS_BIT;
-        if (a+b){}
-        if (a) {
-            b = 100;
-        }
-        while (a) {
+        while (*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_RX_STATUS_BIT) {
             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
-            Thread* waiter = dequeueGetcWaiter();
+            KThread* waiter = dequeueGetcWaiter();
             if (waiter != nullptr) {
                 waiter->threadContext.x[10] = (size_t)(unsigned char)c;
                 Scheduler::Put(waiter);
@@ -99,7 +92,7 @@ void Konsole::handleInterrupt() {
     if (irq) plic_complete(irq);
 }
 
-int Konsole::putcKernel(Thread* caller, char c) {
+int Konsole::putcKernel(KThread* caller, char c) {
     int nextTail = (outputTail + 1) % BUFFER_SIZE;
     if (nextTail == outputHead) {
         if (caller) caller->threadContext.x[10] = (size_t)-1;
@@ -112,7 +105,7 @@ int Konsole::putcKernel(Thread* caller, char c) {
     return 0;
 }
 
-int Konsole::getcKernel(Thread* caller) {
+int Konsole::getcKernel(KThread* caller) {
     if (inputHead != inputTail) {
         char c = inputBuffer[inputHead];
         inputHead = (inputHead + 1) % BUFFER_SIZE;

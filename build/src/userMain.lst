@@ -1,0 +1,93 @@
+GAS LISTING /tmp/ccNDLtU4.s 			page 1
+
+
+   1              		.file	"userMain.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	userMain
+   9              	userMain:
+  10              	.LFB0:
+  11              		.file 1 "src/userMain.cpp"
+   1:src/userMain.cpp **** //
+   2:src/userMain.cpp **** // Switch active test here — comment/uncomment one line
+   3:src/userMain.cpp **** //
+   4:src/userMain.cpp **** //#define USE_CPP_TEST
+   5:src/userMain.cpp **** #define USE_C_TEST
+   6:src/userMain.cpp **** 
+   7:src/userMain.cpp **** #ifdef USE_CPP_TEST
+   8:src/userMain.cpp **** extern "C" void userMainCpp(void);
+   9:src/userMain.cpp **** extern "C" void userMain(void) {
+  10:src/userMain.cpp ****     userMainCpp();
+  11:src/userMain.cpp **** }
+  12:src/userMain.cpp **** #else
+  13:src/userMain.cpp **** extern "C" void userMainC(void);
+  14:src/userMain.cpp **** extern "C" void userMain(void) {
+  12              		.loc 1 14 32
+  13              		.cfi_startproc
+  14 0000 130101FF 		addi	sp,sp,-16
+  15              		.cfi_def_cfa_offset 16
+  16 0004 23341100 		sd	ra,8(sp)
+  17 0008 23308100 		sd	s0,0(sp)
+  18              		.cfi_offset 1, -8
+  19              		.cfi_offset 8, -16
+  20 000c 13040101 		addi	s0,sp,16
+  21              		.cfi_def_cfa 8, 0
+  15:src/userMain.cpp ****     userMainC();
+  22              		.loc 1 15 5
+  23              		.loc 1 15 14 is_stmt 0
+  24 0010 97000000 		call	userMainC@plt
+  24      E7800000 
+  25              	.LVL0:
+  16:src/userMain.cpp **** }
+  26              		.loc 1 16 1
+  27 0018 83308100 		ld	ra,8(sp)
+  28              		.cfi_restore 1
+  29 001c 03340100 		ld	s0,0(sp)
+  30              		.cfi_restore 8
+  31              		.cfi_def_cfa 2, 16
+  32 0020 13010101 		addi	sp,sp,16
+  33              		.cfi_def_cfa_offset 0
+  34 0024 67800000 		jr	ra
+  35              		.cfi_endproc
+  36              	.LFE0:
+  38              	.Letext0:
+GAS LISTING /tmp/ccNDLtU4.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 userMain.cpp
+     /tmp/ccNDLtU4.s:9      .text:0000000000000000 userMain
+     /tmp/ccNDLtU4.s:13     .text:0000000000000000 .L0 
+     /tmp/ccNDLtU4.s:14     .text:0000000000000000 .L0 
+     /tmp/ccNDLtU4.s:15     .text:0000000000000004 .L0 
+     /tmp/ccNDLtU4.s:18     .text:000000000000000c .L0 
+     /tmp/ccNDLtU4.s:19     .text:000000000000000c .L0 
+     /tmp/ccNDLtU4.s:21     .text:0000000000000010 .L0 
+     /tmp/ccNDLtU4.s:23     .text:0000000000000010 .L0 
+     /tmp/ccNDLtU4.s:24     .text:0000000000000010 .L0 
+     /tmp/ccNDLtU4.s:27     .text:0000000000000018 .L0 
+     /tmp/ccNDLtU4.s:28     .text:000000000000001c .L0 
+     /tmp/ccNDLtU4.s:30     .text:0000000000000020 .L0 
+     /tmp/ccNDLtU4.s:31     .text:0000000000000020 .L0 
+     /tmp/ccNDLtU4.s:33     .text:0000000000000024 .L0 
+     /tmp/ccNDLtU4.s:35     .text:0000000000000028 .L0 
+     /tmp/ccNDLtU4.s:39     .text:0000000000000028 .L0 
+     /tmp/ccNDLtU4.s:75     .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccNDLtU4.s:164    .debug_str:0000000000000000 .LASF0
+     /tmp/ccNDLtU4.s:168    .debug_str:00000000000000cd .LASF1
+     /tmp/ccNDLtU4.s:170    .debug_str:00000000000000de .LASF2
+     /tmp/ccNDLtU4.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccNDLtU4.s:38     .text:0000000000000028 .Letext0
+     /tmp/ccNDLtU4.s:162    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccNDLtU4.s:166    .debug_str:00000000000000c4 .LASF3
+     /tmp/ccNDLtU4.s:10     .text:0000000000000000 .LFB0
+     /tmp/ccNDLtU4.s:36     .text:0000000000000028 .LFE0
+     /tmp/ccNDLtU4.s:25     .text:0000000000000018 .LVL0
+     /tmp/ccNDLtU4.s:172    .debug_str:00000000000000fc .LASF4
+     /tmp/ccNDLtU4.s:40     .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+userMainC

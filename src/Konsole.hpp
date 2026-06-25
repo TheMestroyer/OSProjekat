@@ -19,20 +19,20 @@ class Konsole {
     static char outputBuffer[BUFFER_SIZE];
     static int outputHead;
     static int outputTail;
-    static Semaphore outputItems;
+    static KSemaphore outputItems;
 
-    static Thread* getcWaiterHead;
-    static Thread* getcWaiterTail;
+    static KThread* getcWaiterHead;
+    static KThread* getcWaiterTail;
 
-    static void enqueueGetcWaiter(Thread* thread);
-    static Thread* dequeueGetcWaiter();
+    static void enqueueGetcWaiter(KThread* thread);
+    static KThread* dequeueGetcWaiter();
     static void outputThreadBody(void*);
 
 public:
     static void init();
     static void handleInterrupt();
-    static int putcKernel(Thread* caller, char c);
-    static int getcKernel(Thread* caller);
+    static int putcKernel(KThread* caller, char c);
+    static int getcKernel(KThread* caller);
 };
 
 #endif //OSPROJEKAT_CONSOLE_H
