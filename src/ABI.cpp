@@ -3,7 +3,7 @@
 //
 #include "./MemoryAllocator.hpp"
 #include "Thread.hpp"
-#include "APIC.h"
+#include "syscall_c.h"
 #include "Scheduler.hpp"
 #include "Semaphore.hpp"
 #include "Konsole.hpp"
@@ -185,6 +185,11 @@ extern "C" void HandleInterupt(size_t* frame){
             char c = (char)frame[11];
             int result = Konsole::putcKernel(current, c);
             __asm__ volatile("mv a0, %0" :: "r"((size_t)result));
+            break;
+        }
+        case 0xFF: {
+            *((volatile uint32*)0x100000UL) = 0x5555;
+            while (true) {}
             break;
         }
         default: {

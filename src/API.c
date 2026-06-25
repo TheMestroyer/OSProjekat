@@ -2,7 +2,7 @@
 // Created by os on 5/6/26.
 //
 
-#include "./APIC.h"
+#include "./syscall_c.h"
 #include "../lib/hw.h"
 
 void* mem_alloc(size_t size){
@@ -104,6 +104,11 @@ void putc(char c) {
     register size_t a0 asm("a0") = 0x42;
     register size_t a1 asm("a1") = (size_t)(unsigned char)c;
     __asm__ volatile("ecall" : "+r"(a0) : "r"(a1));
+}
+
+void sys_halt(void) {
+    register size_t a0 asm("a0") = 0xFF;
+    __asm__ volatile("ecall" : "+r"(a0));
 }
 
 int sem_signal_n(sem_t id, unsigned n) {

@@ -5,7 +5,7 @@
 #include "Konsole.hpp"
 #include "Scheduler.hpp"
 #include "MemoryAllocator.hpp"
-#include "APIC.h"
+#include "syscall_c.h"
 
 char Konsole::inputBuffer[BUFFER_SIZE];
 int Konsole::inputHead = 0;

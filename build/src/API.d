@@ -1,5 +1,5 @@
-build/src/API.o: src/API.c src/./APIC.h src/./../lib/hw.h
+build/src/API.o: src/API.c src/./syscall_c.h src/./../lib/hw.h
 
-src/./APIC.h:
+src/./syscall_c.h:
 
 src/./../lib/hw.h:
