@@ -10,8 +10,9 @@ extern "C" void restoreContext(size_t* ctx);
 extern "C" void setupStartContext(size_t* ctx);
 
 KThread* Scheduler::running = nullptr;
-KThread* Scheduler::readyQueue = nullptr;
-KThread* Scheduler::readyQueueEnd = nullptr;
+KThread* Scheduler::readyHead[Scheduler::LEVELS] = {};
+KThread* Scheduler::readyTail[Scheduler::LEVELS] = {};
+int      Scheduler::agingTick = 0;
 KThread* Scheduler::sleepQueue = nullptr;
 KThread* Scheduler::deadThread = nullptr;
 time_t   Scheduler::runningThreadTimeLeft = DEFAULT_TIME_SLICE;
@@ -44,25 +45,31 @@ void Scheduler::freeDead() {
     MemoryAllocator::GetInstance().FreeFragment(dead);
 }
 KThread* Scheduler::GetNext() {
-    if (readyQueue == nullptr) return nullptr;
-    KThread* toRet = readyQueue;
-    readyQueue = readyQueue->getNextInQueue();
-    if (readyQueue != nullptr) readyQueue->setPrevInQueue(nullptr);
-    else readyQueueEnd = nullptr;
-    toRet->setNextInQueue(nullptr);
-    toRet->setPrevInQueue(nullptr);
-    return toRet;
-}
-void Scheduler::Put(KThread* thread) {
-    thread->setNextInQueue(nullptr);
-    if (readyQueueEnd != nullptr) {
-        thread->setPrevInQueue(readyQueueEnd);
-        readyQueueEnd->setNextInQueue(thread);
-    } else {
-        thread->setPrevInQueue(nullptr);
-        readyQueue = thread;
+    for (int i = 0; i < LEVELS; i++) {
+        if (readyHead[i] == nullptr) continue;
+        KThread* toRet = readyHead[i];
+        readyHead[i] = toRet->getNextInQueue();
+        if (readyHead[i] != nullptr) readyHead[i]->setPrevInQueue(nullptr);
+        else readyTail[i] = nullptr;
+        toRet->setNextInQueue(nullptr);
+        toRet->setPrevInQueue(nullptr);
+        return toRet;
     }
-    readyQueueEnd = thread;
+    return nullptr;
+}
+
+void Scheduler::Put(KThread* thread) {
+    int lvl = thread->priority;
+    thread->setNextInQueue(nullptr);
+    thread->setPrevInQueue(readyTail[lvl]);
+    if (readyTail[lvl] != nullptr) readyTail[lvl]->setNextInQueue(thread);
+    else readyHead[lvl] = thread;
+    readyTail[lvl] = thread;
+}
+
+void Scheduler::PutPreempted(KThread* thread) {
+    if (thread->priority < LEVELS - 1) thread->priority++;
+    Put(thread);
 }
 
 extern "C" char end[];
@@ -119,10 +126,27 @@ void Scheduler::timerTick(KThread* current) {
     if (runningThreadTimeLeft > 0) runningThreadTimeLeft--;
     if (runningThreadTimeLeft > 0) return;
 
+    if (++agingTick >= 100) {
+        agingTick = 0;
+        for (int i = 1; i < LEVELS; i++) {
+            if (readyHead[i] == nullptr) continue;
+            KThread* curr = readyHead[i];
+            while (curr) { curr->priority = 0; curr = curr->getNextInQueue(); }
+            if (readyTail[0] != nullptr) {
+                readyTail[0]->setNextInQueue(readyHead[i]);
+                readyHead[i]->setPrevInQueue(readyTail[0]);
+            } else {
+                readyHead[0] = readyHead[i];
+            }
+            readyTail[0] = readyTail[i];
+            readyHead[i] = readyTail[i] = nullptr;
+        }
+    }
+
     KThread* next = GetNext();
     runningThreadTimeLeft = DEFAULT_TIME_SLICE;
     if (next == nullptr) return;
-    Put(current);
+    PutPreempted(current);
     yield(current, next);
 }
 

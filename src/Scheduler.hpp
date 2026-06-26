@@ -13,8 +13,10 @@
 class Scheduler{
     static time_t runningThreadTimeLeft;
     static KThread* running;
-    static KThread* readyQueue;
-    static KThread* readyQueueEnd;
+    static constexpr int LEVELS = 4;
+    static KThread* readyHead[LEVELS];
+    static KThread* readyTail[LEVELS];
+    static int agingTick;
     static KThread* sleepQueue;
     static void* free_stacks;
     static size_t* stack_cursor;
@@ -22,6 +24,7 @@ class Scheduler{
 
     static void SaveContext();
     static void RestoreContext(KThread* thread);
+    static void PutPreempted(KThread* thread);
 public:
     static void SetupStartStack();
     static void SetupStartThread();

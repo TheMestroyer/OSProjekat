@@ -27,6 +27,7 @@ protected:
     size_t* stackPtr;
     size_t* supervisorSp;
     time_t sleepDelta;
+    uint8  priority;
 public:
     void* stackBase;
     Context threadContext;

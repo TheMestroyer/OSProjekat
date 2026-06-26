@@ -1,4 +1,4 @@
-GAS LISTING /tmp/ccQhBrvw.s 			page 1
+GAS LISTING /tmp/cc3bEMxm.s 			page 1
 
 
    1              		.file	"userMain.cpp"
@@ -50,41 +50,41 @@ GAS LISTING /tmp/ccQhBrvw.s 			page 1
   35              		.cfi_endproc
   36              	.LFE0:
   38              	.Letext0:
-GAS LISTING /tmp/ccQhBrvw.s 			page 2
+GAS LISTING /tmp/cc3bEMxm.s 			page 2
 
 
 DEFINED SYMBOLS
                             *ABS*:0000000000000000 userMain.cpp
-     /tmp/ccQhBrvw.s:9      .text:0000000000000000 userMainK
-     /tmp/ccQhBrvw.s:13     .text:0000000000000000 .L0 
-     /tmp/ccQhBrvw.s:14     .text:0000000000000000 .L0 
-     /tmp/ccQhBrvw.s:15     .text:0000000000000004 .L0 
-     /tmp/ccQhBrvw.s:18     .text:000000000000000c .L0 
-     /tmp/ccQhBrvw.s:19     .text:000000000000000c .L0 
-     /tmp/ccQhBrvw.s:21     .text:0000000000000010 .L0 
-     /tmp/ccQhBrvw.s:23     .text:0000000000000010 .L0 
-     /tmp/ccQhBrvw.s:24     .text:0000000000000010 .L0 
-     /tmp/ccQhBrvw.s:27     .text:0000000000000018 .L0 
-     /tmp/ccQhBrvw.s:28     .text:000000000000001c .L0 
-     /tmp/ccQhBrvw.s:30     .text:0000000000000020 .L0 
-     /tmp/ccQhBrvw.s:31     .text:0000000000000020 .L0 
-     /tmp/ccQhBrvw.s:33     .text:0000000000000024 .L0 
-     /tmp/ccQhBrvw.s:35     .text:0000000000000028 .L0 
-     /tmp/ccQhBrvw.s:39     .text:0000000000000028 .L0 
-     /tmp/ccQhBrvw.s:75     .debug_abbrev:0000000000000000 .Ldebug_abbrev0
-     /tmp/ccQhBrvw.s:164    .debug_str:0000000000000000 .LASF0
-     /tmp/ccQhBrvw.s:168    .debug_str:00000000000000ce .LASF1
-     /tmp/ccQhBrvw.s:174    .debug_str:00000000000000fb .LASF2
-     /tmp/ccQhBrvw.s:5      .text:0000000000000000 .Ltext0
-     /tmp/ccQhBrvw.s:38     .text:0000000000000028 .Letext0
-     /tmp/ccQhBrvw.s:162    .debug_line:0000000000000000 .Ldebug_line0
-     /tmp/ccQhBrvw.s:166    .debug_str:00000000000000c4 .LASF3
-     /tmp/ccQhBrvw.s:10     .text:0000000000000000 .LFB0
-     /tmp/ccQhBrvw.s:36     .text:0000000000000028 .LFE0
-     /tmp/ccQhBrvw.s:25     .text:0000000000000018 .LVL0
-     /tmp/ccQhBrvw.s:172    .debug_str:00000000000000ee .LASF4
-     /tmp/ccQhBrvw.s:170    .debug_str:00000000000000e5 .LASF5
-     /tmp/ccQhBrvw.s:40     .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/cc3bEMxm.s:9      .text:0000000000000000 userMainK
+     /tmp/cc3bEMxm.s:13     .text:0000000000000000 .L0 
+     /tmp/cc3bEMxm.s:14     .text:0000000000000000 .L0 
+     /tmp/cc3bEMxm.s:15     .text:0000000000000004 .L0 
+     /tmp/cc3bEMxm.s:18     .text:000000000000000c .L0 
+     /tmp/cc3bEMxm.s:19     .text:000000000000000c .L0 
+     /tmp/cc3bEMxm.s:21     .text:0000000000000010 .L0 
+     /tmp/cc3bEMxm.s:23     .text:0000000000000010 .L0 
+     /tmp/cc3bEMxm.s:24     .text:0000000000000010 .L0 
+     /tmp/cc3bEMxm.s:27     .text:0000000000000018 .L0 
+     /tmp/cc3bEMxm.s:28     .text:000000000000001c .L0 
+     /tmp/cc3bEMxm.s:30     .text:0000000000000020 .L0 
+     /tmp/cc3bEMxm.s:31     .text:0000000000000020 .L0 
+     /tmp/cc3bEMxm.s:33     .text:0000000000000024 .L0 
+     /tmp/cc3bEMxm.s:35     .text:0000000000000028 .L0 
+     /tmp/cc3bEMxm.s:39     .text:0000000000000028 .L0 
+     /tmp/cc3bEMxm.s:75     .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/cc3bEMxm.s:164    .debug_str:0000000000000000 .LASF0
+     /tmp/cc3bEMxm.s:168    .debug_str:00000000000000ce .LASF1
+     /tmp/cc3bEMxm.s:174    .debug_str:00000000000000fb .LASF2
+     /tmp/cc3bEMxm.s:5      .text:0000000000000000 .Ltext0
+     /tmp/cc3bEMxm.s:38     .text:0000000000000028 .Letext0
+     /tmp/cc3bEMxm.s:162    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/cc3bEMxm.s:166    .debug_str:00000000000000c4 .LASF3
+     /tmp/cc3bEMxm.s:10     .text:0000000000000000 .LFB0
+     /tmp/cc3bEMxm.s:36     .text:0000000000000028 .LFE0
+     /tmp/cc3bEMxm.s:25     .text:0000000000000018 .LVL0
+     /tmp/cc3bEMxm.s:172    .debug_str:00000000000000ee .LASF4
+     /tmp/cc3bEMxm.s:170    .debug_str:00000000000000e5 .LASF5
+     /tmp/cc3bEMxm.s:40     .debug_info:0000000000000000 .Ldebug_info0
 
 UNDEFINED SYMBOLS
 _Z8userMainv
