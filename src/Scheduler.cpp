@@ -56,6 +56,7 @@ void Scheduler::ThreadExit(KThread* t) {
         t->waitingThread->stopperThread = t->stopperThread;
         t->waitingThread=nullptr;
     }
+    t->finished=true;
     yield(t, next);
 }
 
@@ -191,6 +192,7 @@ void Scheduler::sleep(KThread* thread, time_t duration) {
 }
 
 void Scheduler::joinThread(KThread* joiningThread) {
+    if (joiningThread == nullptr||joiningThread->finished) return;
     joiningThread->waitingThread = running;
     running->stopperThread = joiningThread;
     blockCurrent(running);

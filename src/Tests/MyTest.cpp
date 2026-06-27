@@ -31,12 +31,27 @@ public:
 
     }
 };
+
 void TestTh2::testTh2Body(void* arg) {
     for (long long i=0; i < 5;i++) {
         printString("k\n");
         sleep(20);
     }
     printString("Thread2 Finished\n");
+    thread_dispatch();
+}
+class TestTh3: public Thread {
+    void testTh3Body(void* arg);
+public:
+    TestTh3():Thread() {}
+
+    void run() override {
+        testTh3Body(nullptr);
+
+    }
+};
+void TestTh3::testTh3Body(void* arg) {
+    printString("All Finished\n");
     thread_dispatch();
 }
 void myUserMain() {
@@ -49,9 +64,11 @@ void myUserMain() {
     th2->start();
     th2->dispatch();
 
-    th2->join(th2);
-    th1->join(th1);
-    printString("c\n");
+    Thread::join(th2);
+    Thread::join(th1);
+    Thread* th3 = new TestTh3();
+    th3->start();
+    th3->dispatch();
+    Thread::join(th3);
 
-    while (true) {}
 }

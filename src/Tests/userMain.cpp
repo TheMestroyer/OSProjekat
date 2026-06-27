@@ -2,10 +2,9 @@ void userMain();
 void myUserMain();
 
 extern "C" void userMainK(void) {
-    const bool mytests=true;
+    const bool mytests=false;
     if (!mytests) {
         userMain();
-    }
-    myUserMain();
+    }else myUserMain();
 }
 
