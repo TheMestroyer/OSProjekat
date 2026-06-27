@@ -1,0 +1,1692 @@
+GAS LISTING /tmp/ccHSkuFm.s 			page 1
+
+
+   1              		.file	"Konsole.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	_ZN7Konsole16outputThreadBodyEPv
+   9              	_ZN7Konsole16outputThreadBodyEPv:
+  10              	.LFB5:
+  11              		.file 1 "src/Konsole.cpp"
+   1:src/Konsole.cpp **** //
+   2:src/Konsole.cpp **** // Created by os on 6/24/26.
+   3:src/Konsole.cpp **** //
+   4:src/Konsole.cpp **** 
+   5:src/Konsole.cpp **** #include "../h/Konsole.hpp"
+   6:src/Konsole.cpp **** #include "../h/Scheduler.hpp"
+   7:src/Konsole.cpp **** #include "../h/MemoryAllocator.hpp"
+   8:src/Konsole.cpp **** #include "../h/syscall_c.h"
+   9:src/Konsole.cpp **** 
+  10:src/Konsole.cpp **** char Konsole::inputBuffer[BUFFER_SIZE];
+  11:src/Konsole.cpp **** int Konsole::inputHead = 0;
+  12:src/Konsole.cpp **** int Konsole::inputTail = 0;
+  13:src/Konsole.cpp **** 
+  14:src/Konsole.cpp **** char Konsole::outputBuffer[BUFFER_SIZE];
+  15:src/Konsole.cpp **** int Konsole::outputHead = 0;
+  16:src/Konsole.cpp **** int Konsole::outputTail = 0;
+  17:src/Konsole.cpp **** KSemaphore Konsole::outputItems;
+  18:src/Konsole.cpp **** 
+  19:src/Konsole.cpp **** KThread* Konsole::getcWaiterHead = nullptr;
+  20:src/Konsole.cpp **** KThread* Konsole::getcWaiterTail = nullptr;
+  21:src/Konsole.cpp **** 
+  22:src/Konsole.cpp **** void Konsole::enqueueGetcWaiter(KThread* thread) {
+  23:src/Konsole.cpp ****     thread->setNextInQueue(nullptr);
+  24:src/Konsole.cpp ****     if (getcWaiterTail != nullptr) {
+  25:src/Konsole.cpp ****         thread->setPrevInQueue(getcWaiterTail);
+  26:src/Konsole.cpp ****         getcWaiterTail->setNextInQueue(thread);
+  27:src/Konsole.cpp ****     } else {
+  28:src/Konsole.cpp ****         thread->setPrevInQueue(nullptr);
+  29:src/Konsole.cpp ****         getcWaiterHead = thread;
+  30:src/Konsole.cpp ****     }
+  31:src/Konsole.cpp ****     getcWaiterTail = thread;
+  32:src/Konsole.cpp **** }
+  33:src/Konsole.cpp **** 
+  34:src/Konsole.cpp **** KThread* Konsole::dequeueGetcWaiter() {
+  35:src/Konsole.cpp ****     if (getcWaiterHead == nullptr) return nullptr;
+  36:src/Konsole.cpp ****     KThread* thread = getcWaiterHead;
+  37:src/Konsole.cpp ****     getcWaiterHead = thread->getNextInQueue();
+  38:src/Konsole.cpp ****     if (getcWaiterHead != nullptr) getcWaiterHead->setPrevInQueue(nullptr);
+  39:src/Konsole.cpp ****     else getcWaiterTail = nullptr;
+  40:src/Konsole.cpp ****     thread->setNextInQueue(nullptr);
+  41:src/Konsole.cpp ****     thread->setPrevInQueue(nullptr);
+  42:src/Konsole.cpp ****     return thread;
+  43:src/Konsole.cpp **** }
+  44:src/Konsole.cpp **** 
+  45:src/Konsole.cpp **** void Konsole::outputThreadBody(void*) {
+  12              		.loc 1 45 39
+  13              		.cfi_startproc
+GAS LISTING /tmp/ccHSkuFm.s 			page 2
+
+
+  14 0000 130101FF 		addi	sp,sp,-16
+  15              		.cfi_def_cfa_offset 16
+  16 0004 23341100 		sd	ra,8(sp)
+  17 0008 23308100 		sd	s0,0(sp)
+  18              		.cfi_offset 1, -8
+  19              		.cfi_offset 8, -16
+  20 000c 13040101 		addi	s0,sp,16
+  21              		.cfi_def_cfa 8, 0
+  22              	.L3:
+  46:src/Konsole.cpp ****     while (true) {
+  23              		.loc 1 46 5
+  24              	.LBB4:
+  47:src/Konsole.cpp ****         sem_wait((sem_t)&outputItems);
+  25              		.loc 1 47 9
+  26              		.loc 1 47 17 is_stmt 0
+  27 0010 17050000 		lla	a0,.LANCHOR0
+  27      13050500 
+  28 0018 97000000 		call	sem_wait@plt
+  28      E7800000 
+  29              	.LVL0:
+  30              	.L2:
+  48:src/Konsole.cpp ****         while (!(*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_TX_STATUS_BIT));
+  31              		.loc 1 48 9 is_stmt 1
+  32              		.loc 1 48 16
+  33              		.loc 1 48 18 is_stmt 0
+  34 0020 97070000 		la	a5,CONSOLE_STATUS
+  34      83B70700 
+  35 0028 83B70700 		ld	a5,0(a5)
+  36 002c 83C70700 		lbu	a5,0(a5)
+  37 0030 93F7F70F 		andi	a5,a5,0xff
+  38              		.loc 1 48 16
+  39 0034 93F70702 		andi	a5,a5,32
+  40 0038 E38407FE 		beqz	a5,.L2
+  49:src/Konsole.cpp ****         if (outputHead!=outputTail) {
+  41              		.loc 1 49 9 is_stmt 1
+  42              	.LBB5:
+  43              		.loc 1 49 23 is_stmt 0
+  44 003c 17070000 		lla	a4,.LANCHOR0
+  44      13070700 
+  45 0044 83278701 		lw	a5,24(a4)
+  46 0048 0327C701 		lw	a4,28(a4)
+  47              		.loc 1 49 9
+  48 004c E382E7FC 		beq	a5,a4,.L3
+  49              	.LBB6:
+  50:src/Konsole.cpp ****             char c = outputBuffer[outputHead];
+  50              		.loc 1 50 13 is_stmt 1
+  51              		.loc 1 50 18 is_stmt 0
+  52 0050 97060000 		lla	a3,.LANCHOR0
+  52      93860600 
+  53 0058 3387F600 		add	a4,a3,a5
+  54 005c 03460702 		lbu	a2,32(a4)
+  55              	.LVL1:
+  51:src/Konsole.cpp ****             outputHead = (outputHead + 1) % BUFFER_SIZE;
+  56              		.loc 1 51 13 is_stmt 1
+  57              		.loc 1 51 38 is_stmt 0
+  58 0060 9B871700 		addiw	a5,a5,1
+  59              		.loc 1 51 43
+GAS LISTING /tmp/ccHSkuFm.s 			page 3
+
+
+  60 0064 1BD7F741 		sraiw	a4,a5,31
+  61 0068 1B578701 		srliw	a4,a4,24
+  62 006c BB87E700 		addw	a5,a5,a4
+  63 0070 93F7F70F 		andi	a5,a5,255
+  64 0074 BB87E740 		subw	a5,a5,a4
+  65              		.loc 1 51 24
+  66 0078 23ACF600 		sw	a5,24(a3)
+  52:src/Konsole.cpp ****             *((volatile uint8*)CONSOLE_TX_DATA) = c;
+  67              		.loc 1 52 13 is_stmt 1
+  68 007c 97070000 		la	a5,CONSOLE_TX_DATA
+  68      83B70700 
+  69 0084 83B70700 		ld	a5,0(a5)
+  70              		.loc 1 52 49 is_stmt 0
+  71 0088 2380C700 		sb	a2,0(a5)
+  72              	.LBE6:
+  73 008c 6FF05FF8 		j	.L3
+  74              	.LBE5:
+  75              	.LBE4:
+  76              		.cfi_endproc
+  77              	.LFE5:
+  79              		.align	2
+  80              		.globl	_ZN7Konsole17enqueueGetcWaiterEP7KThread
+  82              	_ZN7Konsole17enqueueGetcWaiterEP7KThread:
+  83              	.LFB3:
+  22:src/Konsole.cpp ****     thread->setNextInQueue(nullptr);
+  84              		.loc 1 22 50 is_stmt 1
+  85              		.cfi_startproc
+  86              	.LVL2:
+  87 0090 130101FE 		addi	sp,sp,-32
+  88              		.cfi_def_cfa_offset 32
+  89 0094 233C1100 		sd	ra,24(sp)
+  90 0098 23388100 		sd	s0,16(sp)
+  91 009c 23349100 		sd	s1,8(sp)
+  92              		.cfi_offset 1, -8
+  93              		.cfi_offset 8, -16
+  94              		.cfi_offset 9, -24
+  95 00a0 13040102 		addi	s0,sp,32
+  96              		.cfi_def_cfa 8, 0
+  97 00a4 93040500 		mv	s1,a0
+  23:src/Konsole.cpp ****     if (getcWaiterTail != nullptr) {
+  98              		.loc 1 23 5
+  23:src/Konsole.cpp ****     if (getcWaiterTail != nullptr) {
+  99              		.loc 1 23 27 is_stmt 0
+ 100 00a8 93050000 		li	a1,0
+ 101 00ac 97000000 		call	_ZN7KThread14setNextInQueueEPS_@plt
+ 101      E7800000 
+ 102              	.LVL3:
+  24:src/Konsole.cpp ****         thread->setPrevInQueue(getcWaiterTail);
+ 103              		.loc 1 24 5 is_stmt 1
+  24:src/Konsole.cpp ****         thread->setPrevInQueue(getcWaiterTail);
+ 104              		.loc 1 24 24 is_stmt 0
+ 105 00b4 97050000 		ld	a1,.LANCHOR0+288
+ 105      83B50500 
+  24:src/Konsole.cpp ****         thread->setPrevInQueue(getcWaiterTail);
+ 106              		.loc 1 24 5
+ 107 00bc 63800504 		beqz	a1,.L7
+  25:src/Konsole.cpp ****         getcWaiterTail->setNextInQueue(thread);
+GAS LISTING /tmp/ccHSkuFm.s 			page 4
+
+
+ 108              		.loc 1 25 9 is_stmt 1
+  25:src/Konsole.cpp ****         getcWaiterTail->setNextInQueue(thread);
+ 109              		.loc 1 25 31 is_stmt 0
+ 110 00c0 13850400 		mv	a0,s1
+ 111 00c4 97000000 		call	_ZN7KThread14setPrevInQueueEPS_@plt
+ 111      E7800000 
+ 112              	.LVL4:
+  26:src/Konsole.cpp ****     } else {
+ 113              		.loc 1 26 9 is_stmt 1
+  26:src/Konsole.cpp ****     } else {
+ 114              		.loc 1 26 39 is_stmt 0
+ 115 00cc 93850400 		mv	a1,s1
+ 116 00d0 17050000 		ld	a0,.LANCHOR0+288
+ 116      03350500 
+ 117 00d8 97000000 		call	_ZN7KThread14setNextInQueueEPS_@plt
+ 117      E7800000 
+ 118              	.LVL5:
+ 119              	.L8:
+  31:src/Konsole.cpp **** }
+ 120              		.loc 1 31 5 is_stmt 1
+  31:src/Konsole.cpp **** }
+ 121              		.loc 1 31 20 is_stmt 0
+ 122 00e0 97070000 		sd	s1,.LANCHOR0+288,a5
+ 122      23B09700 
+  32:src/Konsole.cpp **** 
+ 123              		.loc 1 32 1
+ 124 00e8 83308101 		ld	ra,24(sp)
+ 125              		.cfi_remember_state
+ 126              		.cfi_restore 1
+ 127 00ec 03340101 		ld	s0,16(sp)
+ 128              		.cfi_restore 8
+ 129              		.cfi_def_cfa 2, 32
+ 130 00f0 83348100 		ld	s1,8(sp)
+ 131              		.cfi_restore 9
+ 132              	.LVL6:
+ 133 00f4 13010102 		addi	sp,sp,32
+ 134              		.cfi_def_cfa_offset 0
+ 135 00f8 67800000 		jr	ra
+ 136              	.LVL7:
+ 137              	.L7:
+ 138              		.cfi_restore_state
+  28:src/Konsole.cpp ****         getcWaiterHead = thread;
+ 139              		.loc 1 28 9 is_stmt 1
+  28:src/Konsole.cpp ****         getcWaiterHead = thread;
+ 140              		.loc 1 28 31 is_stmt 0
+ 141 00fc 93050000 		li	a1,0
+ 142 0100 13850400 		mv	a0,s1
+ 143 0104 97000000 		call	_ZN7KThread14setPrevInQueueEPS_@plt
+ 143      E7800000 
+ 144              	.LVL8:
+  29:src/Konsole.cpp ****     }
+ 145              		.loc 1 29 9 is_stmt 1
+  29:src/Konsole.cpp ****     }
+ 146              		.loc 1 29 24 is_stmt 0
+ 147 010c 97070000 		sd	s1,.LANCHOR0+296,a5
+ 147      23B09700 
+ 148 0114 6FF0DFFC 		j	.L8
+GAS LISTING /tmp/ccHSkuFm.s 			page 5
+
+
+ 149              		.cfi_endproc
+ 150              	.LFE3:
+ 152              		.align	2
+ 153              		.globl	_ZN7Konsole17dequeueGetcWaiterEv
+ 155              	_ZN7Konsole17dequeueGetcWaiterEv:
+ 156              	.LFB4:
+  34:src/Konsole.cpp ****     if (getcWaiterHead == nullptr) return nullptr;
+ 157              		.loc 1 34 39 is_stmt 1
+ 158              		.cfi_startproc
+ 159 0118 130101FE 		addi	sp,sp,-32
+ 160              		.cfi_def_cfa_offset 32
+ 161 011c 233C1100 		sd	ra,24(sp)
+ 162 0120 23388100 		sd	s0,16(sp)
+ 163 0124 23349100 		sd	s1,8(sp)
+ 164              		.cfi_offset 1, -8
+ 165              		.cfi_offset 8, -16
+ 166              		.cfi_offset 9, -24
+ 167 0128 13040102 		addi	s0,sp,32
+ 168              		.cfi_def_cfa 8, 0
+  35:src/Konsole.cpp ****     KThread* thread = getcWaiterHead;
+ 169              		.loc 1 35 5
+  35:src/Konsole.cpp ****     KThread* thread = getcWaiterHead;
+ 170              		.loc 1 35 24 is_stmt 0
+ 171 012c 97040000 		ld	s1,.LANCHOR0+296
+ 171      83B40400 
+  35:src/Konsole.cpp ****     KThread* thread = getcWaiterHead;
+ 172              		.loc 1 35 5
+ 173 0134 63840404 		beqz	s1,.L10
+  36:src/Konsole.cpp ****     getcWaiterHead = thread->getNextInQueue();
+ 174              		.loc 1 36 5 is_stmt 1
+ 175              	.LVL9:
+  37:src/Konsole.cpp ****     if (getcWaiterHead != nullptr) getcWaiterHead->setPrevInQueue(nullptr);
+ 176              		.loc 1 37 5
+  37:src/Konsole.cpp ****     if (getcWaiterHead != nullptr) getcWaiterHead->setPrevInQueue(nullptr);
+ 177              		.loc 1 37 44 is_stmt 0
+ 178 0138 13850400 		mv	a0,s1
+ 179 013c 97000000 		call	_ZN7KThread14getNextInQueueEv@plt
+ 179      E7800000 
+ 180              	.LVL10:
+  37:src/Konsole.cpp ****     if (getcWaiterHead != nullptr) getcWaiterHead->setPrevInQueue(nullptr);
+ 181              		.loc 1 37 20
+ 182 0144 97070000 		sd	a0,.LANCHOR0+296,a5
+ 182      23B0A700 
+  38:src/Konsole.cpp ****     else getcWaiterTail = nullptr;
+ 183              		.loc 1 38 5 is_stmt 1
+ 184 014c 63040504 		beqz	a0,.L12
+  38:src/Konsole.cpp ****     else getcWaiterTail = nullptr;
+ 185              		.loc 1 38 36 discriminator 1
+  38:src/Konsole.cpp ****     else getcWaiterTail = nullptr;
+ 186              		.loc 1 38 66 is_stmt 0 discriminator 1
+ 187 0150 93050000 		li	a1,0
+ 188 0154 97000000 		call	_ZN7KThread14setPrevInQueueEPS_@plt
+ 188      E7800000 
+ 189              	.LVL11:
+ 190              	.L13:
+  40:src/Konsole.cpp ****     thread->setPrevInQueue(nullptr);
+ 191              		.loc 1 40 5 is_stmt 1
+GAS LISTING /tmp/ccHSkuFm.s 			page 6
+
+
+  40:src/Konsole.cpp ****     thread->setPrevInQueue(nullptr);
+ 192              		.loc 1 40 27 is_stmt 0
+ 193 015c 93050000 		li	a1,0
+ 194 0160 13850400 		mv	a0,s1
+ 195 0164 97000000 		call	_ZN7KThread14setNextInQueueEPS_@plt
+ 195      E7800000 
+ 196              	.LVL12:
+  41:src/Konsole.cpp ****     return thread;
+ 197              		.loc 1 41 5 is_stmt 1
+  41:src/Konsole.cpp ****     return thread;
+ 198              		.loc 1 41 27 is_stmt 0
+ 199 016c 93050000 		li	a1,0
+ 200 0170 13850400 		mv	a0,s1
+ 201 0174 97000000 		call	_ZN7KThread14setPrevInQueueEPS_@plt
+ 201      E7800000 
+ 202              	.LVL13:
+  42:src/Konsole.cpp **** }
+ 203              		.loc 1 42 5 is_stmt 1
+ 204              	.L10:
+  43:src/Konsole.cpp **** 
+ 205              		.loc 1 43 1 is_stmt 0
+ 206 017c 13850400 		mv	a0,s1
+ 207 0180 83308101 		ld	ra,24(sp)
+ 208              		.cfi_remember_state
+ 209              		.cfi_restore 1
+ 210 0184 03340101 		ld	s0,16(sp)
+ 211              		.cfi_restore 8
+ 212              		.cfi_def_cfa 2, 32
+ 213 0188 83348100 		ld	s1,8(sp)
+ 214              		.cfi_restore 9
+ 215 018c 13010102 		addi	sp,sp,32
+ 216              		.cfi_def_cfa_offset 0
+ 217 0190 67800000 		jr	ra
+ 218              	.LVL14:
+ 219              	.L12:
+ 220              		.cfi_restore_state
+  39:src/Konsole.cpp ****     thread->setNextInQueue(nullptr);
+ 221              		.loc 1 39 10 is_stmt 1
+  39:src/Konsole.cpp ****     thread->setNextInQueue(nullptr);
+ 222              		.loc 1 39 25 is_stmt 0
+ 223 0194 97070000 		sd	zero,.LANCHOR0+288,a5
+ 223      23B00700 
+ 224 019c 6FF01FFC 		j	.L13
+ 225              		.cfi_endproc
+ 226              	.LFE4:
+ 228              		.align	2
+ 229              		.globl	_ZN7Konsole4initEv
+ 231              	_ZN7Konsole4initEv:
+ 232              	.LFB6:
+  53:src/Konsole.cpp ****         }
+  54:src/Konsole.cpp ****     }
+  55:src/Konsole.cpp **** }
+  56:src/Konsole.cpp **** 
+  57:src/Konsole.cpp **** void Konsole::init() {
+ 233              		.loc 1 57 22 is_stmt 1
+ 234              		.cfi_startproc
+ 235 01a0 130101FE 		addi	sp,sp,-32
+GAS LISTING /tmp/ccHSkuFm.s 			page 7
+
+
+ 236              		.cfi_def_cfa_offset 32
+ 237 01a4 233C1100 		sd	ra,24(sp)
+ 238 01a8 23388100 		sd	s0,16(sp)
+ 239 01ac 23349100 		sd	s1,8(sp)
+ 240              		.cfi_offset 1, -8
+ 241              		.cfi_offset 8, -16
+ 242              		.cfi_offset 9, -24
+ 243 01b0 13040102 		addi	s0,sp,32
+ 244              		.cfi_def_cfa 8, 0
+  58:src/Konsole.cpp ****     inputHead = 0; inputTail = 0;
+ 245              		.loc 1 58 5
+ 246              		.loc 1 58 15 is_stmt 0
+ 247 01b4 17050000 		lla	a0,.LANCHOR0
+ 247      13050500 
+ 248 01bc 23280512 		sw	zero,304(a0)
+ 249              		.loc 1 58 20 is_stmt 1
+ 250              		.loc 1 58 30 is_stmt 0
+ 251 01c0 232A0512 		sw	zero,308(a0)
+  59:src/Konsole.cpp ****     outputHead = 0; outputTail = 0;
+ 252              		.loc 1 59 5 is_stmt 1
+ 253              		.loc 1 59 16 is_stmt 0
+ 254 01c4 232C0500 		sw	zero,24(a0)
+ 255              		.loc 1 59 21 is_stmt 1
+ 256              		.loc 1 59 32 is_stmt 0
+ 257 01c8 232E0500 		sw	zero,28(a0)
+  60:src/Konsole.cpp ****     getcWaiterHead = nullptr; getcWaiterTail = nullptr;
+ 258              		.loc 1 60 5 is_stmt 1
+ 259              		.loc 1 60 20 is_stmt 0
+ 260 01cc 23340512 		sd	zero,296(a0)
+ 261              		.loc 1 60 31 is_stmt 1
+ 262              		.loc 1 60 46 is_stmt 0
+ 263 01d0 23300512 		sd	zero,288(a0)
+  61:src/Konsole.cpp ****     outputItems.init(0);
+ 264              		.loc 1 61 5 is_stmt 1
+ 265              		.loc 1 61 21 is_stmt 0
+ 266 01d4 93050000 		li	a1,0
+ 267 01d8 97000000 		call	_ZN10KSemaphore4initEj@plt
+ 267      E7800000 
+ 268              	.LVL15:
+  62:src/Konsole.cpp **** 
+  63:src/Konsole.cpp ****     void* threadMem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread));
+ 269              		.loc 1 63 5 is_stmt 1
+ 270              		.loc 1 63 52 is_stmt 0
+ 271 01e0 97000000 		call	_ZN15MemoryAllocator11GetInstanceEv@plt
+ 271      E7800000 
+ 272              	.LVL16:
+ 273              		.loc 1 63 70
+ 274 01e8 93050018 		li	a1,384
+ 275 01ec 97000000 		call	_ZN15MemoryAllocator16AllocateFragmentEm@plt
+ 275      E7800000 
+ 276              	.LVL17:
+ 277 01f4 93040500 		mv	s1,a0
+ 278              	.LVL18:
+  64:src/Konsole.cpp ****     KThread* outputThread = reinterpret_cast<KThread*>(threadMem);
+ 279              		.loc 1 64 5 is_stmt 1
+  65:src/Konsole.cpp ****     outputThread->init();
+ 280              		.loc 1 65 5
+GAS LISTING /tmp/ccHSkuFm.s 			page 8
+
+
+ 281              		.loc 1 65 23 is_stmt 0
+ 282 01f8 97000000 		call	_ZN7KThread4initEv@plt
+ 282      E7800000 
+ 283              	.LVL19:
+  66:src/Konsole.cpp ****     outputThread->setBody(outputThreadBody, nullptr);
+ 284              		.loc 1 66 5 is_stmt 1
+ 285              	.LBB7:
+ 286              	.LBB8:
+ 287              		.file 2 "src/../h/Thread.hpp"
+   1:src/../h/Thread.hpp **** //
+   2:src/../h/Thread.hpp **** // Created by os on 6/10/26.
+   3:src/../h/Thread.hpp **** //
+   4:src/../h/Thread.hpp **** 
+   5:src/../h/Thread.hpp **** #ifndef OSPROJEKAT_THREAD_H
+   6:src/../h/Thread.hpp **** #define OSPROJEKAT_THREAD_H
+   7:src/../h/Thread.hpp **** 
+   8:src/../h/Thread.hpp **** #include "../lib/hw.h"
+   9:src/../h/Thread.hpp **** struct Context {
+  10:src/../h/Thread.hpp ****     size_t x[32];    // x0-x31, offsets 0x00-0xF8
+  11:src/../h/Thread.hpp ****     size_t sepc;     // offset 0x100
+  12:src/../h/Thread.hpp ****     size_t sstatus;  // offset 0x108
+  13:src/../h/Thread.hpp ****     size_t pc;
+  14:src/../h/Thread.hpp **** };
+  15:src/../h/Thread.hpp **** 
+  16:src/../h/Thread.hpp **** class KThread{
+  17:src/../h/Thread.hpp ****     friend class Scheduler;
+  18:src/../h/Thread.hpp ****     friend class KSemaphore;
+  19:src/../h/Thread.hpp **** protected:
+  20:src/../h/Thread.hpp ****     static void threadTrampoline(KThread* t);
+  21:src/../h/Thread.hpp ****     void (*body)(void*);
+  22:src/../h/Thread.hpp ****     void* arg;
+  23:src/../h/Thread.hpp ****     KThread* parent;
+  24:src/../h/Thread.hpp **** 
+  25:src/../h/Thread.hpp ****     bool finished;
+  26:src/../h/Thread.hpp **** 
+  27:src/../h/Thread.hpp ****     KThread* prev;
+  28:src/../h/Thread.hpp ****     KThread* next;
+  29:src/../h/Thread.hpp ****     size_t* stackPtr;
+  30:src/../h/Thread.hpp ****     size_t* supervisorSp;
+  31:src/../h/Thread.hpp ****     time_t sleepDelta;
+  32:src/../h/Thread.hpp ****     uint8  priority;
+  33:src/../h/Thread.hpp ****     KThread* waitingThread;
+  34:src/../h/Thread.hpp ****     KThread* stopperThread;
+  35:src/../h/Thread.hpp **** public:
+  36:src/../h/Thread.hpp ****     void* stackBase;
+  37:src/../h/Thread.hpp ****     Context threadContext;
+  38:src/../h/Thread.hpp ****     KThread();
+  39:src/../h/Thread.hpp ****     void copyContext(size_t* ctx);
+  40:src/../h/Thread.hpp ****     void init();
+  41:src/../h/Thread.hpp ****     size_t* getStackTop() { return stackPtr; }
+  42:src/../h/Thread.hpp ****     size_t* getContext();
+  43:src/../h/Thread.hpp ****     KThread* getParent() { return parent; }
+  44:src/../h/Thread.hpp ****     KThread* getNextInQueue();
+  45:src/../h/Thread.hpp ****     KThread* getPrevInQueue();
+  46:src/../h/Thread.hpp ****     void setNextInQueue(KThread* next);
+  47:src/../h/Thread.hpp ****     void setPrevInQueue(KThread* prev);
+  48:src/../h/Thread.hpp ****     void setNextAndPrevInQueue(KThread* next, KThread* prev);
+GAS LISTING /tmp/ccHSkuFm.s 			page 9
+
+
+  49:src/../h/Thread.hpp ****     void setup(KThread* parentThread, size_t* stack_top);
+  50:src/../h/Thread.hpp ****     void setBody(void (*b)(void*), void* a) { body = b; arg = a; }
+ 288              		.loc 2 50 47
+ 289              		.loc 2 50 52 is_stmt 0
+ 290 0200 97070000 		lla	a5,_ZN7Konsole16outputThreadBodyEPv
+ 290      93870700 
+ 291 0208 23B0F400 		sd	a5,0(s1)
+ 292              		.loc 2 50 57 is_stmt 1
+ 293              		.loc 2 50 61 is_stmt 0
+ 294 020c 23B40400 		sd	zero,8(s1)
+ 295              	.LVL20:
+ 296              	.LBE8:
+ 297              	.LBE7:
+  67:src/Konsole.cpp **** 
+  68:src/Konsole.cpp ****     void* stackMem = MemoryAllocator::GetInstance().AllocateFragment(DEFAULT_STACK_SIZE * sizeof(si
+ 298              		.loc 1 68 5 is_stmt 1
+ 299              		.loc 1 68 51 is_stmt 0
+ 300 0210 97000000 		call	_ZN15MemoryAllocator11GetInstanceEv@plt
+ 300      E7800000 
+ 301              	.LVL21:
+ 302              		.loc 1 68 69
+ 303 0218 B7850000 		li	a1,32768
+ 304 021c 97000000 		call	_ZN15MemoryAllocator16AllocateFragmentEm@plt
+ 304      E7800000 
+ 305              	.LVL22:
+  69:src/Konsole.cpp ****     size_t* stackTop = reinterpret_cast<size_t*>((char*)stackMem + DEFAULT_STACK_SIZE * sizeof(size
+ 306              		.loc 1 69 5 is_stmt 1
+  70:src/Konsole.cpp ****     outputThread->setup(nullptr, stackTop);
+ 307              		.loc 1 70 5
+ 308              		.loc 1 70 24 is_stmt 0
+ 309 0224 37860000 		li	a2,32768
+ 310 0228 3306C500 		add	a2,a0,a2
+ 311              	.LVL23:
+ 312 022c 93050000 		li	a1,0
+ 313 0230 13850400 		mv	a0,s1
+ 314              	.LVL24:
+ 315 0234 97000000 		call	_ZN7KThread5setupEPS_Pm@plt
+ 315      E7800000 
+ 316              	.LVL25:
+  71:src/Konsole.cpp ****     outputThread->threadContext.sstatus |= (1UL << 8);
+ 317              		.loc 1 71 5 is_stmt 1
+ 318              		.loc 1 71 41 is_stmt 0
+ 319 023c 83B70417 		ld	a5,368(s1)
+ 320 0240 93E70710 		ori	a5,a5,256
+ 321 0244 23B8F416 		sd	a5,368(s1)
+  72:src/Konsole.cpp ****     Scheduler::Put(outputThread);
+ 322              		.loc 1 72 5 is_stmt 1
+ 323              		.loc 1 72 19 is_stmt 0
+ 324 0248 13850400 		mv	a0,s1
+ 325 024c 97000000 		call	_ZN9Scheduler3PutEP7KThread@plt
+ 325      E7800000 
+ 326              	.LVL26:
+  73:src/Konsole.cpp **** }
+ 327              		.loc 1 73 1
+ 328 0254 83308101 		ld	ra,24(sp)
+ 329              		.cfi_restore 1
+ 330 0258 03340101 		ld	s0,16(sp)
+GAS LISTING /tmp/ccHSkuFm.s 			page 10
+
+
+ 331              		.cfi_restore 8
+ 332              		.cfi_def_cfa 2, 32
+ 333 025c 83348100 		ld	s1,8(sp)
+ 334              		.cfi_restore 9
+ 335              	.LVL27:
+ 336 0260 13010102 		addi	sp,sp,32
+ 337              		.cfi_def_cfa_offset 0
+ 338 0264 67800000 		jr	ra
+ 339              		.cfi_endproc
+ 340              	.LFE6:
+ 342              		.align	2
+ 343              		.globl	_ZN7Konsole15handleInterruptEv
+ 345              	_ZN7Konsole15handleInterruptEv:
+ 346              	.LFB7:
+  74:src/Konsole.cpp **** 
+  75:src/Konsole.cpp **** void Konsole::handleInterrupt() {
+ 347              		.loc 1 75 33 is_stmt 1
+ 348              		.cfi_startproc
+ 349 0268 130101FE 		addi	sp,sp,-32
+ 350              		.cfi_def_cfa_offset 32
+ 351 026c 233C1100 		sd	ra,24(sp)
+ 352 0270 23388100 		sd	s0,16(sp)
+ 353 0274 23349100 		sd	s1,8(sp)
+ 354 0278 23302101 		sd	s2,0(sp)
+ 355              		.cfi_offset 1, -8
+ 356              		.cfi_offset 8, -16
+ 357              		.cfi_offset 9, -24
+ 358              		.cfi_offset 18, -32
+ 359 027c 13040102 		addi	s0,sp,32
+ 360              		.cfi_def_cfa 8, 0
+  76:src/Konsole.cpp ****     int irq = plic_claim();
+ 361              		.loc 1 76 5
+ 362              		.loc 1 76 25 is_stmt 0
+ 363 0280 97000000 		call	plic_claim@plt
+ 363      E7800000 
+ 364              	.LVL28:
+ 365 0288 93040500 		mv	s1,a0
+ 366              	.LVL29:
+  77:src/Konsole.cpp ****     if (irq == (int)CONSOLE_IRQ) {
+ 367              		.loc 1 77 5 is_stmt 1
+ 368              	.LBB9:
+ 369 028c 9307A000 		li	a5,10
+ 370 0290 6306F502 		beq	a0,a5,.L18
+ 371              	.LVL30:
+ 372              	.L19:
+ 373              	.LBE9:
+  78:src/Konsole.cpp ****         while (*((volatile uint8*)CONSOLE_STATUS) & CONSOLE_RX_STATUS_BIT) {
+  79:src/Konsole.cpp ****             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
+  80:src/Konsole.cpp ****             KThread* waiter = dequeueGetcWaiter();
+  81:src/Konsole.cpp ****             if (waiter != nullptr) {
+  82:src/Konsole.cpp ****                 waiter->threadContext.x[10] = (size_t)(unsigned char)c;
+  83:src/Konsole.cpp ****                 Scheduler::Put(waiter);
+  84:src/Konsole.cpp ****             } else {
+  85:src/Konsole.cpp ****                 int nextTail = (inputTail + 1) % BUFFER_SIZE;
+  86:src/Konsole.cpp ****                 if (nextTail != inputHead) {
+  87:src/Konsole.cpp ****                     inputBuffer[inputTail] = c;
+  88:src/Konsole.cpp ****                     inputTail = nextTail;
+GAS LISTING /tmp/ccHSkuFm.s 			page 11
+
+
+  89:src/Konsole.cpp ****                 }
+  90:src/Konsole.cpp ****             }
+  91:src/Konsole.cpp ****         }
+  92:src/Konsole.cpp ****     }
+  93:src/Konsole.cpp ****     if (irq) plic_complete(irq);
+ 374              		.loc 1 93 5
+ 375 0294 6394040A 		bnez	s1,.L24
+ 376              	.L17:
+  94:src/Konsole.cpp **** }
+ 377              		.loc 1 94 1 is_stmt 0
+ 378 0298 83308101 		ld	ra,24(sp)
+ 379              		.cfi_remember_state
+ 380              		.cfi_restore 1
+ 381 029c 03340101 		ld	s0,16(sp)
+ 382              		.cfi_restore 8
+ 383              		.cfi_def_cfa 2, 32
+ 384 02a0 83348100 		ld	s1,8(sp)
+ 385              		.cfi_restore 9
+ 386 02a4 03390100 		ld	s2,0(sp)
+ 387              		.cfi_restore 18
+ 388 02a8 13010102 		addi	sp,sp,32
+ 389              		.cfi_def_cfa_offset 0
+ 390 02ac 67800000 		jr	ra
+ 391              	.LVL31:
+ 392              	.L25:
+ 393              		.cfi_restore_state
+ 394              	.LBB16:
+ 395              	.LBB10:
+ 396              	.LBB11:
+ 397              	.LBB12:
+  82:src/Konsole.cpp ****                 Scheduler::Put(waiter);
+ 398              		.loc 1 82 17 is_stmt 1
+  82:src/Konsole.cpp ****                 Scheduler::Put(waiter);
+ 399              		.loc 1 82 45 is_stmt 0
+ 400 02b0 233C250B 		sd	s2,184(a0)
+  83:src/Konsole.cpp ****             } else {
+ 401              		.loc 1 83 17 is_stmt 1
+  83:src/Konsole.cpp ****             } else {
+ 402              		.loc 1 83 31 is_stmt 0
+ 403 02b4 97000000 		call	_ZN9Scheduler3PutEP7KThread@plt
+ 403      E7800000 
+ 404              	.LVL32:
+ 405              	.L18:
+ 406              	.LBE12:
+ 407              	.LBE11:
+  78:src/Konsole.cpp ****             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
+ 408              		.loc 1 78 9 is_stmt 1
+  78:src/Konsole.cpp ****             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
+ 409              		.loc 1 78 53
+  78:src/Konsole.cpp ****             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
+ 410              		.loc 1 78 16 is_stmt 0
+ 411 02bc 97070000 		la	a5,CONSOLE_STATUS
+ 411      83B70700 
+ 412 02c4 83B70700 		ld	a5,0(a5)
+ 413 02c8 83C70700 		lbu	a5,0(a5)
+  78:src/Konsole.cpp ****             char c = (char)*((volatile uint8*)CONSOLE_RX_DATA);
+ 414              		.loc 1 78 53
+GAS LISTING /tmp/ccHSkuFm.s 			page 12
+
+
+ 415 02cc 93F71700 		andi	a5,a5,1
+ 416 02d0 E38207FC 		beqz	a5,.L19
+ 417              	.LBB15:
+  79:src/Konsole.cpp ****             KThread* waiter = dequeueGetcWaiter();
+ 418              		.loc 1 79 13 is_stmt 1
+  79:src/Konsole.cpp ****             KThread* waiter = dequeueGetcWaiter();
+ 419              		.loc 1 79 22 is_stmt 0
+ 420 02d4 97070000 		la	a5,CONSOLE_RX_DATA
+ 420      83B70700 
+ 421 02dc 83B70700 		ld	a5,0(a5)
+  79:src/Konsole.cpp ****             KThread* waiter = dequeueGetcWaiter();
+ 422              		.loc 1 79 62
+ 423 02e0 83C70700 		lbu	a5,0(a5)
+ 424 02e4 13F9F70F 		andi	s2,a5,0xff
+ 425              	.LVL33:
+  80:src/Konsole.cpp ****             if (waiter != nullptr) {
+ 426              		.loc 1 80 13 is_stmt 1
+  80:src/Konsole.cpp ****             if (waiter != nullptr) {
+ 427              		.loc 1 80 48 is_stmt 0
+ 428 02e8 97000000 		call	_ZN7Konsole17dequeueGetcWaiterEv
+ 428      E7800000 
+ 429              	.LVL34:
+  81:src/Konsole.cpp ****                 waiter->threadContext.x[10] = (size_t)(unsigned char)c;
+ 430              		.loc 1 81 13 is_stmt 1
+ 431              	.LBB14:
+ 432 02f0 E31005FC 		bnez	a0,.L25
+ 433              	.LBB13:
+  85:src/Konsole.cpp ****                 if (nextTail != inputHead) {
+ 434              		.loc 1 85 17
+  85:src/Konsole.cpp ****                 if (nextTail != inputHead) {
+ 435              		.loc 1 85 43 is_stmt 0
+ 436 02f4 17060000 		lla	a2,.LANCHOR0
+ 436      13060600 
+ 437 02fc 83264613 		lw	a3,308(a2)
+ 438 0300 9B871600 		addiw	a5,a3,1
+  85:src/Konsole.cpp ****                 if (nextTail != inputHead) {
+ 439              		.loc 1 85 21
+ 440 0304 1BD7F741 		sraiw	a4,a5,31
+ 441 0308 1B578701 		srliw	a4,a4,24
+ 442 030c BB87E700 		addw	a5,a5,a4
+ 443 0310 93F7F70F 		andi	a5,a5,255
+ 444 0314 BB87E740 		subw	a5,a5,a4
+ 445 0318 1B870700 		sext.w	a4,a5
+ 446              	.LVL35:
+  86:src/Konsole.cpp ****                     inputBuffer[inputTail] = c;
+ 447              		.loc 1 86 17 is_stmt 1
+  86:src/Konsole.cpp ****                     inputBuffer[inputTail] = c;
+ 448              		.loc 1 86 30 is_stmt 0
+ 449 031c 03260613 		lw	a2,304(a2)
+  86:src/Konsole.cpp ****                     inputBuffer[inputTail] = c;
+ 450              		.loc 1 86 17
+ 451 0320 E30EE6F8 		beq	a2,a4,.L18
+  87:src/Konsole.cpp ****                     inputTail = nextTail;
+ 452              		.loc 1 87 21 is_stmt 1
+  87:src/Konsole.cpp ****                     inputTail = nextTail;
+ 453              		.loc 1 87 44 is_stmt 0
+ 454 0324 17070000 		lla	a4,.LANCHOR0
+GAS LISTING /tmp/ccHSkuFm.s 			page 13
+
+
+ 454      13070700 
+ 455 032c B306D700 		add	a3,a4,a3
+ 456 0330 238C2613 		sb	s2,312(a3)
+  88:src/Konsole.cpp ****                 }
+ 457              		.loc 1 88 21 is_stmt 1
+  88:src/Konsole.cpp ****                 }
+ 458              		.loc 1 88 31 is_stmt 0
+ 459 0334 232AF712 		sw	a5,308(a4)
+ 460 0338 6FF05FF8 		j	.L18
+ 461              	.LVL36:
+ 462              	.L24:
+ 463              	.LBE13:
+ 464              	.LBE14:
+ 465              	.LBE15:
+ 466              	.LBE10:
+ 467              	.LBE16:
+  93:src/Konsole.cpp **** }
+ 468              		.loc 1 93 14 is_stmt 1 discriminator 1
+  93:src/Konsole.cpp **** }
+ 469              		.loc 1 93 27 is_stmt 0 discriminator 1
+ 470 033c 13850400 		mv	a0,s1
+ 471 0340 97000000 		call	plic_complete@plt
+ 471      E7800000 
+ 472              	.LVL37:
+ 473              		.loc 1 94 1 discriminator 1
+ 474 0348 6FF01FF5 		j	.L17
+ 475              		.cfi_endproc
+ 476              	.LFE7:
+ 478              		.align	2
+ 479              		.globl	_ZN7Konsole10putcKernelEP7KThreadc
+ 481              	_ZN7Konsole10putcKernelEP7KThreadc:
+ 482              	.LFB8:
+  95:src/Konsole.cpp **** 
+  96:src/Konsole.cpp **** int Konsole::putcKernel(KThread* caller, char c) {
+ 483              		.loc 1 96 50 is_stmt 1
+ 484              		.cfi_startproc
+ 485              	.LVL38:
+ 486 034c 130101FE 		addi	sp,sp,-32
+ 487              		.cfi_def_cfa_offset 32
+ 488 0350 233C1100 		sd	ra,24(sp)
+ 489 0354 23388100 		sd	s0,16(sp)
+ 490 0358 23349100 		sd	s1,8(sp)
+ 491              		.cfi_offset 1, -8
+ 492              		.cfi_offset 8, -16
+ 493              		.cfi_offset 9, -24
+ 494 035c 13040102 		addi	s0,sp,32
+ 495              		.cfi_def_cfa 8, 0
+ 496 0360 93040500 		mv	s1,a0
+  97:src/Konsole.cpp ****     int nextTail = (outputTail + 1) % BUFFER_SIZE;
+ 497              		.loc 1 97 5
+ 498              		.loc 1 97 32 is_stmt 0
+ 499 0364 17060000 		lla	a2,.LANCHOR0
+ 499      13060600 
+ 500 036c 8326C601 		lw	a3,28(a2)
+ 501 0370 9B871600 		addiw	a5,a3,1
+ 502              		.loc 1 97 9
+ 503 0374 1BD7F741 		sraiw	a4,a5,31
+GAS LISTING /tmp/ccHSkuFm.s 			page 14
+
+
+ 504 0378 1B578701 		srliw	a4,a4,24
+ 505 037c BB87E700 		addw	a5,a5,a4
+ 506 0380 93F7F70F 		andi	a5,a5,255
+ 507 0384 BB87E740 		subw	a5,a5,a4
+ 508 0388 1B870700 		sext.w	a4,a5
+ 509              	.LVL39:
+  98:src/Konsole.cpp ****     if (nextTail == outputHead) {
+ 510              		.loc 1 98 5 is_stmt 1
+ 511              		.loc 1 98 18 is_stmt 0
+ 512 038c 03268601 		lw	a2,24(a2)
+ 513              		.loc 1 98 5
+ 514 0390 6300E604 		beq	a2,a4,.L32
+  99:src/Konsole.cpp ****         if (caller) caller->threadContext.x[10] = (size_t)-1;
+ 100:src/Konsole.cpp ****         return -1;
+ 101:src/Konsole.cpp ****     }
+ 102:src/Konsole.cpp ****     outputBuffer[outputTail] = c;
+ 515              		.loc 1 102 5 is_stmt 1
+ 516              		.loc 1 102 30 is_stmt 0
+ 517 0394 17050000 		lla	a0,.LANCHOR0
+ 517      13050500 
+ 518              	.LVL40:
+ 519 039c B306D500 		add	a3,a0,a3
+ 520 03a0 2380B602 		sb	a1,32(a3)
+ 103:src/Konsole.cpp ****     outputTail = nextTail;
+ 521              		.loc 1 103 5 is_stmt 1
+ 522              		.loc 1 103 16 is_stmt 0
+ 523 03a4 232EF500 		sw	a5,28(a0)
+ 104:src/Konsole.cpp ****     outputItems.signal();
+ 524              		.loc 1 104 5 is_stmt 1
+ 525              		.loc 1 104 23 is_stmt 0
+ 526 03a8 97000000 		call	_ZN10KSemaphore6signalEv@plt
+ 526      E7800000 
+ 527              	.LVL41:
+ 105:src/Konsole.cpp ****     if (caller) caller->threadContext.x[10] = 0;
+ 528              		.loc 1 105 5 is_stmt 1
+ 529 03b0 638A0402 		beqz	s1,.L30
+ 530              		.loc 1 105 17 discriminator 1
+ 531              		.loc 1 105 45 is_stmt 0 discriminator 1
+ 532 03b4 23BC040A 		sd	zero,184(s1)
+ 106:src/Konsole.cpp ****     return 0;
+ 533              		.loc 1 106 12 discriminator 1
+ 534 03b8 13050000 		li	a0,0
+ 535              	.L29:
+ 107:src/Konsole.cpp **** }
+ 536              		.loc 1 107 1
+ 537 03bc 83308101 		ld	ra,24(sp)
+ 538              		.cfi_remember_state
+ 539              		.cfi_restore 1
+ 540 03c0 03340101 		ld	s0,16(sp)
+ 541              		.cfi_restore 8
+ 542              		.cfi_def_cfa 2, 32
+ 543 03c4 83348100 		ld	s1,8(sp)
+ 544              		.cfi_restore 9
+ 545              	.LVL42:
+ 546 03c8 13010102 		addi	sp,sp,32
+ 547              		.cfi_def_cfa_offset 0
+ 548 03cc 67800000 		jr	ra
+GAS LISTING /tmp/ccHSkuFm.s 			page 15
+
+
+ 549              	.LVL43:
+ 550              	.L32:
+ 551              		.cfi_restore_state
+  99:src/Konsole.cpp ****         return -1;
+ 552              		.loc 1 99 9 is_stmt 1
+ 553 03d0 63060500 		beqz	a0,.L28
+  99:src/Konsole.cpp ****         return -1;
+ 554              		.loc 1 99 21 discriminator 1
+  99:src/Konsole.cpp ****         return -1;
+ 555              		.loc 1 99 49 is_stmt 0 discriminator 1
+ 556 03d4 9307F0FF 		li	a5,-1
+ 557              	.LVL44:
+ 558 03d8 233CF50A 		sd	a5,184(a0)
+ 559              	.L28:
+ 100:src/Konsole.cpp ****     }
+ 560              		.loc 1 100 9 is_stmt 1
+ 100:src/Konsole.cpp ****     }
+ 561              		.loc 1 100 17 is_stmt 0
+ 562 03dc 1305F0FF 		li	a0,-1
+ 563 03e0 6FF0DFFD 		j	.L29
+ 564              	.LVL45:
+ 565              	.L30:
+ 106:src/Konsole.cpp **** }
+ 566              		.loc 1 106 12
+ 567 03e4 13050000 		li	a0,0
+ 568 03e8 6FF05FFD 		j	.L29
+ 569              		.cfi_endproc
+ 570              	.LFE8:
+ 572              		.align	2
+ 573              		.globl	_ZN7Konsole10getcKernelEP7KThread
+ 575              	_ZN7Konsole10getcKernelEP7KThread:
+ 576              	.LFB9:
+ 108:src/Konsole.cpp **** 
+ 109:src/Konsole.cpp **** 
+ 110:src/Konsole.cpp **** int Konsole::getcKernel(KThread* caller) {
+ 577              		.loc 1 110 42 is_stmt 1
+ 578              		.cfi_startproc
+ 579              	.LVL46:
+ 111:src/Konsole.cpp ****     if (inputHead != inputTail) {
+ 580              		.loc 1 111 5
+ 581              	.LBB17:
+ 582              		.loc 1 111 19 is_stmt 0
+ 583 03ec 17070000 		lla	a4,.LANCHOR0
+ 583      13070700 
+ 584 03f4 83270713 		lw	a5,304(a4)
+ 585 03f8 03274713 		lw	a4,308(a4)
+ 586              		.loc 1 111 5
+ 587 03fc 6380E704 		beq	a5,a4,.L34
+ 588              	.LBB18:
+ 112:src/Konsole.cpp ****         char c = inputBuffer[inputHead];
+ 589              		.loc 1 112 9 is_stmt 1
+ 590              		.loc 1 112 14 is_stmt 0
+ 591 0400 17060000 		lla	a2,.LANCHOR0
+ 591      13060600 
+ 592 0408 3307F600 		add	a4,a2,a5
+ 593 040c 83468713 		lbu	a3,312(a4)
+ 594              	.LVL47:
+GAS LISTING /tmp/ccHSkuFm.s 			page 16
+
+
+ 113:src/Konsole.cpp ****         inputHead = (inputHead + 1) % BUFFER_SIZE;
+ 595              		.loc 1 113 9 is_stmt 1
+ 596              		.loc 1 113 32 is_stmt 0
+ 597 0410 9B871700 		addiw	a5,a5,1
+ 598              		.loc 1 113 37
+ 599 0414 1BD7F741 		sraiw	a4,a5,31
+ 600 0418 1B578701 		srliw	a4,a4,24
+ 601 041c BB87E700 		addw	a5,a5,a4
+ 602 0420 93F7F70F 		andi	a5,a5,255
+ 603 0424 BB87E740 		subw	a5,a5,a4
+ 604              		.loc 1 113 19
+ 605 0428 2328F612 		sw	a5,304(a2)
+ 114:src/Konsole.cpp ****         if (caller) caller->threadContext.x[10] = (size_t)(unsigned char)c;
+ 606              		.loc 1 114 9 is_stmt 1
+ 607 042c 63040500 		beqz	a0,.L35
+ 608              		.loc 1 114 21 discriminator 1
+ 609              		.loc 1 114 49 is_stmt 0 discriminator 1
+ 610 0430 233CD50A 		sd	a3,184(a0)
+ 611              	.L35:
+ 115:src/Konsole.cpp ****         return (unsigned char)c;
+ 612              		.loc 1 115 9 is_stmt 1
+ 613              		.loc 1 115 31 is_stmt 0
+ 614 0434 1B850600 		sext.w	a0,a3
+ 615              	.LVL48:
+ 616              	.LBE18:
+ 617              	.LBE17:
+ 116:src/Konsole.cpp ****     }
+ 117:src/Konsole.cpp ****     enqueueGetcWaiter(caller);
+ 118:src/Konsole.cpp ****     return -2;
+ 119:src/Konsole.cpp **** }...
+ 618              		.loc 1 119 1
+ 619 0438 67800000 		ret
+ 620              	.LVL49:
+ 621              	.L34:
+ 110:src/Konsole.cpp **** int Konsole::getcKernel(KThread* caller) {
+ 622              		.loc 1 110 42
+ 623 043c 130101FF 		addi	sp,sp,-16
+ 624              		.cfi_def_cfa_offset 16
+ 625 0440 23341100 		sd	ra,8(sp)
+ 626 0444 23308100 		sd	s0,0(sp)
+ 627              		.cfi_offset 1, -8
+ 628              		.cfi_offset 8, -16
+ 629 0448 13040101 		addi	s0,sp,16
+ 630              		.cfi_def_cfa 8, 0
+ 117:src/Konsole.cpp ****     enqueueGetcWaiter(caller);
+ 631              		.loc 1 117 5 is_stmt 1
+ 117:src/Konsole.cpp ****     enqueueGetcWaiter(caller);
+ 632              		.loc 1 117 22 is_stmt 0
+ 633 044c 97000000 		call	_ZN7Konsole17enqueueGetcWaiterEP7KThread
+ 633      E7800000 
+ 634              	.LVL50:
+ 118:src/Konsole.cpp ****     return -2;
+ 635              		.loc 1 118 5 is_stmt 1
+ 118:src/Konsole.cpp ****     return -2;
+ 636              		.loc 1 118 13 is_stmt 0
+ 637 0454 1305E0FF 		li	a0,-2
+ 638              		.loc 1 119 1
+GAS LISTING /tmp/ccHSkuFm.s 			page 17
+
+
+ 639 0458 83308100 		ld	ra,8(sp)
+ 640              		.cfi_restore 1
+ 641 045c 03340100 		ld	s0,0(sp)
+ 642              		.cfi_restore 8
+ 643              		.cfi_def_cfa 2, 16
+ 644 0460 13010101 		addi	sp,sp,16
+ 645              		.cfi_def_cfa_offset 0
+ 646 0464 67800000 		jr	ra
+ 647              		.cfi_endproc
+ 648              	.LFE9:
+ 650              		.globl	_ZN7Konsole14getcWaiterTailE
+ 651              		.globl	_ZN7Konsole14getcWaiterHeadE
+ 652              		.globl	_ZN7Konsole11outputItemsE
+ 653              		.globl	_ZN7Konsole10outputTailE
+ 654              		.globl	_ZN7Konsole10outputHeadE
+ 655              		.globl	_ZN7Konsole12outputBufferE
+ 656              		.globl	_ZN7Konsole9inputTailE
+ 657              		.globl	_ZN7Konsole9inputHeadE
+ 658              		.globl	_ZN7Konsole11inputBufferE
+ 659              		.bss
+ 660              		.align	3
+ 661              		.set	.LANCHOR0,. + 0
+ 664              	_ZN7Konsole11outputItemsE:
+ 665 0000 00000000 		.zero	24
+ 665      00000000 
+ 665      00000000 
+ 665      00000000 
+ 665      00000000 
+ 668              	_ZN7Konsole10outputHeadE:
+ 669 0018 00000000 		.zero	4
+ 672              	_ZN7Konsole10outputTailE:
+ 673 001c 00000000 		.zero	4
+ 676              	_ZN7Konsole12outputBufferE:
+ 677 0020 00000000 		.zero	256
+ 677      00000000 
+ 677      00000000 
+ 677      00000000 
+ 677      00000000 
+ 680              	_ZN7Konsole14getcWaiterTailE:
+ 681 0120 00000000 		.zero	8
+ 681      00000000 
+ 684              	_ZN7Konsole14getcWaiterHeadE:
+ 685 0128 00000000 		.zero	8
+ 685      00000000 
+ 688              	_ZN7Konsole9inputHeadE:
+ 689 0130 00000000 		.zero	4
+ 692              	_ZN7Konsole9inputTailE:
+ 693 0134 00000000 		.zero	4
+ 696              	_ZN7Konsole11inputBufferE:
+ 697 0138 00000000 		.zero	256
+ 697      00000000 
+ 697      00000000 
+ 697      00000000 
+ 697      00000000 
+ 698              		.text
+ 699              	.Letext0:
+ 700              		.file 3 "src/../h/../lib/hw.h"
+GAS LISTING /tmp/ccHSkuFm.s 			page 18
+
+
+ 701              		.file 4 "src/../h/Semaphore.hpp"
+ 702              		.file 5 "src/../h/Konsole.hpp"
+ 703              		.file 6 "src/../h/Scheduler.hpp"
+ 704              		.file 7 "src/../h/MemoryAllocator.hpp"
+ 705              		.file 8 "src/../h/syscall_c.h"
+GAS LISTING /tmp/ccHSkuFm.s 			page 19
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 Konsole.cpp
+     /tmp/ccHSkuFm.s:9      .text:0000000000000000 _ZN7Konsole16outputThreadBodyEPv
+     /tmp/ccHSkuFm.s:13     .text:0000000000000000 .L0 
+     /tmp/ccHSkuFm.s:14     .text:0000000000000000 .L0 
+     /tmp/ccHSkuFm.s:15     .text:0000000000000004 .L0 
+     /tmp/ccHSkuFm.s:18     .text:000000000000000c .L0 
+     /tmp/ccHSkuFm.s:19     .text:000000000000000c .L0 
+     /tmp/ccHSkuFm.s:21     .text:0000000000000010 .L0 
+     /tmp/ccHSkuFm.s:25     .text:0000000000000010 .L0 
+     /tmp/ccHSkuFm.s:26     .text:0000000000000010 .L0 
+     /tmp/ccHSkuFm.s:27     .text:0000000000000010 .L0 
+     /tmp/ccHSkuFm.s:32     .text:0000000000000020 .L0 
+     /tmp/ccHSkuFm.s:33     .text:0000000000000020 .L0 
+     /tmp/ccHSkuFm.s:34     .text:0000000000000020 .L0 
+     /tmp/ccHSkuFm.s:39     .text:0000000000000034 .L0 
+     /tmp/ccHSkuFm.s:43     .text:000000000000003c .L0 
+     /tmp/ccHSkuFm.s:44     .text:000000000000003c .L0 
+     /tmp/ccHSkuFm.s:48     .text:000000000000004c .L0 
+     /tmp/ccHSkuFm.s:51     .text:0000000000000050 .L0 
+     /tmp/ccHSkuFm.s:52     .text:0000000000000050 .L0 
+     /tmp/ccHSkuFm.s:57     .text:0000000000000060 .L0 
+     /tmp/ccHSkuFm.s:58     .text:0000000000000060 .L0 
+     /tmp/ccHSkuFm.s:60     .text:0000000000000064 .L0 
+     /tmp/ccHSkuFm.s:66     .text:0000000000000078 .L0 
+     /tmp/ccHSkuFm.s:68     .text:000000000000007c .L0 
+     /tmp/ccHSkuFm.s:71     .text:0000000000000088 .L0 
+     /tmp/ccHSkuFm.s:76     .text:0000000000000090 .L0 
+     /tmp/ccHSkuFm.s:82     .text:0000000000000090 _ZN7Konsole17enqueueGetcWaiterEP7KThread
+     /tmp/ccHSkuFm.s:85     .text:0000000000000090 .L0 
+     /tmp/ccHSkuFm.s:87     .text:0000000000000090 .L0 
+     /tmp/ccHSkuFm.s:88     .text:0000000000000094 .L0 
+     /tmp/ccHSkuFm.s:92     .text:00000000000000a0 .L0 
+     /tmp/ccHSkuFm.s:93     .text:00000000000000a0 .L0 
+     /tmp/ccHSkuFm.s:94     .text:00000000000000a0 .L0 
+     /tmp/ccHSkuFm.s:96     .text:00000000000000a4 .L0 
+     /tmp/ccHSkuFm.s:99     .text:00000000000000a8 .L0 
+     /tmp/ccHSkuFm.s:100    .text:00000000000000a8 .L0 
+     /tmp/ccHSkuFm.s:104    .text:00000000000000b4 .L0 
+     /tmp/ccHSkuFm.s:105    .text:00000000000000b4 .L0 
+     /tmp/ccHSkuFm.s:107    .text:00000000000000bc .L0 
+     /tmp/ccHSkuFm.s:109    .text:00000000000000c0 .L0 
+     /tmp/ccHSkuFm.s:110    .text:00000000000000c0 .L0 
+     /tmp/ccHSkuFm.s:114    .text:00000000000000cc .L0 
+     /tmp/ccHSkuFm.s:115    .text:00000000000000cc .L0 
+     /tmp/ccHSkuFm.s:121    .text:00000000000000e0 .L0 
+     /tmp/ccHSkuFm.s:122    .text:00000000000000e0 .L0 
+     /tmp/ccHSkuFm.s:124    .text:00000000000000e8 .L0 
+     /tmp/ccHSkuFm.s:125    .text:00000000000000ec .L0 
+     /tmp/ccHSkuFm.s:126    .text:00000000000000ec .L0 
+     /tmp/ccHSkuFm.s:128    .text:00000000000000f0 .L0 
+     /tmp/ccHSkuFm.s:129    .text:00000000000000f0 .L0 
+     /tmp/ccHSkuFm.s:131    .text:00000000000000f4 .L0 
+     /tmp/ccHSkuFm.s:134    .text:00000000000000f8 .L0 
+     /tmp/ccHSkuFm.s:138    .text:00000000000000fc .L0 
+     /tmp/ccHSkuFm.s:140    .text:00000000000000fc .L0 
+     /tmp/ccHSkuFm.s:141    .text:00000000000000fc .L0 
+GAS LISTING /tmp/ccHSkuFm.s 			page 20
+
+
+     /tmp/ccHSkuFm.s:146    .text:000000000000010c .L0 
+     /tmp/ccHSkuFm.s:147    .text:000000000000010c .L0 
+     /tmp/ccHSkuFm.s:149    .text:0000000000000118 .L0 
+     /tmp/ccHSkuFm.s:155    .text:0000000000000118 _ZN7Konsole17dequeueGetcWaiterEv
+     /tmp/ccHSkuFm.s:158    .text:0000000000000118 .L0 
+     /tmp/ccHSkuFm.s:159    .text:0000000000000118 .L0 
+     /tmp/ccHSkuFm.s:160    .text:000000000000011c .L0 
+     /tmp/ccHSkuFm.s:164    .text:0000000000000128 .L0 
+     /tmp/ccHSkuFm.s:165    .text:0000000000000128 .L0 
+     /tmp/ccHSkuFm.s:166    .text:0000000000000128 .L0 
+     /tmp/ccHSkuFm.s:168    .text:000000000000012c .L0 
+     /tmp/ccHSkuFm.s:170    .text:000000000000012c .L0 
+     /tmp/ccHSkuFm.s:171    .text:000000000000012c .L0 
+     /tmp/ccHSkuFm.s:173    .text:0000000000000134 .L0 
+     /tmp/ccHSkuFm.s:176    .text:0000000000000138 .L0 
+     /tmp/ccHSkuFm.s:177    .text:0000000000000138 .L0 
+     /tmp/ccHSkuFm.s:178    .text:0000000000000138 .L0 
+     /tmp/ccHSkuFm.s:182    .text:0000000000000144 .L0 
+     /tmp/ccHSkuFm.s:184    .text:000000000000014c .L0 
+     /tmp/ccHSkuFm.s:186    .text:0000000000000150 .L0 
+     /tmp/ccHSkuFm.s:187    .text:0000000000000150 .L0 
+     /tmp/ccHSkuFm.s:192    .text:000000000000015c .L0 
+     /tmp/ccHSkuFm.s:193    .text:000000000000015c .L0 
+     /tmp/ccHSkuFm.s:198    .text:000000000000016c .L0 
+     /tmp/ccHSkuFm.s:199    .text:000000000000016c .L0 
+     /tmp/ccHSkuFm.s:205    .text:000000000000017c .L0 
+     /tmp/ccHSkuFm.s:206    .text:000000000000017c .L0 
+     /tmp/ccHSkuFm.s:208    .text:0000000000000184 .L0 
+     /tmp/ccHSkuFm.s:209    .text:0000000000000184 .L0 
+     /tmp/ccHSkuFm.s:211    .text:0000000000000188 .L0 
+     /tmp/ccHSkuFm.s:212    .text:0000000000000188 .L0 
+     /tmp/ccHSkuFm.s:214    .text:000000000000018c .L0 
+     /tmp/ccHSkuFm.s:216    .text:0000000000000190 .L0 
+     /tmp/ccHSkuFm.s:220    .text:0000000000000194 .L0 
+     /tmp/ccHSkuFm.s:222    .text:0000000000000194 .L0 
+     /tmp/ccHSkuFm.s:223    .text:0000000000000194 .L0 
+     /tmp/ccHSkuFm.s:225    .text:00000000000001a0 .L0 
+     /tmp/ccHSkuFm.s:231    .text:00000000000001a0 _ZN7Konsole4initEv
+     /tmp/ccHSkuFm.s:234    .text:00000000000001a0 .L0 
+     /tmp/ccHSkuFm.s:235    .text:00000000000001a0 .L0 
+     /tmp/ccHSkuFm.s:236    .text:00000000000001a4 .L0 
+     /tmp/ccHSkuFm.s:240    .text:00000000000001b0 .L0 
+     /tmp/ccHSkuFm.s:241    .text:00000000000001b0 .L0 
+     /tmp/ccHSkuFm.s:242    .text:00000000000001b0 .L0 
+     /tmp/ccHSkuFm.s:244    .text:00000000000001b4 .L0 
+     /tmp/ccHSkuFm.s:246    .text:00000000000001b4 .L0 
+     /tmp/ccHSkuFm.s:247    .text:00000000000001b4 .L0 
+     /tmp/ccHSkuFm.s:250    .text:00000000000001c0 .L0 
+     /tmp/ccHSkuFm.s:251    .text:00000000000001c0 .L0 
+     /tmp/ccHSkuFm.s:253    .text:00000000000001c4 .L0 
+     /tmp/ccHSkuFm.s:254    .text:00000000000001c4 .L0 
+     /tmp/ccHSkuFm.s:256    .text:00000000000001c8 .L0 
+     /tmp/ccHSkuFm.s:257    .text:00000000000001c8 .L0 
+     /tmp/ccHSkuFm.s:259    .text:00000000000001cc .L0 
+     /tmp/ccHSkuFm.s:260    .text:00000000000001cc .L0 
+     /tmp/ccHSkuFm.s:262    .text:00000000000001d0 .L0 
+     /tmp/ccHSkuFm.s:263    .text:00000000000001d0 .L0 
+GAS LISTING /tmp/ccHSkuFm.s 			page 21
+
+
+     /tmp/ccHSkuFm.s:265    .text:00000000000001d4 .L0 
+     /tmp/ccHSkuFm.s:266    .text:00000000000001d4 .L0 
+     /tmp/ccHSkuFm.s:270    .text:00000000000001e0 .L0 
+     /tmp/ccHSkuFm.s:271    .text:00000000000001e0 .L0 
+     /tmp/ccHSkuFm.s:274    .text:00000000000001e8 .L0 
+     /tmp/ccHSkuFm.s:280    .text:00000000000001f8 .L0 
+     /tmp/ccHSkuFm.s:281    .text:00000000000001f8 .L0 
+     /tmp/ccHSkuFm.s:282    .text:00000000000001f8 .L0 
+     /tmp/ccHSkuFm.s:288    .text:0000000000000200 .L0 
+     /tmp/ccHSkuFm.s:289    .text:0000000000000200 .L0 
+     /tmp/ccHSkuFm.s:290    .text:0000000000000200 .L0 
+     /tmp/ccHSkuFm.s:293    .text:000000000000020c .L0 
+     /tmp/ccHSkuFm.s:294    .text:000000000000020c .L0 
+     /tmp/ccHSkuFm.s:299    .text:0000000000000210 .L0 
+     /tmp/ccHSkuFm.s:300    .text:0000000000000210 .L0 
+     /tmp/ccHSkuFm.s:303    .text:0000000000000218 .L0 
+     /tmp/ccHSkuFm.s:307    .text:0000000000000224 .L0 
+     /tmp/ccHSkuFm.s:308    .text:0000000000000224 .L0 
+     /tmp/ccHSkuFm.s:309    .text:0000000000000224 .L0 
+     /tmp/ccHSkuFm.s:318    .text:000000000000023c .L0 
+     /tmp/ccHSkuFm.s:319    .text:000000000000023c .L0 
+     /tmp/ccHSkuFm.s:323    .text:0000000000000248 .L0 
+     /tmp/ccHSkuFm.s:324    .text:0000000000000248 .L0 
+     /tmp/ccHSkuFm.s:328    .text:0000000000000254 .L0 
+     /tmp/ccHSkuFm.s:329    .text:0000000000000258 .L0 
+     /tmp/ccHSkuFm.s:331    .text:000000000000025c .L0 
+     /tmp/ccHSkuFm.s:332    .text:000000000000025c .L0 
+     /tmp/ccHSkuFm.s:334    .text:0000000000000260 .L0 
+     /tmp/ccHSkuFm.s:337    .text:0000000000000264 .L0 
+     /tmp/ccHSkuFm.s:339    .text:0000000000000268 .L0 
+     /tmp/ccHSkuFm.s:345    .text:0000000000000268 _ZN7Konsole15handleInterruptEv
+     /tmp/ccHSkuFm.s:348    .text:0000000000000268 .L0 
+     /tmp/ccHSkuFm.s:349    .text:0000000000000268 .L0 
+     /tmp/ccHSkuFm.s:350    .text:000000000000026c .L0 
+     /tmp/ccHSkuFm.s:355    .text:000000000000027c .L0 
+     /tmp/ccHSkuFm.s:356    .text:000000000000027c .L0 
+     /tmp/ccHSkuFm.s:357    .text:000000000000027c .L0 
+     /tmp/ccHSkuFm.s:358    .text:000000000000027c .L0 
+     /tmp/ccHSkuFm.s:360    .text:0000000000000280 .L0 
+     /tmp/ccHSkuFm.s:362    .text:0000000000000280 .L0 
+     /tmp/ccHSkuFm.s:363    .text:0000000000000280 .L0 
+     /tmp/ccHSkuFm.s:369    .text:000000000000028c .L0 
+     /tmp/ccHSkuFm.s:375    .text:0000000000000294 .L0 
+     /tmp/ccHSkuFm.s:378    .text:0000000000000298 .L0 
+     /tmp/ccHSkuFm.s:379    .text:000000000000029c .L0 
+     /tmp/ccHSkuFm.s:380    .text:000000000000029c .L0 
+     /tmp/ccHSkuFm.s:382    .text:00000000000002a0 .L0 
+     /tmp/ccHSkuFm.s:383    .text:00000000000002a0 .L0 
+     /tmp/ccHSkuFm.s:385    .text:00000000000002a4 .L0 
+     /tmp/ccHSkuFm.s:387    .text:00000000000002a8 .L0 
+     /tmp/ccHSkuFm.s:389    .text:00000000000002ac .L0 
+     /tmp/ccHSkuFm.s:393    .text:00000000000002b0 .L0 
+     /tmp/ccHSkuFm.s:399    .text:00000000000002b0 .L0 
+     /tmp/ccHSkuFm.s:400    .text:00000000000002b0 .L0 
+     /tmp/ccHSkuFm.s:402    .text:00000000000002b4 .L0 
+     /tmp/ccHSkuFm.s:403    .text:00000000000002b4 .L0 
+     /tmp/ccHSkuFm.s:409    .text:00000000000002bc .L0 
+GAS LISTING /tmp/ccHSkuFm.s 			page 22
+
+
+     /tmp/ccHSkuFm.s:410    .text:00000000000002bc .L0 
+     /tmp/ccHSkuFm.s:411    .text:00000000000002bc .L0 
+     /tmp/ccHSkuFm.s:415    .text:00000000000002cc .L0 
+     /tmp/ccHSkuFm.s:419    .text:00000000000002d4 .L0 
+     /tmp/ccHSkuFm.s:420    .text:00000000000002d4 .L0 
+     /tmp/ccHSkuFm.s:423    .text:00000000000002e0 .L0 
+     /tmp/ccHSkuFm.s:427    .text:00000000000002e8 .L0 
+     /tmp/ccHSkuFm.s:428    .text:00000000000002e8 .L0 
+     /tmp/ccHSkuFm.s:432    .text:00000000000002f0 .L0 
+     /tmp/ccHSkuFm.s:435    .text:00000000000002f4 .L0 
+     /tmp/ccHSkuFm.s:436    .text:00000000000002f4 .L0 
+     /tmp/ccHSkuFm.s:440    .text:0000000000000304 .L0 
+     /tmp/ccHSkuFm.s:448    .text:000000000000031c .L0 
+     /tmp/ccHSkuFm.s:449    .text:000000000000031c .L0 
+     /tmp/ccHSkuFm.s:451    .text:0000000000000320 .L0 
+     /tmp/ccHSkuFm.s:453    .text:0000000000000324 .L0 
+     /tmp/ccHSkuFm.s:454    .text:0000000000000324 .L0 
+     /tmp/ccHSkuFm.s:458    .text:0000000000000334 .L0 
+     /tmp/ccHSkuFm.s:459    .text:0000000000000334 .L0 
+     /tmp/ccHSkuFm.s:469    .text:000000000000033c .L0 
+     /tmp/ccHSkuFm.s:470    .text:000000000000033c .L0 
+     /tmp/ccHSkuFm.s:474    .text:0000000000000348 .L0 
+     /tmp/ccHSkuFm.s:475    .text:000000000000034c .L0 
+     /tmp/ccHSkuFm.s:481    .text:000000000000034c _ZN7Konsole10putcKernelEP7KThreadc
+     /tmp/ccHSkuFm.s:484    .text:000000000000034c .L0 
+     /tmp/ccHSkuFm.s:486    .text:000000000000034c .L0 
+     /tmp/ccHSkuFm.s:487    .text:0000000000000350 .L0 
+     /tmp/ccHSkuFm.s:491    .text:000000000000035c .L0 
+     /tmp/ccHSkuFm.s:492    .text:000000000000035c .L0 
+     /tmp/ccHSkuFm.s:493    .text:000000000000035c .L0 
+     /tmp/ccHSkuFm.s:495    .text:0000000000000360 .L0 
+     /tmp/ccHSkuFm.s:498    .text:0000000000000364 .L0 
+     /tmp/ccHSkuFm.s:499    .text:0000000000000364 .L0 
+     /tmp/ccHSkuFm.s:503    .text:0000000000000374 .L0 
+     /tmp/ccHSkuFm.s:511    .text:000000000000038c .L0 
+     /tmp/ccHSkuFm.s:512    .text:000000000000038c .L0 
+     /tmp/ccHSkuFm.s:514    .text:0000000000000390 .L0 
+     /tmp/ccHSkuFm.s:516    .text:0000000000000394 .L0 
+     /tmp/ccHSkuFm.s:517    .text:0000000000000394 .L0 
+     /tmp/ccHSkuFm.s:522    .text:00000000000003a4 .L0 
+     /tmp/ccHSkuFm.s:523    .text:00000000000003a4 .L0 
+     /tmp/ccHSkuFm.s:525    .text:00000000000003a8 .L0 
+     /tmp/ccHSkuFm.s:526    .text:00000000000003a8 .L0 
+     /tmp/ccHSkuFm.s:529    .text:00000000000003b0 .L0 
+     /tmp/ccHSkuFm.s:531    .text:00000000000003b4 .L0 
+     /tmp/ccHSkuFm.s:532    .text:00000000000003b4 .L0 
+     /tmp/ccHSkuFm.s:534    .text:00000000000003b8 .L0 
+     /tmp/ccHSkuFm.s:537    .text:00000000000003bc .L0 
+     /tmp/ccHSkuFm.s:538    .text:00000000000003c0 .L0 
+     /tmp/ccHSkuFm.s:539    .text:00000000000003c0 .L0 
+     /tmp/ccHSkuFm.s:541    .text:00000000000003c4 .L0 
+     /tmp/ccHSkuFm.s:542    .text:00000000000003c4 .L0 
+     /tmp/ccHSkuFm.s:544    .text:00000000000003c8 .L0 
+     /tmp/ccHSkuFm.s:547    .text:00000000000003cc .L0 
+     /tmp/ccHSkuFm.s:551    .text:00000000000003d0 .L0 
+     /tmp/ccHSkuFm.s:553    .text:00000000000003d0 .L0 
+     /tmp/ccHSkuFm.s:555    .text:00000000000003d4 .L0 
+GAS LISTING /tmp/ccHSkuFm.s 			page 23
+
+
+     /tmp/ccHSkuFm.s:556    .text:00000000000003d4 .L0 
+     /tmp/ccHSkuFm.s:561    .text:00000000000003dc .L0 
+     /tmp/ccHSkuFm.s:562    .text:00000000000003dc .L0 
+     /tmp/ccHSkuFm.s:567    .text:00000000000003e4 .L0 
+     /tmp/ccHSkuFm.s:569    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:575    .text:00000000000003ec _ZN7Konsole10getcKernelEP7KThread
+     /tmp/ccHSkuFm.s:578    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:580    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:582    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:583    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:587    .text:00000000000003fc .L0 
+     /tmp/ccHSkuFm.s:590    .text:0000000000000400 .L0 
+     /tmp/ccHSkuFm.s:591    .text:0000000000000400 .L0 
+     /tmp/ccHSkuFm.s:596    .text:0000000000000410 .L0 
+     /tmp/ccHSkuFm.s:597    .text:0000000000000410 .L0 
+     /tmp/ccHSkuFm.s:599    .text:0000000000000414 .L0 
+     /tmp/ccHSkuFm.s:605    .text:0000000000000428 .L0 
+     /tmp/ccHSkuFm.s:607    .text:000000000000042c .L0 
+     /tmp/ccHSkuFm.s:609    .text:0000000000000430 .L0 
+     /tmp/ccHSkuFm.s:610    .text:0000000000000430 .L0 
+     /tmp/ccHSkuFm.s:613    .text:0000000000000434 .L0 
+     /tmp/ccHSkuFm.s:614    .text:0000000000000434 .L0 
+     /tmp/ccHSkuFm.s:619    .text:0000000000000438 .L0 
+     /tmp/ccHSkuFm.s:623    .text:000000000000043c .L0 
+     /tmp/ccHSkuFm.s:624    .text:0000000000000440 .L0 
+     /tmp/ccHSkuFm.s:627    .text:0000000000000448 .L0 
+     /tmp/ccHSkuFm.s:628    .text:0000000000000448 .L0 
+     /tmp/ccHSkuFm.s:630    .text:000000000000044c .L0 
+     /tmp/ccHSkuFm.s:632    .text:000000000000044c .L0 
+     /tmp/ccHSkuFm.s:633    .text:000000000000044c .L0 
+     /tmp/ccHSkuFm.s:636    .text:0000000000000454 .L0 
+     /tmp/ccHSkuFm.s:637    .text:0000000000000454 .L0 
+     /tmp/ccHSkuFm.s:639    .text:0000000000000458 .L0 
+     /tmp/ccHSkuFm.s:640    .text:000000000000045c .L0 
+     /tmp/ccHSkuFm.s:642    .text:0000000000000460 .L0 
+     /tmp/ccHSkuFm.s:643    .text:0000000000000460 .L0 
+     /tmp/ccHSkuFm.s:645    .text:0000000000000464 .L0 
+     /tmp/ccHSkuFm.s:647    .text:0000000000000468 .L0 
+     /tmp/ccHSkuFm.s:680    .bss:0000000000000120 _ZN7Konsole14getcWaiterTailE
+     /tmp/ccHSkuFm.s:684    .bss:0000000000000128 _ZN7Konsole14getcWaiterHeadE
+     /tmp/ccHSkuFm.s:664    .bss:0000000000000000 _ZN7Konsole11outputItemsE
+     /tmp/ccHSkuFm.s:672    .bss:000000000000001c _ZN7Konsole10outputTailE
+     /tmp/ccHSkuFm.s:668    .bss:0000000000000018 _ZN7Konsole10outputHeadE
+     /tmp/ccHSkuFm.s:676    .bss:0000000000000020 _ZN7Konsole12outputBufferE
+     /tmp/ccHSkuFm.s:692    .bss:0000000000000134 _ZN7Konsole9inputTailE
+     /tmp/ccHSkuFm.s:688    .bss:0000000000000130 _ZN7Konsole9inputHeadE
+     /tmp/ccHSkuFm.s:696    .bss:0000000000000138 _ZN7Konsole11inputBufferE
+     /tmp/ccHSkuFm.s:661    .bss:0000000000000000 .LANCHOR0
+     /tmp/ccHSkuFm.s:706    .text:0000000000000468 .L0 
+     /tmp/ccHSkuFm.s:27     .text:0000000000000010 .L0 
+     /tmp/ccHSkuFm.s:34     .text:0000000000000020 .L0 
+     /tmp/ccHSkuFm.s:44     .text:000000000000003c .L0 
+     /tmp/ccHSkuFm.s:52     .text:0000000000000050 .L0 
+     /tmp/ccHSkuFm.s:68     .text:000000000000007c .L0 
+     /tmp/ccHSkuFm.s:105    .text:00000000000000b4 .L0 
+     /tmp/ccHSkuFm.s:116    .text:00000000000000d0 .L0 
+     /tmp/ccHSkuFm.s:122    .text:00000000000000e0 .L0 
+GAS LISTING /tmp/ccHSkuFm.s 			page 24
+
+
+     /tmp/ccHSkuFm.s:147    .text:000000000000010c .L0 
+     /tmp/ccHSkuFm.s:171    .text:000000000000012c .L0 
+     /tmp/ccHSkuFm.s:182    .text:0000000000000144 .L0 
+     /tmp/ccHSkuFm.s:223    .text:0000000000000194 .L0 
+     /tmp/ccHSkuFm.s:247    .text:00000000000001b4 .L0 
+     /tmp/ccHSkuFm.s:290    .text:0000000000000200 .L0 
+     /tmp/ccHSkuFm.s:411    .text:00000000000002bc .L0 
+     /tmp/ccHSkuFm.s:420    .text:00000000000002d4 .L0 
+     /tmp/ccHSkuFm.s:436    .text:00000000000002f4 .L0 
+     /tmp/ccHSkuFm.s:454    .text:0000000000000324 .L0 
+     /tmp/ccHSkuFm.s:499    .text:0000000000000364 .L0 
+     /tmp/ccHSkuFm.s:517    .text:0000000000000394 .L0 
+     /tmp/ccHSkuFm.s:583    .text:00000000000003ec .L0 
+     /tmp/ccHSkuFm.s:591    .text:0000000000000400 .L0 
+     /tmp/ccHSkuFm.s:30     .text:0000000000000020 .L2
+     /tmp/ccHSkuFm.s:22     .text:0000000000000010 .L3
+     /tmp/ccHSkuFm.s:137    .text:00000000000000fc .L7
+     /tmp/ccHSkuFm.s:119    .text:00000000000000e0 .L8
+     /tmp/ccHSkuFm.s:204    .text:000000000000017c .L10
+     /tmp/ccHSkuFm.s:219    .text:0000000000000194 .L12
+     /tmp/ccHSkuFm.s:190    .text:000000000000015c .L13
+     /tmp/ccHSkuFm.s:405    .text:00000000000002bc .L18
+     /tmp/ccHSkuFm.s:462    .text:000000000000033c .L24
+     /tmp/ccHSkuFm.s:372    .text:0000000000000294 .L19
+     /tmp/ccHSkuFm.s:392    .text:00000000000002b0 .L25
+     /tmp/ccHSkuFm.s:376    .text:0000000000000298 .L17
+     /tmp/ccHSkuFm.s:550    .text:00000000000003d0 .L32
+     /tmp/ccHSkuFm.s:565    .text:00000000000003e4 .L30
+     /tmp/ccHSkuFm.s:559    .text:00000000000003dc .L28
+     /tmp/ccHSkuFm.s:535    .text:00000000000003bc .L29
+     /tmp/ccHSkuFm.s:621    .text:000000000000043c .L34
+     /tmp/ccHSkuFm.s:611    .text:0000000000000434 .L35
+     /tmp/ccHSkuFm.s:2483   .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccHSkuFm.s:4148   .debug_str:0000000000000ab1 .LASF183
+     /tmp/ccHSkuFm.s:3938   .debug_str:000000000000035a .LASF184
+     /tmp/ccHSkuFm.s:4126   .debug_str:00000000000009fb .LASF185
+     /tmp/ccHSkuFm.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccHSkuFm.s:699    .text:0000000000000468 .Letext0
+     /tmp/ccHSkuFm.s:3828   .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccHSkuFm.s:3976   .debug_str:00000000000004e3 .LASF0
+     /tmp/ccHSkuFm.s:3996   .debug_str:0000000000000596 .LASF1
+     /tmp/ccHSkuFm.s:4090   .debug_str:00000000000008e4 .LASF2
+     /tmp/ccHSkuFm.s:3926   .debug_str:00000000000002eb .LASF3
+     /tmp/ccHSkuFm.s:4094   .debug_str:000000000000090f .LASF4
+     /tmp/ccHSkuFm.s:3982   .debug_str:0000000000000523 .LASF5
+     /tmp/ccHSkuFm.s:3844   .debug_str:0000000000000052 .LASF6
+     /tmp/ccHSkuFm.s:4066   .debug_str:000000000000082e .LASF7
+     /tmp/ccHSkuFm.s:4054   .debug_str:00000000000007e6 .LASF8
+     /tmp/ccHSkuFm.s:3988   .debug_str:0000000000000556 .LASF9
+     /tmp/ccHSkuFm.s:3946   .debug_str:000000000000039b .LASF10
+     /tmp/ccHSkuFm.s:3954   .debug_str:00000000000003d8 .LASF11
+     /tmp/ccHSkuFm.s:3882   .debug_str:000000000000014f .LASF12
+     /tmp/ccHSkuFm.s:3932   .debug_str:000000000000031f .LASF13
+     /tmp/ccHSkuFm.s:3890   .debug_str:0000000000000191 .LASF14
+     /tmp/ccHSkuFm.s:3880   .debug_str:000000000000013f .LASF15
+     /tmp/ccHSkuFm.s:4124   .debug_str:00000000000009ef .LASF16
+     /tmp/ccHSkuFm.s:3918   .debug_str:0000000000000280 .LASF17
+GAS LISTING /tmp/ccHSkuFm.s 			page 25
+
+
+     /tmp/ccHSkuFm.s:4110   .debug_str:000000000000097e .LASF18
+     /tmp/ccHSkuFm.s:4132   .debug_str:0000000000000a38 .LASF186
+     /tmp/ccHSkuFm.s:4150   .debug_str:0000000000000b75 .LASF19
+     /tmp/ccHSkuFm.s:4186   .debug_str:0000000000000c8a .LASF20
+     /tmp/ccHSkuFm.s:4048   .debug_str:00000000000007bc .LASF34
+     /tmp/ccHSkuFm.s:4130   .debug_str:0000000000000a27 .LASF58
+     /tmp/ccHSkuFm.s:3992   .debug_str:000000000000056f .LASF60
+     /tmp/ccHSkuFm.s:3908   .debug_str:0000000000000245 .LASF21
+     /tmp/ccHSkuFm.s:3912   .debug_str:000000000000024f .LASF22
+     /tmp/ccHSkuFm.s:4108   .debug_str:0000000000000975 .LASF23
+     /tmp/ccHSkuFm.s:3858   .debug_str:00000000000000be .LASF24
+     /tmp/ccHSkuFm.s:3884   .debug_str:000000000000015e .LASF25
+     /tmp/ccHSkuFm.s:4104   .debug_str:0000000000000954 .LASF26
+     /tmp/ccHSkuFm.s:4138   .debug_str:0000000000000a50 .LASF27
+     /tmp/ccHSkuFm.s:4208   .debug_str:0000000000000d50 .LASF28
+     /tmp/ccHSkuFm.s:4010   .debug_str:000000000000061d .LASF29
+     /tmp/ccHSkuFm.s:4196   .debug_str:0000000000000cda .LASF30
+     /tmp/ccHSkuFm.s:3870   .debug_str:00000000000000e9 .LASF31
+     /tmp/ccHSkuFm.s:3900   .debug_str:0000000000000206 .LASF32
+     /tmp/ccHSkuFm.s:3856   .debug_str:00000000000000b0 .LASF33
+     /tmp/ccHSkuFm.s:3914   .debug_str:0000000000000256 .LASF36
+     /tmp/ccHSkuFm.s:4212   .debug_str:0000000000000d62 .LASF35
+     /tmp/ccHSkuFm.s:3970   .debug_str:0000000000000481 .LASF37
+     /tmp/ccHSkuFm.s:3862   .debug_str:00000000000000c9 .LASF38
+     /tmp/ccHSkuFm.s:4052   .debug_str:00000000000007d3 .LASF39
+     /tmp/ccHSkuFm.s:3872   .debug_str:00000000000000f7 .LASF40
+     /tmp/ccHSkuFm.s:4140   .debug_str:0000000000000a5d .LASF42
+     /tmp/ccHSkuFm.s:3968   .debug_str:0000000000000476 .LASF41
+     /tmp/ccHSkuFm.s:3962   .debug_str:0000000000000447 .LASF43
+     /tmp/ccHSkuFm.s:4088   .debug_str:00000000000008da .LASF44
+     /tmp/ccHSkuFm.s:3888   .debug_str:0000000000000179 .LASF45
+     /tmp/ccHSkuFm.s:4030   .debug_str:00000000000006d2 .LASF46
+     /tmp/ccHSkuFm.s:4190   .debug_str:0000000000000c9f .LASF47
+     /tmp/ccHSkuFm.s:4072   .debug_str:0000000000000853 .LASF48
+     /tmp/ccHSkuFm.s:3940   .debug_str:000000000000036a .LASF49
+     /tmp/ccHSkuFm.s:4160   .debug_str:0000000000000bc3 .LASF50
+     /tmp/ccHSkuFm.s:4120   .debug_str:00000000000009c2 .LASF51
+     /tmp/ccHSkuFm.s:3964   .debug_str:0000000000000461 .LASF52
+     /tmp/ccHSkuFm.s:3848   .debug_str:0000000000000066 .LASF53
+     /tmp/ccHSkuFm.s:3886   .debug_str:0000000000000163 .LASF54
+     /tmp/ccHSkuFm.s:3998   .debug_str:00000000000005a9 .LASF55
+     /tmp/ccHSkuFm.s:4056   .debug_str:00000000000007f9 .LASF56
+     /tmp/ccHSkuFm.s:4106   .debug_str:000000000000095d .LASF57
+     /tmp/ccHSkuFm.s:3864   .debug_str:00000000000000ce .LASF59
+     /tmp/ccHSkuFm.s:3896   .debug_str:00000000000001dc .LASF61
+     /tmp/ccHSkuFm.s:4016   .debug_str:0000000000000647 .LASF62
+     /tmp/ccHSkuFm.s:4080   .debug_str:0000000000000880 .LASF63
+     /tmp/ccHSkuFm.s:3966   .debug_str:0000000000000470 .LASF64
+     /tmp/ccHSkuFm.s:4180   .debug_str:0000000000000c6e .LASF65
+     /tmp/ccHSkuFm.s:4102   .debug_str:0000000000000948 .LASF66
+     /tmp/ccHSkuFm.s:3902   .debug_str:0000000000000210 .LASF67
+     /tmp/ccHSkuFm.s:3866   .debug_str:00000000000000d6 .LASF68
+     /tmp/ccHSkuFm.s:4024   .debug_str:000000000000069a .LASF69
+     /tmp/ccHSkuFm.s:4058   .debug_str:00000000000007ff .LASF70
+     /tmp/ccHSkuFm.s:3892   .debug_str:00000000000001a1 .LASF71
+     /tmp/ccHSkuFm.s:4192   .debug_str:0000000000000cbd .LASF72
+     /tmp/ccHSkuFm.s:3910   .debug_str:000000000000024a .LASF73
+GAS LISTING /tmp/ccHSkuFm.s 			page 26
+
+
+     /tmp/ccHSkuFm.s:4206   .debug_str:0000000000000d31 .LASF74
+     /tmp/ccHSkuFm.s:4128   .debug_str:0000000000000a20 .LASF75
+     /tmp/ccHSkuFm.s:4034   .debug_str:00000000000006fe .LASF76
+     /tmp/ccHSkuFm.s:3860   .debug_str:00000000000000c3 .LASF77
+     /tmp/ccHSkuFm.s:4086   .debug_str:00000000000008b9 .LASF78
+     /tmp/ccHSkuFm.s:3984   .debug_str:0000000000000535 .LASF79
+     /tmp/ccHSkuFm.s:4176   .debug_str:0000000000000c47 .LASF80
+     /tmp/ccHSkuFm.s:3850   .debug_str:0000000000000086 .LASF81
+     /tmp/ccHSkuFm.s:4162   .debug_str:0000000000000bd2 .LASF82
+     /tmp/ccHSkuFm.s:4172   .debug_str:0000000000000c1d .LASF83
+     /tmp/ccHSkuFm.s:3842   .debug_str:0000000000000046 .LASF187
+     /tmp/ccHSkuFm.s:4168   .debug_str:0000000000000c01 .LASF84
+     /tmp/ccHSkuFm.s:3978   .debug_str:00000000000004f0 .LASF85
+     /tmp/ccHSkuFm.s:3876   .debug_str:000000000000012c .LASF86
+     /tmp/ccHSkuFm.s:4178   .debug_str:0000000000000c61 .LASF87
+     /tmp/ccHSkuFm.s:4134   .debug_str:0000000000000a40 .LASF88
+     /tmp/ccHSkuFm.s:4042   .debug_str:0000000000000772 .LASF89
+     /tmp/ccHSkuFm.s:3898   .debug_str:00000000000001fa .LASF90
+     /tmp/ccHSkuFm.s:4050   .debug_str:00000000000007c4 .LASF91
+     /tmp/ccHSkuFm.s:3838   .debug_str:0000000000000026 .LASF92
+     /tmp/ccHSkuFm.s:3952   .debug_str:00000000000003c6 .LASF93
+     /tmp/ccHSkuFm.s:3874   .debug_str:0000000000000103 .LASF95
+     /tmp/ccHSkuFm.s:4166   .debug_str:0000000000000bef .LASF97
+     /tmp/ccHSkuFm.s:4040   .debug_str:0000000000000751 .LASF98
+     /tmp/ccHSkuFm.s:4198   .debug_str:0000000000000ce8 .LASF94
+     /tmp/ccHSkuFm.s:3894   .debug_str:00000000000001bb .LASF96
+     /tmp/ccHSkuFm.s:4100   .debug_str:0000000000000935 .LASF99
+     /tmp/ccHSkuFm.s:4096   .debug_str:0000000000000916 .LASF100
+     /tmp/ccHSkuFm.s:4038   .debug_str:0000000000000732 .LASF101
+     /tmp/ccHSkuFm.s:3922   .debug_str:00000000000002bc .LASF102
+     /tmp/ccHSkuFm.s:4046   .debug_str:0000000000000799 .LASF103
+     /tmp/ccHSkuFm.s:3868   .debug_str:00000000000000de .LASF104
+     /tmp/ccHSkuFm.s:4174   .debug_str:0000000000000c25 .LASF105
+     /tmp/ccHSkuFm.s:4136   .debug_str:0000000000000a4b .LASF106
+     /tmp/ccHSkuFm.s:3944   .debug_str:0000000000000391 .LASF107
+     /tmp/ccHSkuFm.s:4014   .debug_str:0000000000000631 .LASF108
+     /tmp/ccHSkuFm.s:4146   .debug_str:0000000000000aa9 .LASF109
+     /tmp/ccHSkuFm.s:4210   .debug_str:0000000000000d5b .LASF188
+     /tmp/ccHSkuFm.s:4008   .debug_str:0000000000000613 .LASF110
+     /tmp/ccHSkuFm.s:3834   .debug_str:0000000000000013 .LASF111
+     /tmp/ccHSkuFm.s:4026   .debug_str:00000000000006bc .LASF112
+     /tmp/ccHSkuFm.s:4156   .debug_str:0000000000000bab .LASF113
+     /tmp/ccHSkuFm.s:4028   .debug_str:00000000000006c6 .LASF114
+     /tmp/ccHSkuFm.s:3846   .debug_str:0000000000000059 .LASF115
+     /tmp/ccHSkuFm.s:4112   .debug_str:0000000000000994 .LASF116
+     /tmp/ccHSkuFm.s:4184   .debug_str:0000000000000c7e .LASF189
+     /tmp/ccHSkuFm.s:4000   .debug_str:00000000000005d3 .LASF190
+     /tmp/ccHSkuFm.s:4098   .debug_str:0000000000000926 .LASF117
+     /tmp/ccHSkuFm.s:4154   .debug_str:0000000000000b83 .LASF118
+     /tmp/ccHSkuFm.s:3930   .debug_str:0000000000000312 .LASF119
+     /tmp/ccHSkuFm.s:3956   .debug_str:00000000000003e6 .LASF120
+     /tmp/ccHSkuFm.s:4170   .debug_str:0000000000000c0d .LASF121
+     /tmp/ccHSkuFm.s:3928   .debug_str:00000000000002f1 .LASF122
+     /tmp/ccHSkuFm.s:3840   .debug_str:0000000000000035 .LASF123
+     /tmp/ccHSkuFm.s:3972   .debug_str:000000000000049d .LASF124
+     /tmp/ccHSkuFm.s:3852   .debug_str:000000000000008c .LASF133
+     /tmp/ccHSkuFm.s:4044   .debug_str:000000000000077d .LASF135
+GAS LISTING /tmp/ccHSkuFm.s 			page 27
+
+
+     /tmp/ccHSkuFm.s:4002   .debug_str:00000000000005f0 .LASF125
+     /tmp/ccHSkuFm.s:4214   .debug_str:0000000000000d6e .LASF126
+     /tmp/ccHSkuFm.s:4122   .debug_str:00000000000009e2 .LASF127
+     /tmp/ccHSkuFm.s:4200   .debug_str:0000000000000cf9 .LASF128
+     /tmp/ccHSkuFm.s:4158   .debug_str:0000000000000bb6 .LASF129
+     /tmp/ccHSkuFm.s:3920   .debug_str:0000000000000296 .LASF130
+     /tmp/ccHSkuFm.s:4204   .debug_str:0000000000000d26 .LASF131
+     /tmp/ccHSkuFm.s:3974   .debug_str:00000000000004bf .LASF132
+     /tmp/ccHSkuFm.s:4082   .debug_str:000000000000088b .LASF134
+     /tmp/ccHSkuFm.s:4142   .debug_str:0000000000000a78 .LASF136
+     /tmp/ccHSkuFm.s:3960   .debug_str:000000000000042b .LASF191
+     /tmp/ccHSkuFm.s:4078   .debug_str:0000000000000873 .LASF137
+     /tmp/ccHSkuFm.s:4018   .debug_str:000000000000064c .LASF138
+     /tmp/ccHSkuFm.s:3936   .debug_str:0000000000000350 .LASF139
+     /tmp/ccHSkuFm.s:3934   .debug_str:000000000000032e .LASF140
+     /tmp/ccHSkuFm.s:3990   .debug_str:0000000000000569 .LASF141
+     /tmp/ccHSkuFm.s:3958   .debug_str:000000000000040c .LASF142
+     /tmp/ccHSkuFm.s:3836   .debug_str:000000000000001d .LASF143
+     /tmp/ccHSkuFm.s:4114   .debug_str:000000000000099f .LASF144
+     /tmp/ccHSkuFm.s:3948   .debug_str:00000000000003ab .LASF145
+     /tmp/ccHSkuFm.s:3906   .debug_str:0000000000000221 .LASF146
+     /tmp/ccHSkuFm.s:4182   .debug_str:0000000000000c75 .LASF147
+     /tmp/ccHSkuFm.s:4164   .debug_str:0000000000000bea .LASF148
+     /tmp/ccHSkuFm.s:3994   .debug_str:0000000000000591 .LASF149
+     /tmp/ccHSkuFm.s:3950   .debug_str:00000000000003b6 .LASF150
+     /tmp/ccHSkuFm.s:4060   .debug_str:0000000000000807 .LASF151
+     /tmp/ccHSkuFm.s:3924   .debug_str:00000000000002c7 .LASF152
+     /tmp/ccHSkuFm.s:4004   .debug_str:00000000000005f6 .LASF153
+     /tmp/ccHSkuFm.s:3980   .debug_str:00000000000004fa .LASF154
+     /tmp/ccHSkuFm.s:4188   .debug_str:0000000000000c92 .LASF155
+     /tmp/ccHSkuFm.s:4084   .debug_str:0000000000000893 .LASF156
+     /tmp/ccHSkuFm.s:4116   .debug_str:00000000000009b8 .LASF157
+     /tmp/ccHSkuFm.s:3854   .debug_str:0000000000000097 .LASF158
+     /tmp/ccHSkuFm.s:4022   .debug_str:000000000000068c .LASF159
+     /tmp/ccHSkuFm.s:4006   .debug_str:0000000000000607 .LASF160
+     /tmp/ccHSkuFm.s:4118   .debug_str:00000000000009bd .LASF161
+     /tmp/ccHSkuFm.s:4074   .debug_str:0000000000000862 .LASF192
+     /tmp/ccHSkuFm.s:4194   .debug_str:0000000000000cd4 .LASF162
+     /tmp/ccHSkuFm.s:3916   .debug_str:0000000000000266 .LASF163
+     /tmp/ccHSkuFm.s:4216   .debug_str:0000000000000d8f .LASF164
+     /tmp/ccHSkuFm.s:4070   .debug_str:000000000000083c .LASF165
+     /tmp/ccHSkuFm.s:4036   .debug_str:0000000000000717 .LASF166
+     /tmp/ccHSkuFm.s:4144   .debug_str:0000000000000a90 .LASF167
+     /tmp/ccHSkuFm.s:3986   .debug_str:000000000000053d .LASF168
+     /tmp/ccHSkuFm.s:4020   .debug_str:0000000000000672 .LASF169
+     /tmp/ccHSkuFm.s:4092   .debug_str:00000000000008f2 .LASF170
+     /tmp/ccHSkuFm.s:4032   .debug_str:00000000000006e1 .LASF171
+     /tmp/ccHSkuFm.s:576    .text:00000000000003ec .LFB9
+     /tmp/ccHSkuFm.s:648    .text:0000000000000468 .LFE9
+     /tmp/ccHSkuFm.s:4076   .debug_str:000000000000086c .LASF172
+     /tmp/ccHSkuFm.s:3589   .debug_loc:0000000000000000 .LLST16
+     /tmp/ccHSkuFm.s:588    .text:0000000000000400 .LBB18
+     /tmp/ccHSkuFm.s:616    .text:0000000000000438 .LBE18
+     /tmp/ccHSkuFm.s:3614   .debug_loc:0000000000000062 .LLST17
+     /tmp/ccHSkuFm.s:634    .text:0000000000000454 .LVL50
+     /tmp/ccHSkuFm.s:482    .text:000000000000034c .LFB8
+     /tmp/ccHSkuFm.s:570    .text:00000000000003ec .LFE8
+GAS LISTING /tmp/ccHSkuFm.s 			page 28
+
+
+     /tmp/ccHSkuFm.s:3621   .debug_loc:0000000000000085 .LLST13
+     /tmp/ccHSkuFm.s:3643   .debug_loc:00000000000000e4 .LLST14
+     /tmp/ccHSkuFm.s:4152   .debug_str:0000000000000b7a .LASF173
+     /tmp/ccHSkuFm.s:3668   .debug_loc:0000000000000146 .LLST15
+     /tmp/ccHSkuFm.s:527    .text:00000000000003b0 .LVL41
+     /tmp/ccHSkuFm.s:346    .text:0000000000000268 .LFB7
+     /tmp/ccHSkuFm.s:476    .text:000000000000034c .LFE7
+     /tmp/ccHSkuFm.s:3683   .debug_loc:000000000000018f .LLST9
+     /tmp/ccHSkuFm.s:3820   .debug_ranges:0000000000000000 .Ldebug_ranges0
+     /tmp/ccHSkuFm.s:3690   .debug_loc:00000000000001b2 .LLST10
+     /tmp/ccHSkuFm.s:4068   .debug_str:0000000000000835 .LASF174
+     /tmp/ccHSkuFm.s:3701   .debug_loc:00000000000001e8 .LLST11
+     /tmp/ccHSkuFm.s:433    .text:00000000000002f4 .LBB13
+     /tmp/ccHSkuFm.s:463    .text:000000000000033c .LBE13
+     /tmp/ccHSkuFm.s:3712   .debug_loc:000000000000021e .LLST12
+     /tmp/ccHSkuFm.s:404    .text:00000000000002bc .LVL32
+     /tmp/ccHSkuFm.s:429    .text:00000000000002f0 .LVL34
+     /tmp/ccHSkuFm.s:364    .text:0000000000000288 .LVL28
+     /tmp/ccHSkuFm.s:472    .text:0000000000000348 .LVL37
+     /tmp/ccHSkuFm.s:232    .text:00000000000001a0 .LFB6
+     /tmp/ccHSkuFm.s:340    .text:0000000000000268 .LFE6
+     /tmp/ccHSkuFm.s:3830   .debug_str:0000000000000000 .LASF175
+     /tmp/ccHSkuFm.s:3719   .debug_loc:0000000000000241 .LLST2
+     /tmp/ccHSkuFm.s:4064   .debug_str:0000000000000821 .LASF176
+     /tmp/ccHSkuFm.s:3942   .debug_str:0000000000000388 .LASF177
+     /tmp/ccHSkuFm.s:3726   .debug_loc:0000000000000264 .LLST4
+     /tmp/ccHSkuFm.s:3832   .debug_str:000000000000000a .LASF178
+     /tmp/ccHSkuFm.s:3739   .debug_loc:000000000000029e .LLST5
+     /tmp/ccHSkuFm.s:285    .text:0000000000000200 .LBB7
+     /tmp/ccHSkuFm.s:297    .text:0000000000000210 .LBE7
+     /tmp/ccHSkuFm.s:3752   .debug_loc:00000000000002d8 .LLST6
+     /tmp/ccHSkuFm.s:3760   .debug_loc:00000000000002fc .LLST7
+     /tmp/ccHSkuFm.s:3769   .debug_loc:0000000000000328 .LLST8
+     /tmp/ccHSkuFm.s:268    .text:00000000000001e0 .LVL15
+     /tmp/ccHSkuFm.s:272    .text:00000000000001e8 .LVL16
+     /tmp/ccHSkuFm.s:276    .text:00000000000001f4 .LVL17
+     /tmp/ccHSkuFm.s:283    .text:0000000000000200 .LVL19
+     /tmp/ccHSkuFm.s:301    .text:0000000000000218 .LVL21
+     /tmp/ccHSkuFm.s:305    .text:0000000000000224 .LVL22
+     /tmp/ccHSkuFm.s:316    .text:000000000000023c .LVL25
+     /tmp/ccHSkuFm.s:326    .text:0000000000000254 .LVL26
+     /tmp/ccHSkuFm.s:10     .text:0000000000000000 .LFB5
+     /tmp/ccHSkuFm.s:77     .text:0000000000000090 .LFE5
+     /tmp/ccHSkuFm.s:49     .text:0000000000000050 .LBB6
+     /tmp/ccHSkuFm.s:72     .text:000000000000008c .LBE6
+     /tmp/ccHSkuFm.s:29     .text:0000000000000020 .LVL0
+     /tmp/ccHSkuFm.s:156    .text:0000000000000118 .LFB4
+     /tmp/ccHSkuFm.s:226    .text:00000000000001a0 .LFE4
+     /tmp/ccHSkuFm.s:4202   .debug_str:0000000000000d1f .LASF179
+     /tmp/ccHSkuFm.s:3776   .debug_loc:000000000000034b .LLST1
+     /tmp/ccHSkuFm.s:180    .text:0000000000000144 .LVL10
+     /tmp/ccHSkuFm.s:189    .text:000000000000015c .LVL11
+     /tmp/ccHSkuFm.s:196    .text:000000000000016c .LVL12
+     /tmp/ccHSkuFm.s:202    .text:000000000000017c .LVL13
+     /tmp/ccHSkuFm.s:83     .text:0000000000000090 .LFB3
+     /tmp/ccHSkuFm.s:150    .text:0000000000000118 .LFE3
+     /tmp/ccHSkuFm.s:3787   .debug_loc:0000000000000381 .LLST0
+GAS LISTING /tmp/ccHSkuFm.s 			page 29
+
+
+     /tmp/ccHSkuFm.s:102    .text:00000000000000b4 .LVL3
+     /tmp/ccHSkuFm.s:112    .text:00000000000000cc .LVL4
+     /tmp/ccHSkuFm.s:118    .text:00000000000000e0 .LVL5
+     /tmp/ccHSkuFm.s:144    .text:000000000000010c .LVL8
+     /tmp/ccHSkuFm.s:3904   .debug_str:000000000000021c .LASF193
+     /tmp/ccHSkuFm.s:4012   .debug_str:0000000000000626 .LASF180
+     /tmp/ccHSkuFm.s:4062   .debug_str:0000000000000813 .LASF181
+     /tmp/ccHSkuFm.s:3878   .debug_str:0000000000000136 .LASF182
+     /tmp/ccHSkuFm.s:579    .text:00000000000003ec .LVL46
+     /tmp/ccHSkuFm.s:615    .text:0000000000000438 .LVL48
+     /tmp/ccHSkuFm.s:620    .text:000000000000043c .LVL49
+     /tmp/ccHSkuFm.s:594    .text:0000000000000410 .LVL47
+     /tmp/ccHSkuFm.s:485    .text:000000000000034c .LVL38
+     /tmp/ccHSkuFm.s:518    .text:000000000000039c .LVL40
+     /tmp/ccHSkuFm.s:545    .text:00000000000003c8 .LVL42
+     /tmp/ccHSkuFm.s:549    .text:00000000000003d0 .LVL43
+     /tmp/ccHSkuFm.s:564    .text:00000000000003e4 .LVL45
+     /tmp/ccHSkuFm.s:509    .text:000000000000038c .LVL39
+     /tmp/ccHSkuFm.s:557    .text:00000000000003d8 .LVL44
+     /tmp/ccHSkuFm.s:366    .text:000000000000028c .LVL29
+     /tmp/ccHSkuFm.s:371    .text:0000000000000294 .LVL30
+     /tmp/ccHSkuFm.s:391    .text:00000000000002b0 .LVL31
+     /tmp/ccHSkuFm.s:425    .text:00000000000002e8 .LVL33
+     /tmp/ccHSkuFm.s:461    .text:000000000000033c .LVL36
+     /tmp/ccHSkuFm.s:446    .text:000000000000031c .LVL35
+     /tmp/ccHSkuFm.s:278    .text:00000000000001f8 .LVL18
+     /tmp/ccHSkuFm.s:335    .text:0000000000000260 .LVL27
+     /tmp/ccHSkuFm.s:314    .text:0000000000000234 .LVL24
+     /tmp/ccHSkuFm.s:311    .text:000000000000022c .LVL23
+     /tmp/ccHSkuFm.s:295    .text:0000000000000210 .LVL20
+     /tmp/ccHSkuFm.s:175    .text:0000000000000138 .LVL9
+     /tmp/ccHSkuFm.s:218    .text:0000000000000194 .LVL14
+     /tmp/ccHSkuFm.s:86     .text:0000000000000090 .LVL2
+     /tmp/ccHSkuFm.s:132    .text:00000000000000f4 .LVL6
+     /tmp/ccHSkuFm.s:136    .text:00000000000000fc .LVL7
+     /tmp/ccHSkuFm.s:707    .debug_info:0000000000000000 .Ldebug_info0
+     /tmp/ccHSkuFm.s:396    .text:00000000000002b0 .LBB11
+     /tmp/ccHSkuFm.s:407    .text:00000000000002bc .LBE11
+     /tmp/ccHSkuFm.s:417    .text:00000000000002d4 .LBB15
+     /tmp/ccHSkuFm.s:465    .text:000000000000033c .LBE15
+
+UNDEFINED SYMBOLS
+sem_wait
+CONSOLE_STATUS
+CONSOLE_TX_DATA
+_ZN7KThread14setNextInQueueEPS_
+_ZN7KThread14setPrevInQueueEPS_
+_ZN7KThread14getNextInQueueEv
+_ZN10KSemaphore4initEj
+_ZN15MemoryAllocator11GetInstanceEv
+_ZN15MemoryAllocator16AllocateFragmentEm
+_ZN7KThread4initEv
+_ZN7KThread5setupEPS_Pm
+_ZN9Scheduler3PutEP7KThread
+plic_claim
+CONSOLE_RX_DATA
+plic_complete
+GAS LISTING /tmp/ccHSkuFm.s 			page 30
+
+
+_ZN10KSemaphore6signalEv

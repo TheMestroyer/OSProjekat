@@ -9,18 +9,18 @@
 #include "Thread.hpp"
 
 class KSemaphore {
-    int value;
-    bool closed;
-    KThread* blockedHead;
-    KThread* blockedTail;
+    int val;
+    bool isClosed;
+    KThread* head;
+    KThread* tail;
 
-    void enqueue(KThread* thread);
+    void enqueue(KThread* t);
     KThread* dequeue();
 public:
-    void init(unsigned initialValue);
-    int wait(KThread* caller);
+    void init(unsigned initVal);
+    int wait(KThread* tcb);
     int signal();
-    int waitN(KThread* caller, unsigned n);
+    int waitN(KThread* tcb, unsigned n);
     int signalN(unsigned n);
     int close();
 };

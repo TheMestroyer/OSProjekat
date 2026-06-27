@@ -1,0 +1,94 @@
+GAS LISTING /tmp/ccCUkIKA.s 			page 1
+
+
+   1              		.file	"userMain.cpp"
+   2              		.option pic
+   3              		.option norelax
+   4              		.text
+   5              	.Ltext0:
+   6              		.align	2
+   7              		.globl	userMainK
+   9              	userMainK:
+  10              	.LFB0:
+  11              		.file 1 "src/Tests/userMain.cpp"
+   1:src/Tests/userMain.cpp **** void userMain();
+   2:src/Tests/userMain.cpp **** void myUserMain();
+   3:src/Tests/userMain.cpp **** 
+   4:src/Tests/userMain.cpp **** extern "C" void userMainK(void) {
+  12              		.loc 1 4 33
+  13              		.cfi_startproc
+  14 0000 130101FF 		addi	sp,sp,-16
+  15              		.cfi_def_cfa_offset 16
+  16 0004 23341100 		sd	ra,8(sp)
+  17 0008 23308100 		sd	s0,0(sp)
+  18              		.cfi_offset 1, -8
+  19              		.cfi_offset 8, -16
+  20 000c 13040101 		addi	s0,sp,16
+  21              		.cfi_def_cfa 8, 0
+   5:src/Tests/userMain.cpp ****     const bool mytests=false;
+  22              		.loc 1 5 5
+  23              	.LVL0:
+   6:src/Tests/userMain.cpp ****     if (!mytests) {
+  24              		.loc 1 6 5
+   7:src/Tests/userMain.cpp ****         userMain();
+  25              		.loc 1 7 9
+  26              		.loc 1 7 17 is_stmt 0
+  27 0010 97000000 		call	_Z8userMainv@plt
+  27      E7800000 
+  28              	.LVL1:
+   8:src/Tests/userMain.cpp ****     }else myUserMain();
+   9:src/Tests/userMain.cpp **** }
+  29              		.loc 1 9 1
+  30 0018 83308100 		ld	ra,8(sp)
+  31              		.cfi_restore 1
+  32 001c 03340100 		ld	s0,0(sp)
+  33              		.cfi_restore 8
+  34              		.cfi_def_cfa 2, 16
+  35 0020 13010101 		addi	sp,sp,16
+  36              		.cfi_def_cfa_offset 0
+  37 0024 67800000 		jr	ra
+  38              		.cfi_endproc
+  39              	.LFE0:
+  41              	.Letext0:
+GAS LISTING /tmp/ccCUkIKA.s 			page 2
+
+
+DEFINED SYMBOLS
+                            *ABS*:0000000000000000 userMain.cpp
+     /tmp/ccCUkIKA.s:9      .text:0000000000000000 userMainK
+     /tmp/ccCUkIKA.s:13     .text:0000000000000000 .L0 
+     /tmp/ccCUkIKA.s:14     .text:0000000000000000 .L0 
+     /tmp/ccCUkIKA.s:15     .text:0000000000000004 .L0 
+     /tmp/ccCUkIKA.s:18     .text:000000000000000c .L0 
+     /tmp/ccCUkIKA.s:19     .text:000000000000000c .L0 
+     /tmp/ccCUkIKA.s:21     .text:0000000000000010 .L0 
+     /tmp/ccCUkIKA.s:24     .text:0000000000000010 .L0 
+     /tmp/ccCUkIKA.s:25     .text:0000000000000010 .L0 
+     /tmp/ccCUkIKA.s:26     .text:0000000000000010 .L0 
+     /tmp/ccCUkIKA.s:27     .text:0000000000000010 .L0 
+     /tmp/ccCUkIKA.s:30     .text:0000000000000018 .L0 
+     /tmp/ccCUkIKA.s:31     .text:000000000000001c .L0 
+     /tmp/ccCUkIKA.s:33     .text:0000000000000020 .L0 
+     /tmp/ccCUkIKA.s:34     .text:0000000000000020 .L0 
+     /tmp/ccCUkIKA.s:36     .text:0000000000000024 .L0 
+     /tmp/ccCUkIKA.s:38     .text:0000000000000028 .L0 
+     /tmp/ccCUkIKA.s:42     .text:0000000000000028 .L0 
+     /tmp/ccCUkIKA.s:91     .debug_abbrev:0000000000000000 .Ldebug_abbrev0
+     /tmp/ccCUkIKA.s:215    .debug_str:0000000000000000 .LASF0
+     /tmp/ccCUkIKA.s:221    .debug_str:00000000000000d6 .LASF1
+     /tmp/ccCUkIKA.s:229    .debug_str:0000000000000108 .LASF2
+     /tmp/ccCUkIKA.s:5      .text:0000000000000000 .Ltext0
+     /tmp/ccCUkIKA.s:41     .text:0000000000000028 .Letext0
+     /tmp/ccCUkIKA.s:213    .debug_line:0000000000000000 .Ldebug_line0
+     /tmp/ccCUkIKA.s:219    .debug_str:00000000000000cc .LASF3
+     /tmp/ccCUkIKA.s:10     .text:0000000000000000 .LFB0
+     /tmp/ccCUkIKA.s:39     .text:0000000000000028 .LFE0
+     /tmp/ccCUkIKA.s:217    .debug_str:00000000000000c4 .LASF4
+     /tmp/ccCUkIKA.s:28     .text:0000000000000018 .LVL1
+     /tmp/ccCUkIKA.s:223    .debug_str:00000000000000ed .LASF5
+     /tmp/ccCUkIKA.s:227    .debug_str:00000000000000fb .LASF6
+     /tmp/ccCUkIKA.s:225    .debug_str:00000000000000f2 .LASF7
+     /tmp/ccCUkIKA.s:43     .debug_info:0000000000000000 .Ldebug_info0
+
+UNDEFINED SYMBOLS
+_Z8userMainv
