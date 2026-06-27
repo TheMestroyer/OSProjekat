@@ -22,6 +22,8 @@ protected:
     void* arg;
     KThread* parent;
 
+    bool finished;
+
     KThread* prev;
     KThread* next;
     size_t* stackPtr;

@@ -25,6 +25,9 @@ void KThread::init() {
     threadContext.sepc = 0;
     threadContext.sstatus = 0;
     threadContext.pc = 0;
+    finished=false;
+    waitingThread=nullptr;
+    stopperThread=nullptr;
 }
 
 void KThread::copyContext(size_t* ctx) {
@@ -77,5 +80,6 @@ void KThread::setup(KThread* parentThread, size_t* stack_top) {
 
 void KThread::threadTrampoline(KThread* t) {
     if (t->body) t->body(t->arg);
+    t->finished=true;
     __asm__ volatile("li a0, 0x12; ecall");
 }

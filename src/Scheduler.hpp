@@ -31,6 +31,10 @@ public:
 
     static KThread* GetRunning();
     static void yield(KThread* oldThread, KThread* newThread);
+    // Re-queues current and switches to the next ready thread. Returns false if no next exists.
+    static bool yieldCurrent(KThread* current);
+    // Switches to the next ready thread without re-queuing current (for blocking ops and join).
+    static void blockCurrent(KThread* current);
     static void ThreadExit(KThread* t);
     static KThread* GetNext();
     static void Put(KThread* thread);

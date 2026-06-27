@@ -104,14 +104,8 @@ extern "C" void HandleInterupt(size_t* stackInfo){
             break;
         }
         case Syscall::THREAD_YIELD: {
-            KThread* next = Scheduler::GetNext();
-            if (next == nullptr) {
+            if (!Scheduler::yieldCurrent(current))
                 __asm__ volatile("li a0, 0");
-                break;
-            }
-            if (current) current->threadContext.x[10] = 0;
-            Scheduler::Put(current);
-            Scheduler::yield(current, next);
             break;
         }
         case Syscall::SEM_OPEN: {
@@ -136,9 +130,7 @@ extern "C" void HandleInterupt(size_t* stackInfo){
             KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
             int result = semaphore->wait(current);
             if (result <= 0) { __asm__ volatile("mv a0, %0" :: "r"((size_t)result)); break; }
-            KThread* next = Scheduler::GetNext();
-            if (next == nullptr) { while(true){} }
-            Scheduler::yield(current, next);
+            Scheduler::blockCurrent(current);
             break;
         }
         case Syscall::SEM_SIGNAL: {
@@ -152,9 +144,7 @@ extern "C" void HandleInterupt(size_t* stackInfo){
             unsigned n = (unsigned)stackInfo[12];
             int result = semaphore->waitN(current, n);
             if (result <= 0) { __asm__ volatile("mv a0, %0" :: "r"((size_t)result)); break; }
-            KThread* next = Scheduler::GetNext();
-            if (next == nullptr) { while(true){} }
-            Scheduler::yield(current, next);
+            Scheduler::blockCurrent(current);
             break;
         }
         case Syscall::SEM_SIGNAL_N: {
@@ -169,20 +159,15 @@ extern "C" void HandleInterupt(size_t* stackInfo){
             if (current) current->threadContext.x[10] = 0;
             if (dur == 0) { __asm__ volatile("li a0, 0"); break; }
             Scheduler::sleep(current, dur);
-            KThread* next = Scheduler::GetNext();
-            if (next == nullptr) { while(true){} }
-            Scheduler::yield(current, next);
+            Scheduler::blockCurrent(current);
             break;
         }
         case Syscall::GETC: {
             int result = Konsole::getcKernel(current);
-            if (result == -2) {
-                KThread* next = Scheduler::GetNext();
-                if (next == nullptr) { while(true){} }
-                Scheduler::yield(current, next);
-            } else {
+            if (result == -2)
+                Scheduler::blockCurrent(current);
+            else
                 __asm__ volatile("mv a0, %0" :: "r"((size_t)(unsigned char)result));
-            }
             break;
         }
         case Syscall::PUTC: {

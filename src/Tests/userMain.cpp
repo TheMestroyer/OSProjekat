@@ -2,18 +2,15 @@
 
 
 #define USE_CPP_TEST
-//#define USE_C_TEST
 void userMain();
+void myUserMain();
 
-#ifdef USE_CPP_TEST
 extern "C" void userMainCpp(void);
 extern "C" void userMainK(void) {
-    userMain();
+    const bool mytests=true;
+    if (!mytests) {
+        userMain();
+    }
+    myUserMain();
 }
-#else
-extern "C" void userMainC(void);
-extern "C" void userMainK(void) {
-    userMain();
-}
-#endif
 

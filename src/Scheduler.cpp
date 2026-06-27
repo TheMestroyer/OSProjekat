@@ -27,12 +27,34 @@ void Scheduler::yield(KThread* oldThread, KThread* newThread){
     restoreContext(newThread->getContext());
 }
 
+bool Scheduler::yieldCurrent(KThread* current) {
+    KThread* next = GetNext();
+    if (next == nullptr) return false;
+
+    if (current) current->threadContext.x[10] = 0;
+    Put(current);
+    yield(current, next);
+    return true;
+}
+
+void Scheduler::blockCurrent(KThread* current) {
+    KThread* next = GetNext();
+    if (next == nullptr) { while (true) {} }
+    yield(current, next);
+}
+
 void Scheduler::ThreadExit(KThread* t) {
     deadThread = t;
     KThread* next = GetNext();
     if (next == nullptr) {
         next = t->getParent();
         if (next == nullptr) { while (true) {} }
+    }
+    if (t->stopperThread)return;
+    if (t->waitingThread) {
+        Put(t->waitingThread);
+        t->waitingThread->stopperThread = t->stopperThread;
+        t->waitingThread=nullptr;
     }
     yield(t, next);
 }
@@ -169,5 +191,8 @@ void Scheduler::sleep(KThread* thread, time_t duration) {
 }
 
 void Scheduler::joinThread(KThread* joiningThread) {
+    joiningThread->waitingThread = joiningThread;
+    running->stopperThread = joiningThread;
+    blockCurrent(running);
 
 }
