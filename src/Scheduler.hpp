@@ -38,6 +38,7 @@ public:
     static void timerTick(KThread* current);
     static void sleep(KThread* thread, time_t duration);
     static void freeDead();
+    static void joinThread(KThread* joiningThread);
 
 };
 

@@ -28,6 +28,8 @@ protected:
     size_t* supervisorSp;
     time_t sleepDelta;
     uint8  priority;
+    KThread* waitingThread;
+    KThread* stopperThread;
 public:
     void* stackBase;
     Context threadContext;

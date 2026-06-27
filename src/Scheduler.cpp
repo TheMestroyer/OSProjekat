@@ -167,3 +167,7 @@ void Scheduler::sleep(KThread* thread, time_t duration) {
     else previous->setNextInQueue(thread);
     if (current != nullptr) current->sleepDelta -= remaining;
 }
+
+void Scheduler::joinThread(KThread* joiningThread) {
+
+}

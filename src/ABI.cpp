@@ -7,11 +7,14 @@
 #include "Scheduler.hpp"
 #include "Semaphore.hpp"
 #include "Konsole.hpp"
+#include "SyscallCodes.hpp"
 #include "../lib/console.h"
 
 extern "C" void restoreContext(size_t* ctx);
 
-extern "C" void HandleInterupt(size_t* frame){
+
+
+extern "C" void HandleInterupt(size_t* stackInfo){
     uint64 scause;
     __asm__ volatile("csrr %0, scause" : "=r"(scause));
 
@@ -20,31 +23,30 @@ extern "C" void HandleInterupt(size_t* frame){
     KThread* current = Scheduler::GetRunning();
     if (current != nullptr) {
         auto& ctx = current->threadContext;
-        for (int i = 0; i < 32; i++) ctx.x[i] = frame[i];
-        ctx.x[2] = (size_t)frame + 256;
+        for (int i = 0; i < 32; i++) ctx.x[i] = stackInfo[i];
+        ctx.x[2] = (size_t)stackInfo + 256;
 
         size_t sepc, sstatus;
         __asm__ volatile("csrr %0, sepc"    : "=r"(sepc));
         __asm__ volatile("csrr %0, sstatus" : "=r"(sstatus));
-        if (scause == 8 || scause == 9) sepc += 4;
+        if (scause == SCause::ECALL_USER || scause == SCause::ECALL_SUPERVISOR) sepc += 4;
         ctx.sepc    = sepc;
         ctx.sstatus = sstatus;
     }
 
-    // timer (supervisor software interrupt: MSB+LSB both 1)
-    if (scause == 0x8000000000000001UL) {
+    if (scause == SCause::TIMER_INTERRUPT) {
         Scheduler::timerTick(current);
         if (current) __asm__ volatile("mv a0, %0" :: "r"(current->threadContext.x[10]));
         return;
     }
 
-    if (scause == 0x8000000000000009UL) {
+    if (scause == SCause::EXTERNAL_INTERRUPT) {
         Konsole::handleInterrupt();
         if (current) __asm__ volatile("mv a0, %0" :: "r"(current->threadContext.x[10]));
         return;
     }
 
-    if (scause != 8 && scause != 9) {
+    if (scause != SCause::ECALL_USER && scause != SCause::ECALL_SUPERVISOR) {
         if ((scause >> 63) == 0 && current != nullptr) {
             Scheduler::ThreadExit(current);
         }
@@ -58,24 +60,24 @@ extern "C" void HandleInterupt(size_t* frame){
         __asm__ volatile("csrw sepc, %0" :: "r"(sepc + 4));
     }
 
-    size_t code = frame[10];
+    size_t code = stackInfo[10];
     switch (code) {
-        case 0x01: {
-            size_t size = frame[11];
+        case Syscall::MEM_ALLOC: {
+            size_t size = stackInfo[11];
             void* ptr = MemoryAllocator::GetInstance().AllocateFragment(size);
             __asm__ volatile("mv a0,%[res]"::[res]"r"(ptr));
             break;
         }
-        case 0x02: {
-            void* ptr = (void*)frame[11];
+        case Syscall::MEM_FREE: {
+            void* ptr = (void*)stackInfo[11];
             MemoryAllocator::GetInstance().FreeFragment(ptr);
             break;
         }
-        case 0x11: {
-            thread_t* handle             = reinterpret_cast<thread_t*>(frame[11]);
-            void (*start_routine)(void*) = reinterpret_cast<void(*)(void*)>(frame[12]);
-            void* threadArg              = reinterpret_cast<void*>(frame[13]);
-            size_t* stack_space          = reinterpret_cast<size_t*>(frame[14]);
+        case Syscall::THREAD_CREATE: {
+            thread_t* handle             = reinterpret_cast<thread_t*>(stackInfo[11]);
+            void (*start_routine)(void*) = reinterpret_cast<void(*)(void*)>(stackInfo[12]);
+            void* threadArg              = reinterpret_cast<void*>(stackInfo[13]);
+            size_t* stack_space          = reinterpret_cast<size_t*>(stackInfo[14]);
 
             void* mem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(KThread));
             if (!mem) {
@@ -89,7 +91,7 @@ extern "C" void HandleInterupt(size_t* frame){
             t->init();
             t->setBody(start_routine, threadArg);
             t->setup(current, stack_space);
-            t->stackBase = reinterpret_cast<void*>(frame[15]);
+            t->stackBase = reinterpret_cast<void*>(stackInfo[15]);
 
             *handle = reinterpret_cast<thread_t>(t);
             Scheduler::Put(t);
@@ -97,11 +99,11 @@ extern "C" void HandleInterupt(size_t* frame){
             __asm__ volatile("li a0, 0");
             break;
         }
-        case 0x12: {
+        case Syscall::THREAD_EXIT: {
             Scheduler::ThreadExit(current);
             break;
         }
-        case 0x13: {
+        case Syscall::THREAD_YIELD: {
             KThread* next = Scheduler::GetNext();
             if (next == nullptr) {
                 __asm__ volatile("li a0, 0");
@@ -112,9 +114,9 @@ extern "C" void HandleInterupt(size_t* frame){
             Scheduler::yield(current, next);
             break;
         }
-        case 0x21: {
-            sem_t* handle = reinterpret_cast<sem_t*>(frame[11]);
-            unsigned initialValue = (unsigned)frame[12];
+        case Syscall::SEM_OPEN: {
+            sem_t* handle = reinterpret_cast<sem_t*>(stackInfo[11]);
+            unsigned initialValue = (unsigned)stackInfo[12];
             void* mem = MemoryAllocator::GetInstance().AllocateFragment(sizeof(KSemaphore));
             if (!mem) { __asm__ volatile("li a0, -1"); break; }
             KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(mem);
@@ -123,15 +125,15 @@ extern "C" void HandleInterupt(size_t* frame){
             __asm__ volatile("li a0, 0");
             break;
         }
-        case 0x22: {
-            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(frame[11]);
+        case Syscall::SEM_CLOSE: {
+            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
             semaphore->close();
             MemoryAllocator::GetInstance().FreeFragment(semaphore);
             __asm__ volatile("li a0, 0");
             break;
         }
-        case 0x23: {
-            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(frame[11]);
+        case Syscall::SEM_WAIT: {
+            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
             int result = semaphore->wait(current);
             if (result <= 0) { __asm__ volatile("mv a0, %0" :: "r"((size_t)result)); break; }
             KThread* next = Scheduler::GetNext();
@@ -139,15 +141,15 @@ extern "C" void HandleInterupt(size_t* frame){
             Scheduler::yield(current, next);
             break;
         }
-        case 0x24: {
-            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(frame[11]);
+        case Syscall::SEM_SIGNAL: {
+            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
             semaphore->signal();
             __asm__ volatile("li a0, 0");
             break;
         }
-        case 0x25: {
-            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(frame[11]);
-            unsigned n = (unsigned)frame[12];
+        case Syscall::SEM_WAIT_N: {
+            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
+            unsigned n = (unsigned)stackInfo[12];
             int result = semaphore->waitN(current, n);
             if (result <= 0) { __asm__ volatile("mv a0, %0" :: "r"((size_t)result)); break; }
             KThread* next = Scheduler::GetNext();
@@ -155,16 +157,15 @@ extern "C" void HandleInterupt(size_t* frame){
             Scheduler::yield(current, next);
             break;
         }
-        case 0x26: {
-            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(frame[11]);
-            unsigned n = (unsigned)frame[12];
+        case Syscall::SEM_SIGNAL_N: {
+            KSemaphore* semaphore = reinterpret_cast<KSemaphore*>(stackInfo[11]);
+            unsigned n = (unsigned)stackInfo[12];
             semaphore->signalN(n);
             __asm__ volatile("li a0, 0");
             break;
         }
-
-        case 0x31: {
-            time_t dur = (time_t)frame[11];
+        case Syscall::SLEEP: {
+            time_t dur = (time_t)stackInfo[11];
             if (current) current->threadContext.x[10] = 0;
             if (dur == 0) { __asm__ volatile("li a0, 0"); break; }
             Scheduler::sleep(current, dur);
@@ -173,7 +174,7 @@ extern "C" void HandleInterupt(size_t* frame){
             Scheduler::yield(current, next);
             break;
         }
-        case 0x41: {
+        case Syscall::GETC: {
             int result = Konsole::getcKernel(current);
             if (result == -2) {
                 KThread* next = Scheduler::GetNext();
@@ -184,13 +185,13 @@ extern "C" void HandleInterupt(size_t* frame){
             }
             break;
         }
-        case 0x42: {
-            char c = (char)frame[11];
+        case Syscall::PUTC: {
+            char c = (char)stackInfo[11];
             int result = Konsole::putcKernel(current, c);
             __asm__ volatile("mv a0, %0" :: "r"((size_t)result));
             break;
         }
-        case 0xFF: {
+        case Syscall::SHUTDOWN: {
             *((volatile uint32*)0x100000UL) = 0x5555;
             while (true) {}
             break;
