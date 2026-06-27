@@ -16,6 +16,7 @@ public:
     virtual ~Thread();
     int start();
     static void dispatch();
+    static void join(Thread* thread);
     static int sleep(time_t);
 protected:
     Thread();

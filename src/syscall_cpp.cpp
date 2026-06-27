@@ -43,6 +43,10 @@ int Semaphore::wait() {
 int Semaphore::signal() {
     return sem_signal(myHandle);
 }
+void Thread::join(Thread* thread) {
+    join(thread->myHandle);
+}
+
 
 PeriodicThread::PeriodicThread(time_t period) : Thread(), period(period) {}
 

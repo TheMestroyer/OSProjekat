@@ -22,6 +22,7 @@ namespace Syscall {
         THREAD_CREATE = 0x11,
         THREAD_EXIT   = 0x12,
         THREAD_YIELD  = 0x13,
+        THREAD_JOIN = 0x14,
 
         SEM_OPEN     = 0x21,
         SEM_CLOSE    = 0x22,

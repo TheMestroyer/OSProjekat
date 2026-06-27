@@ -23,6 +23,8 @@ typedef void* sem_t;
 void* mem_alloc(size_t size);
 int   mem_free(void* ptr);
 
+void join(thread_t* thread);
+
 int  thread_create(thread_t* handle, void (*start_routine)(void*), void* arg);
 int  thread_exit(void);
 void thread_dispatch(void);

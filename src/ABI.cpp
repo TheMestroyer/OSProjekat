@@ -108,6 +108,11 @@ extern "C" void HandleInterupt(size_t* stackInfo){
                 __asm__ volatile("li a0, 0");
             break;
         }
+        case Syscall::THREAD_JOIN: {
+            KThread* t = reinterpret_cast<KThread*>(stackInfo[11]);
+            Scheduler::joinThread(t);
+            break;
+        }
         case Syscall::SEM_OPEN: {
             sem_t* handle = reinterpret_cast<sem_t*>(stackInfo[11]);
             unsigned initialValue = (unsigned)stackInfo[12];
