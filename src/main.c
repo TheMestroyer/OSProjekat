@@ -1,7 +1,7 @@
 //
 // Created by os on 5/6/26.
 //
-#include "syscall_c.h"
+#include "../h/syscall_c.h"
 #include "../lib/console.h"
 
 void userMainK();

@@ -2,7 +2,7 @@
 // Created by os on 5/6/26.
 //
 
-#include "MemoryAllocator.hpp"
+#include "../h/MemoryAllocator.hpp"
 #include "../lib/console.h"
 
 MemoryAllocator::MemoryAllocator() {

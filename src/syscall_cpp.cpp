@@ -1,7 +1,7 @@
 //
 // Created by os on 6/25/26.
 //
-#include "syscall_cpp.hpp"
+#include "../h/syscall_cpp.hpp"
 
 void* operator new(size_t size) {
     return mem_alloc(size); }

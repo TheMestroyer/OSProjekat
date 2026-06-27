@@ -1,4 +1,4 @@
-#include "../src/syscall_c.h"
+#include "../h/syscall_c.h"
 
 #include "printing.hpp"
 

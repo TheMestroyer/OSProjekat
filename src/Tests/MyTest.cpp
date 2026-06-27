@@ -2,7 +2,7 @@
 // Created by os on 6/27/26.
 //
 #include "../../test/printing.hpp"
-#include "../syscall_cpp.hpp"
+#include "../../h/syscall_cpp.hpp"
 class TestTh: public Thread {
     void testThBody(void* arg);
 public:

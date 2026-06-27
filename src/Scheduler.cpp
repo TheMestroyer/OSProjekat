@@ -2,8 +2,8 @@
 // Created by os on 6/10/26.
 //
 
-#include "Scheduler.hpp"
-#include "MemoryAllocator.hpp"
+#include "../h/Scheduler.hpp"
+#include "../h/MemoryAllocator.hpp"
 
 extern "C" void saveContext(size_t* ctx);
 extern "C" void restoreContext(size_t* ctx);

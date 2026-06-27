@@ -2,8 +2,8 @@
 // Created by os on 6/10/26.
 //
 
-#include "Thread.hpp"
-#include "Scheduler.hpp"
+#include "../h/Thread.hpp"
+#include "../h/Scheduler.hpp"
 
 #include "../lib/console.h"
 

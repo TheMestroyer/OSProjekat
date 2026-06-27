@@ -1,13 +1,13 @@
 //
 // Created by os on 5/6/26.
 //
-#include "./MemoryAllocator.hpp"
-#include "Thread.hpp"
-#include "syscall_c.h"
-#include "Scheduler.hpp"
-#include "Semaphore.hpp"
-#include "Konsole.hpp"
-#include "SyscallCodes.hpp"
+#include "../h/MemoryAllocator.hpp"
+#include "../h/Thread.hpp"
+#include "../h/syscall_c.h"
+#include "../h/Scheduler.hpp"
+#include "../h/Semaphore.hpp"
+#include "../h/Konsole.hpp"
+#include "../h/SyscallCodes.hpp"
 #include "../lib/console.h"
 
 extern "C" void restoreContext(size_t* ctx);

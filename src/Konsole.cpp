@@ -2,10 +2,10 @@
 // Created by os on 6/24/26.
 //
 
-#include "Konsole.hpp"
-#include "Scheduler.hpp"
-#include "MemoryAllocator.hpp"
-#include "syscall_c.h"
+#include "../h/Konsole.hpp"
+#include "../h/Scheduler.hpp"
+#include "../h/MemoryAllocator.hpp"
+#include "../h/syscall_c.h"
 
 char Konsole::inputBuffer[BUFFER_SIZE];
 int Konsole::inputHead = 0;

@@ -2,8 +2,8 @@
 // Created by os on 6/25/26.
 //
 
-#include "Semaphore.hpp"
-#include "Scheduler.hpp"
+#include "../h/Semaphore.hpp"
+#include "../h/Scheduler.hpp"
 
 void KSemaphore::init(unsigned initialValue) {
     blockedHead = nullptr;

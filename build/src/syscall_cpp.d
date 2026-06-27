@@ -1,8 +1,0 @@
-build/src/syscall_cpp.o: src/syscall_cpp.cpp src/syscall_cpp.hpp \
- src/syscall_c.h src/../lib/hw.h
-
-src/syscall_cpp.hpp:
-
-src/syscall_c.h:
-
-src/../lib/hw.h:
