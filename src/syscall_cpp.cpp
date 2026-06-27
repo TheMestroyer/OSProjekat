@@ -44,7 +44,7 @@ int Semaphore::signal() {
     return sem_signal(myHandle);
 }
 void Thread::join(Thread* thread) {
-    join(thread->myHandle);
+    ::join(&thread->myHandle);
 }
 
 

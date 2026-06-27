@@ -42,7 +42,7 @@ int thread_create(thread_t* handle, void (*start_routine)(void*), void* arg) {
 
 void join(thread_t* thread) {
     register size_t a0 asm("a0") = 0x14;
-    register size_t a1 asm("a1") = (size_t)thread;
+    register size_t a1 asm("a1") = (size_t)*thread;
     __asm__ volatile("ecall" : "+r"(a0):"r"(a1));
 }
 

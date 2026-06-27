@@ -191,7 +191,7 @@ void Scheduler::sleep(KThread* thread, time_t duration) {
 }
 
 void Scheduler::joinThread(KThread* joiningThread) {
-    joiningThread->waitingThread = joiningThread;
+    joiningThread->waitingThread = running;
     running->stopperThread = joiningThread;
     blockCurrent(running);
 
